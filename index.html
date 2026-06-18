@@ -7,113 +7,226 @@
 <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script>
 document.addEventListener('contextmenu',e=>e.preventDefault());
-document.onkeydown=function(e){if(e.keyCode==123)return false;if(e.ctrlKey&&e.shiftKey&&['I','C','J'].includes(String.fromCharCode(e.keyCode)))return false;if(e.ctrlKey&&e.keyCode=='U'.charCodeAt(0))return false;}
-</script>
-<!-- TON Connect -->
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-<!-- AD SDK PLACEHOLDERS — new ads will be added later -->
-<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-<script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
-<script src='//libtl.com/sdk.js' data-zone='10135525' data-sdk='show_10135525'></script>
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
-  function initAdexium(){
-    if(typeof AdexiumWidget==='undefined'){setTimeout(initAdexium,3000);return;}
-    try{const w=new AdexiumWidget({wid:'a1a296e8-82a8-4686-8740-2ecd055c403d',adFormat:'interstitial'});window._adexiumWidget=w;w.autoMode();}catch(e){}
-  }
-  initAdexium();
-});
+document.onkeydown=function(e){
+  if(e.keyCode==123)return false;
+  if(e.ctrlKey&&e.shiftKey&&['I','C','J'].includes(String.fromCharCode(e.keyCode)))return false;
+  if(e.ctrlKey&&e.keyCode==85)return false;
+}
 </script>
 <style>
 :root{
---primary:#f59e0b;--primary-dark:#d97706;--accent:#fbbf24;--electric:#facc15;
---bg-page:#09090f;--bg-card:#111118;--bg-section:#0d0d16;
---text-main:#f1f5f9;--text-sub:#cbd5e1;--text-muted:#64748b;
---border:#1e1e2e;--border-mid:#2a2a3e;
---green:#10b981;--red:#ef4444;
---font:'Outfit',sans-serif;--mono:'Space Mono',monospace;
+  --primary:#e9a830;--accent:#f5c842;--electric:#facc15;
+  --bg:#0b0c14;--card:#13141f;--card2:#1a1b28;--section:#0f1018;
+  --txt:#eef0f8;--txt2:#a0a8c0;--txt3:#565d78;
+  --bdr:#1e2035;--bdr2:#2a2d46;
+  --green:#22c98a;--red:#e84e4e;--blue:#4a9eff;
+  --shadow-card:0 8px 32px rgba(0,0,0,0.55),0 2px 8px rgba(0,0,0,0.4);
+  --shadow-btn:0 4px 0 #7a4d00,0 6px 20px rgba(233,168,48,0.3);
+  --shadow-green:0 4px 0 #0a6644,0 6px 20px rgba(34,201,138,0.3);
+  --shadow-red:0 4px 0 #881c1c,0 6px 20px rgba(232,78,78,0.25);
+  --font:'Manrope',sans-serif;
+  --font-display:'Sora',sans-serif;
+  --mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg-page);color:var(--text-main);font-family:var(--font);padding:64px 0 88px;min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
-.app-header{position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;background:rgba(9,9,15,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
-.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.15rem;color:#f1f5f9;}
-.brand-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 0 12px rgba(245,158,11,0.5);}
-.brand .t{color:#f59e0b;}
+html,body{height:100%;}
+body{
+  background:var(--bg);color:var(--txt);font-family:var(--font);
+  padding:64px 0 90px;min-height:100vh;
+  -webkit-tap-highlight-color:transparent;overflow-x:hidden;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(233,168,48,0.08),transparent);
+}
+
+/* ── HEADER ── */
+.app-header{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;
+  background:rgba(11,12,20,0.94);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(233,168,48,0.12);
+  display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:800;font-size:1.12rem;color:var(--txt);}
+.brand-icon{
+  width:34px;height:34px;border-radius:11px;
+  background:linear-gradient(135deg,#f5c842,#e9a830,#c97f1a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;box-shadow:0 0 16px rgba(233,168,48,0.4),inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.brand .t{color:#e9a830;}
 .head-actions{display:flex;gap:8px;align-items:center;}
-.icon-btn{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:0.9rem;}
-.icon-btn:active{transform:scale(0.9);}
-#btn-promo{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
-#btn-history{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.88rem;transition:all 0.15s;
+}
+.icon-btn:active{transform:scale(0.88);}
+#btn-promo{background:rgba(233,168,48,0.12);border:1px solid rgba(233,168,48,0.28);color:#f5c842;}
+#btn-history{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
+
+/* ── LAYOUT ── */
 .container{max-width:600px;margin:0 auto;padding:0 14px;}
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;}
-.sec-title{font-size:0.74rem;font-weight:800;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:7px;text-transform:uppercase;letter-spacing:1.5px;}
-.task-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:13px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:0.2s;}
-.t-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.t-info{flex:1;}
-.t-name{font-size:0.9rem;font-weight:700;color:var(--text-main);}
-.t-reward{font-size:0.72rem;color:var(--primary);font-weight:600;margin-top:2px;}
-.t-limit{font-size:0.67rem;color:var(--text-muted);margin-top:1px;}
-.btn{padding:12px 20px;border:none;border-radius:12px;font-family:var(--font);font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:all 0.15s ease;position:relative;top:0;}
-.btn:active{transform:scale(0.95) translateY(1px);}
-.btn-primary{background:linear-gradient(145deg,#fbbf24,#f59e0b,#d97706);color:#0d0d00;box-shadow:0 4px 0 #92400e,0 6px 16px rgba(245,158,11,0.3);}
-.btn-primary:active{box-shadow:0 1px 0 #92400e!important;}
-.btn-accent{background:linear-gradient(145deg,#34d399,#10b981,#059669);color:#fff;box-shadow:0 4px 0 #047857,0 6px 16px rgba(16,185,129,0.3);}
-.btn-accent:active{box-shadow:0 1px 0 #047857!important;}
-.btn-outline{background:transparent;border:1.5px solid rgba(245,158,11,0.3);color:#fbbf24;}
-.btn-red{background:linear-gradient(145deg,#f87171,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 0 #991b1b,0 6px 16px rgba(239,68,68,0.25);}
-.btn-red:active{box-shadow:0 1px 0 #991b1b!important;}
-.btn-disabled{background:#1e1e2e!important;color:#475569!important;box-shadow:none!important;cursor:not-allowed;border:none!important;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card);border:1px solid var(--bdr);border-radius:22px;
+  padding:18px;margin-bottom:14px;
+  box-shadow:var(--shadow-card);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(233,168,48,0.2),transparent);
+}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:12px 20px;border:none;border-radius:14px;
+  font-family:var(--font-display);font-weight:700;font-size:0.88rem;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  transition:all 0.12s ease;letter-spacing:0.2px;
+}
+.btn:active{transform:translateY(2px);}
+.btn-primary{
+  background:linear-gradient(155deg,#f5c842,#e9a830,#c97f1a);
+  color:#1a0d00;box-shadow:var(--shadow-btn);
+}
+.btn-primary:active{box-shadow:0 1px 0 #7a4d00!important;}
+.btn-green{
+  background:linear-gradient(155deg,#2ddfaa,#22c98a,#14a06e);
+  color:#01160e;box-shadow:var(--shadow-green);
+}
+.btn-green:active{box-shadow:0 1px 0 #0a6644!important;}
+.btn-red{
+  background:linear-gradient(155deg,#f46b6b,#e84e4e,#c42c2c);
+  color:#fff;box-shadow:var(--shadow-red);
+}
+.btn-red:active{box-shadow:0 1px 0 #881c1c!important;}
+.btn-outline{
+  background:transparent;border:1.5px solid rgba(233,168,48,0.3);
+  color:#e9a830;box-shadow:none;
+}
+.btn-outline:active{background:rgba(233,168,48,0.08);}
+.btn-ghost{background:rgba(255,255,255,0.05);border:1px solid var(--bdr2);color:var(--txt2);}
+.btn-ghost:active{background:rgba(255,255,255,0.09);}
+.btn-disabled{background:var(--card2)!important;color:var(--txt3)!important;box-shadow:none!important;cursor:not-allowed!important;}
 .btn-full{width:100%;}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,15,0.97);backdrop-filter:blur(16px);border-top:1px solid rgba(245,158,11,0.1);display:flex;padding:8px 0 18px;z-index:1000;}
-.b-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-muted);font-size:0.6rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:0.2s;letter-spacing:0.5px;}
-.b-nav-item i{font-size:1.15rem;transition:0.2s;}
-.b-nav-item.active{color:#f59e0b;}
-.b-nav-item.active i{transform:translateY(-1px);filter:drop-shadow(0 0 6px rgba(245,158,11,0.7));}
-.content-section{display:none;animation:slideIn 0.22s ease;}
-.content-section.active{display:block;}
-@keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
-.modal-bg.show{display:flex;}
-.modal-box{background:#111118;border:1px solid rgba(245,158,11,0.2);border-radius:22px;width:100%;max-width:360px;padding:24px;text-align:center;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.8);animation:popModal 0.3s cubic-bezier(0.175,0.885,0.32,1.275);max-height:88vh;overflow-y:auto;}
-.modal-title{font-size:1.1rem;font-weight:800;color:var(--text-main);margin-bottom:6px;}
-.modal-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:16px;}
-.input-field{width:100%;background:#0d0d16;border:1.5px solid var(--border-mid);padding:13px 14px;border-radius:12px;color:var(--text-main);font-family:var(--font);font-size:0.9rem;margin-bottom:12px;outline:none;transition:0.2s;}
-.input-field::placeholder{color:#475569;}
-.input-field:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(245,158,11,0.1);}
-.info-box{background:rgba(245,158,11,0.06);border:1.5px solid rgba(245,158,11,0.18);border-radius:12px;padding:12px 14px;font-size:0.8rem;color:var(--text-sub);line-height:1.8;text-align:left;margin-bottom:14px;}
-.info-box b{color:#fbbf24;}
-@keyframes popModal{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
-.refer-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.refer-stat-box{background:rgba(245,158,11,0.06);border:1.5px solid rgba(245,158,11,0.15);border-radius:12px;padding:10px;text-align:center;}
-.refer-stat-val{font-family:var(--mono);font-size:1.2rem;font-weight:800;color:#fbbf24;}
-.refer-stat-label{font-size:0.6rem;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
-.reward-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:700;color:#fbbf24;}
-.loader-spin{width:22px;height:22px;border:2.5px solid var(--border-mid);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;}
-@keyframes spin{100%{transform:rotate(360deg);}}
+
+/* ── INPUTS ── */
+.input-field{
+  width:100%;background:var(--section);
+  border:1.5px solid var(--bdr2);padding:14px 15px;border-radius:14px;
+  color:var(--txt);font-family:var(--font);font-size:0.9rem;
+  margin-bottom:12px;outline:none;transition:0.18s;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);
+}
+.input-field::placeholder{color:var(--txt3);}
+.input-field:focus{border-color:var(--primary);box-shadow:inset 0 2px 6px rgba(0,0,0,0.3),0 0 0 3px rgba(233,168,48,0.12);}
+
+/* ── SEC TITLE ── */
+.sec-title{
+  font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:var(--txt3);
+  margin-bottom:12px;display:flex;align-items:center;gap:7px;
+  text-transform:uppercase;letter-spacing:1.6px;
+}
+.sec-title i{color:var(--primary);}
+
+/* ── TASK CARDS ── */
+.task-card{
+  background:var(--card);border:1px solid var(--bdr);border-radius:16px;
+  padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;
+  transition:border-color 0.18s;
+}
+.task-card:hover{border-color:var(--bdr2);}
+.t-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.t-info{flex:1;min-width:0;}
+.t-name{font-size:0.88rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-reward{font-size:0.7rem;color:var(--primary);font-weight:600;margin-top:2px;}
+.reward-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(233,168,48,0.1);border:1px solid rgba(233,168,48,0.22);
+  border-radius:20px;padding:3px 9px;font-size:0.7rem;font-weight:700;color:#f5c842;
+}
+
+/* ── PLATFORM PILLS ── */
 .platform-row{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;}
-.platform-pill{flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:0.74rem;font-weight:700;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:0.2s;white-space:nowrap;}
-.platform-pill.active,.platform-pill:hover{background:rgba(245,158,11,0.1);color:#fbbf24;border-color:rgba(245,158,11,0.3);}
-.empty-state{text-align:center;padding:30px 20px;color:var(--text-muted);}
-.empty-state i{font-size:2.5rem;opacity:0.3;display:block;margin-bottom:10px;}
+.platform-row::-webkit-scrollbar{display:none;}
+.platform-pill{
+  flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:0.72rem;font-weight:700;
+  background:rgba(255,255,255,0.03);border:1px solid var(--bdr);color:var(--txt3);
+  cursor:pointer;transition:0.18s;white-space:nowrap;font-family:var(--font-display);
+}
+.platform-pill.active,.platform-pill:hover{background:rgba(233,168,48,0.1);color:#f5c842;border-color:rgba(233,168,48,0.3);}
+
+/* ── NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(11,12,20,0.97);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(233,168,48,0.1);
+  display:flex;padding:8px 0 18px;z-index:1000;
+}
+.b-nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--txt3);font-size:0.58rem;font-weight:700;font-family:var(--font-display);
+  text-transform:uppercase;cursor:pointer;transition:0.18s;letter-spacing:0.6px;
+}
+.b-nav-item i{font-size:1.1rem;transition:0.2s;}
+.b-nav-item.active{color:var(--primary);}
+.b-nav-item.active i{filter:drop-shadow(0 0 8px rgba(233,168,48,0.7));transform:translateY(-1px);}
+
+/* ── SECTIONS ── */
+.content-section{display:none;animation:fadeSlide 0.22s ease;}
+.content-section.active{display:block;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── MODALS ── */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+  z-index:2000;display:none;align-items:flex-end;justify-content:center;padding:0;
+}
+.modal-bg.show{display:flex;}
+.modal-box{
+  background:var(--card);border:1px solid rgba(233,168,48,0.18);
+  border-radius:26px 26px 0 0;width:100%;max-width:480px;padding:24px;
+  text-align:center;
+  box-shadow:0 -24px 80px rgba(0,0,0,0.8);
+  animation:slideUp 0.3s cubic-bezier(0.175,0.885,0.32,1.15);
+  max-height:92vh;overflow-y:auto;
+}
+.modal-box::before{
+  content:'';display:block;width:38px;height:4px;background:var(--bdr2);
+  border-radius:4px;margin:0 auto 20px;
+}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:6px;}
+.modal-sub{font-size:0.82rem;color:var(--txt3);margin-bottom:16px;line-height:1.6;}
+
+/* ── MISC ── */
+.loader-spin{
+  width:20px;height:20px;border:2.5px solid var(--bdr2);border-top-color:var(--primary);
+  border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;
+}
+@keyframes spin{100%{transform:rotate(360deg);}}
+.empty-state{text-align:center;padding:30px 20px;color:var(--txt3);}
+.empty-state i{font-size:2.5rem;opacity:0.25;display:block;margin-bottom:10px;}
 .empty-state p{font-size:0.85rem;}
-@keyframes bulbPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 16px rgba(250,204,21,0.7));}50%{transform:scale(1.1);filter:drop-shadow(0 0 32px rgba(250,204,21,1));}}
-@keyframes splashPulse{0%,100%{box-shadow:0 0 30px rgba(245,158,11,0.5);}50%{box-shadow:0 0 60px rgba(245,158,11,0.9);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+@keyframes bulbPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 18px rgba(250,204,21,0.8));}50%{transform:scale(1.12);filter:drop-shadow(0 0 38px rgba(250,204,21,1));}}
+@keyframes splashPulse{0%,100%{box-shadow:0 0 30px rgba(233,168,48,0.5);}50%{box-shadow:0 0 70px rgba(233,168,48,0.9);}}
 </style>
 </head>
 <body>
 
 <!-- SPLASH -->
-<div id="splash-screen" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#09090f,#0f0f1a);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Outfit,sans-serif;transition:opacity 0.5s;">
-  <div style="width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:16px;animation:splashPulse 1.5s ease-in-out infinite;">&#9889;</div>
-  <div style="font-size:1.7rem;font-weight:800;color:#fff;">Ton<span style="color:#f59e0b;">Spark</span></div>
-  <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;">Earn SP. Withdraw TON.</div>
-  <div style="position:relative;width:48px;height:48px;margin-top:28px;">
-    <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(245,158,11,0.1);"></div>
-    <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:#f59e0b;animation:spin 0.9s linear infinite;"></div>
+<div id="splash-screen" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#0b0c14,#0f1022);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Sora',sans-serif;transition:opacity 0.5s;">
+  <div style="width:88px;height:88px;border-radius:26px;background:linear-gradient(135deg,#f5c842,#e9a830,#c97f1a);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:18px;animation:splashPulse 1.5s ease-in-out infinite;box-shadow:0 0 40px rgba(233,168,48,0.4),inset 0 2px 0 rgba(255,255,255,0.3);">&#9889;</div>
+  <div style="font-size:1.8rem;font-weight:800;color:#eef0f8;">Ton<span style="color:#e9a830;">Spark</span></div>
+  <div style="font-size:0.76rem;color:rgba(255,255,255,0.35);margin-top:6px;letter-spacing:1px;text-transform:uppercase;">Earn SP · Withdraw TON</div>
+  <div style="position:relative;width:44px;height:44px;margin-top:32px;">
+    <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(233,168,48,0.08);"></div>
+    <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:#e9a830;animation:spin 0.9s linear infinite;"></div>
   </div>
 </div>
 
@@ -126,414 +239,391 @@ body{background:var(--bg-page);color:var(--text-main);font-family:var(--font);pa
   <div class="head-actions">
     <div class="icon-btn" id="btn-promo"><i class="fas fa-ticket-alt"></i></div>
     <div class="icon-btn" id="btn-history"><i class="fas fa-clock-rotate-left"></i></div>
-    <div id="btn-refer" style="display:none;"></div>
-    <div id="btn-withdraw" style="display:none;"></div>
   </div>
 </header>
 
 <main class="container">
 
-<!-- HOME SECTION -->
+<!-- ═══ HOME ═══ -->
 <section id="sec-home" class="content-section active">
-  <!-- Balance Card -->
-  <div style="background:linear-gradient(145deg,#0d0d00,#111108,#181500);border:1px solid rgba(245,158,11,0.2);border-radius:22px;padding:20px 18px;margin-bottom:14px;box-shadow:0 16px 48px rgba(0,0,0,0.7);position:relative;overflow:hidden;">
-    <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(245,158,11,0.1) 0%,transparent 70%);pointer-events:none;"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+
+  <!-- Balance Hero Card -->
+  <div class="card" style="background:linear-gradient(155deg,#0f1000,#161300,#1c1700);border-color:rgba(233,168,48,0.2);">
+    <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(233,168,48,0.1),transparent 70%);pointer-events:none;"></div>
+    <!-- User row -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:42px;height:42px;border-radius:13px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">&#9889;</div>
+        <div style="width:44px;height:44px;border-radius:14px;background:rgba(233,168,48,0.1);border:1px solid rgba(233,168,48,0.22);display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);">&#9889;</div>
         <div>
-          <div style="font-weight:800;font-size:0.9rem;color:var(--text-main);">My Wallet</div>
-          <div id="uid-display" style="font-family:var(--mono);font-size:0.68rem;color:#f59e0b;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);padding:3px 8px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:2px;"><i class="fas fa-hashtag" style="font-size:0.55rem;"></i><span>...</span></div>
+          <div style="font-family:var(--font-display);font-weight:800;font-size:0.92rem;color:var(--txt);">My Wallet</div>
+          <div id="uid-display" style="font-family:var(--mono);font-size:0.65rem;color:#e9a830;background:rgba(233,168,48,0.08);border:1px solid rgba(233,168,48,0.15);padding:3px 8px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:3px;"><i class="fas fa-hashtag" style="font-size:0.52rem;"></i><span id="uid-val">...</span></div>
         </div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:0.58rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">TON</div>
-        <div style="font-family:var(--mono);font-size:0.82rem;font-weight:700;color:#60a5fa;" id="bal-ton">0.0000</div>
+        <div style="font-size:0.56rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;">TON</div>
+        <div style="font-family:var(--mono);font-size:0.82rem;font-weight:700;color:var(--blue);" id="bal-ton">0.0000</div>
       </div>
     </div>
-    <div style="border-top:1px solid rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.1);padding:16px 0 14px;margin-bottom:14px;text-align:center;">
-      <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.3);margin-bottom:4px;">&#9889; SP Balance</div>
-      <div style="font-family:var(--mono);font-size:2.8rem;font-weight:800;color:#facc15;letter-spacing:-1px;line-height:1;" id="bal-diamond">0</div>
-      <div style="font-size:0.73rem;color:rgba(255,255,255,0.4);margin-top:4px;" id="bal-usdt">&#8776; $0.000 USDT</div>
+
+    <!-- SP Big Number -->
+    <div style="border-top:1px solid rgba(233,168,48,0.1);border-bottom:1px solid rgba(233,168,48,0.1);padding:18px 0 16px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--txt3);margin-bottom:6px;">&#9889; SP Balance</div>
+      <div style="font-family:var(--mono);font-size:3rem;font-weight:700;color:#f5c842;letter-spacing:-2px;line-height:1;" id="bal-sp">0</div>
+      <div style="font-size:0.72rem;color:var(--txt3);margin-top:6px;" id="bal-usdt">&#8776; $0.000 USDT</div>
     </div>
+
+    <!-- Stats row -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <div style="background:rgba(250,204,21,0.06);border:1px solid rgba(250,204,21,0.12);border-radius:12px;padding:10px;text-align:center;">
-        <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.3);margin-bottom:3px;">&#9889; SP</div>
-        <div style="font-family:var(--mono);font-size:1.1rem;font-weight:800;color:#facc15;" id="bal-diamond-2">0</div>
+      <div style="background:rgba(250,204,21,0.05);border:1px solid rgba(250,204,21,0.1);border-radius:14px;padding:11px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);">
+        <div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">&#9889; Total SP</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:700;color:#f5c842;" id="bal-sp-2">0</div>
       </div>
-      <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);border-radius:12px;padding:10px;text-align:center;">
-        <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.3);margin-bottom:3px;">Tasks Done</div>
-        <div style="font-family:var(--mono);font-size:1.1rem;font-weight:800;color:#fb923c;" id="tasks-done-count">0</div>
+      <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.1);border-radius:14px;padding:11px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);">
+        <div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">Tasks Done</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:700;color:#fb923c;" id="tasks-done-count">0</div>
       </div>
     </div>
+
+    <!-- Action buttons -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <button id="btn-withdraw-inline" class="btn btn-red" style="padding:11px;font-size:0.82rem;border-radius:12px;"><i class="fas fa-arrow-up-from-bracket"></i> Withdraw</button>
-      <button id="btn-refer-inline" class="btn btn-accent" style="padding:11px;font-size:0.82rem;border-radius:12px;"><i class="fas fa-user-plus"></i> Refer</button>
+      <button id="btn-withdraw-inline" class="btn btn-red" style="padding:12px;font-size:0.82rem;border-radius:13px;"><i class="fas fa-arrow-up-from-bracket"></i> Withdraw</button>
+      <button id="btn-refer-inline" class="btn btn-green" style="padding:12px;font-size:0.82rem;border-radius:13px;"><i class="fas fa-user-plus"></i> Refer &amp; Earn</button>
     </div>
-    <div id="ton-connect-btn" style="display:none;"></div>
   </div>
 
-  <!-- Task List -->
-  <div>
-    <h2 class="sec-title"><i class="fas fa-clipboard-check" style="color:#f59e0b;"></i> Available Tasks</h2>
-    <div class="platform-row">
-      <div class="platform-pill active" data-filter="all">All</div>
-      <div class="platform-pill" data-filter="telegram_channel"><i class="fab fa-telegram-plane"></i> Channel</div>
-      <div class="platform-pill" data-filter="telegram_group"><i class="fas fa-users"></i> Group</div>
-      <div class="platform-pill" data-filter="telegram_bot"><i class="fas fa-robot"></i> Bot</div>
-      <div class="platform-pill" data-filter="social"><i class="fas fa-play"></i> Social</div>
-    </div>
-    <div id="task-list-container"></div>
+  <!-- Tasks -->
+  <h2 class="sec-title"><i class="fas fa-clipboard-check"></i> Available Tasks</h2>
+  <div class="platform-row">
+    <div class="platform-pill active" data-filter="all">All</div>
+    <div class="platform-pill" data-filter="telegram_channel"><i class="fab fa-telegram-plane"></i> Channel</div>
+    <div class="platform-pill" data-filter="telegram_group"><i class="fas fa-users"></i> Group</div>
+    <div class="platform-pill" data-filter="telegram_bot"><i class="fas fa-robot"></i> Bot</div>
+    <div class="platform-pill" data-filter="social"><i class="fas fa-play"></i> Social</div>
   </div>
+  <div id="task-list-container"></div>
 </section>
 
-<!-- EARN SECTION -->
-<section id="sec-ads" class="content-section">
-  <div style="background:linear-gradient(135deg,#064e3b,#065f46,#047857);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 8px 28px rgba(16,185,129,0.25);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+<!-- ═══ EARN ═══ (Lootbox only — no ads) -->
+<section id="sec-earn" class="content-section">
+  <!-- Balance strip -->
+  <div class="card" style="background:linear-gradient(155deg,#04200e,#062c14,#083618);border-color:rgba(34,201,138,0.2);">
+    <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(34,201,138,0.1),transparent 70%);pointer-events:none;"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div style="font-size:0.65rem;opacity:0.7;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.7);">&#9889; SP Balance</div>
-        <div style="font-family:var(--mono);font-size:1.8rem;font-weight:800;color:#fff;" id="ads-bal-diamond">0</div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);margin-top:1px;" id="ads-bal-usdt">&#8776; $0.000 USDT</div>
+        <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:4px;">&#9889; SP Balance</div>
+        <div style="font-family:var(--mono);font-size:1.9rem;font-weight:700;color:#fff;" id="earn-bal-sp">0</div>
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.5);margin-top:2px;" id="earn-bal-usdt">&#8776; $0.000 USDT</div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:0.65rem;opacity:0.7;color:rgba(255,255,255,0.7);">Today Max</div>
-        <div style="font-family:var(--mono);font-size:1rem;font-weight:800;color:#fff;">+400 SP</div>
+      <div style="text-align:right;background:rgba(34,201,138,0.12);border:1px solid rgba(34,201,138,0.22);border-radius:12px;padding:10px 14px;">
+        <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);margin-bottom:2px;">Claim to earn</div>
+        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:#22c98a;">+SP daily</div>
       </div>
     </div>
-    <div style="height:1px;background:rgba(255,255,255,0.15);margin-bottom:8px;"></div>
-    <div style="font-size:0.7rem;color:rgba(255,255,255,0.65);text-align:center;">Watch all ads daily to maximize earnings &#9889;</div>
   </div>
 
-  <h2 class="sec-title"><i class="fas fa-play-circle" style="color:#10b981;"></i> Watch Ads &amp; Earn SP</h2>
-
-  <!-- AD 1: AdsGram Special (placeholder) -->
-  <div class="task-card" style="border-color:rgba(245,158,11,0.3);background:linear-gradient(135deg,#1a1200,#120d00);">
-    <div class="t-icon" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;"><i class="fas fa-star"></i></div>
-    <div class="t-info">
-      <div class="t-name" style="display:flex;align-items:center;gap:6px;">AdsGram Special <span style="background:#f59e0b;color:#000;font-size:0.58rem;font-weight:800;padding:2px 7px;border-radius:20px;">2x SP</span></div>
-      <div style="margin-top:3px;"><span class="reward-pill"><i class="fas fa-bolt"></i> +20 SP per view</span></div>
-      <div class="t-limit" id="limit-ad2">0/5 today</div>
-    </div>
-    <button class="btn btn-primary" style="padding:9px 16px;font-size:0.82rem;border-radius:11px;flex-shrink:0;" id="btn-ad2">Watch</button>
-  </div>
-
-  <!-- AD 2: AdsGram Daily (placeholder) -->
-  <div class="task-card">
-    <div class="t-icon" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);color:#f59e0b;"><i class="fas fa-film"></i></div>
-    <div class="t-info">
-      <div class="t-name">AdsGram Daily</div>
-      <div style="margin-top:3px;"><span class="reward-pill"><i class="fas fa-bolt"></i> +10 SP per view</span></div>
-      <div class="t-limit" id="limit-ad1">0/10 today</div>
-    </div>
-    <button class="btn btn-primary" style="padding:9px 16px;font-size:0.82rem;border-radius:11px;flex-shrink:0;" id="btn-ad1">Watch</button>
-  </div>
-
-  <!-- AD 3: Monetag (placeholder) -->
-  <div class="task-card">
-    <div class="t-icon" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:#10b981;"><i class="fas fa-ad"></i></div>
-    <div class="t-info">
-      <div class="t-name">Monetag Ad</div>
-      <div style="margin-top:3px;"><span class="reward-pill" style="color:#10b981;border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.08);"><i class="fas fa-bolt"></i> +10 SP per view</span></div>
-      <div class="t-limit" id="limit-ad3">0/10 today</div>
-    </div>
-    <button class="btn btn-accent" style="padding:9px 16px;font-size:0.82rem;border-radius:11px;flex-shrink:0;" id="btn-ad3">Watch</button>
-  </div>
-
-  <!-- AD 4: GigaPub (placeholder) -->
-  <div class="task-card">
-    <div class="t-icon" style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);color:#a855f7;"><i class="fas fa-photo-video"></i></div>
-    <div class="t-info">
-      <div class="t-name">Giga Pub Ad</div>
-      <div style="margin-top:3px;"><span class="reward-pill" style="color:#a855f7;border-color:rgba(168,85,247,0.3);background:rgba(168,85,247,0.08);"><i class="fas fa-bolt"></i> +10 SP per view</span></div>
-      <div class="t-limit" id="limit-ad4">0/10 today</div>
-    </div>
-    <button class="btn" style="padding:9px 16px;font-size:0.82rem;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;" id="btn-ad4">Watch</button>
-  </div>
-
-  <!-- Lootbox -->
-  <div style="background:linear-gradient(145deg,#0d0d00,#111108);border:1.5px solid rgba(245,158,11,0.2);border-radius:18px;padding:18px;margin-top:16px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:-10px;right:-10px;font-size:5rem;opacity:0.04;">&#9889;</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:1.2rem;">&#127873;</span><div style="font-weight:800;font-size:0.95rem;">Lootbox</div></div>
-    <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">Ad earnings stored here. Collect <b style="color:#fbbf24;">min 150 SP</b>, then claim. Max <b style="color:#fbbf24;">2x per day</b>.</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.1);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+  <!-- Lootbox card -->
+  <div class="card" style="border-color:rgba(233,168,48,0.18);">
+    <div style="position:absolute;top:-10px;right:-10px;font-size:5rem;opacity:0.03;pointer-events:none;">&#127873;</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <span style="font-size:1.4rem;">&#127873;</span>
       <div>
-        <div style="font-size:0.6rem;opacity:0.4;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">Lootbox Balance</div>
-        <div style="font-family:var(--mono);font-size:2rem;font-weight:800;color:#fbbf24;" id="lootbox-balance">0.0</div>
-        <div style="font-size:0.65rem;opacity:0.4;margin-top:2px;">&#9889; SP</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--txt);">Lootbox</div>
+        <div style="font-size:0.7rem;color:var(--txt3);margin-top:1px;">Earn SP · Claim to main balance</div>
       </div>
-      <div style="font-size:2.5rem;">&#127873;</div>
     </div>
-    <div style="margin-bottom:10px;">
-      <div style="display:flex;justify-content:space-between;font-size:0.63rem;color:var(--text-muted);margin-bottom:4px;">
+    <div style="height:1px;background:var(--bdr);margin:12px 0;"></div>
+    <div style="font-size:0.7rem;color:var(--txt3);margin-bottom:14px;line-height:1.7;">Collect <b style="color:#f5c842;">min 150 SP</b> in lootbox, then claim to main balance. Max <b style="color:#f5c842;">2x per day</b>.</div>
+
+    <!-- Lootbox balance display -->
+    <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.12);border-radius:16px;padding:16px 18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt3);margin-bottom:5px;">Lootbox Balance</div>
+        <div style="font-family:var(--mono);font-size:2.1rem;font-weight:700;color:#f5c842;line-height:1;" id="lootbox-balance">0.0</div>
+        <div style="font-size:0.62rem;color:var(--txt3);margin-top:3px;">&#9889; SP</div>
+      </div>
+      <div style="font-size:2.8rem;">&#127873;</div>
+    </div>
+
+    <!-- Progress bar -->
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--txt3);margin-bottom:6px;">
         <span id="lootbox-progress-text">0 / 150 SP to claim</span>
-        <span id="lootbox-claims-left" style="color:#fbbf24;"></span>
+        <span id="lootbox-claims-left" style="color:#f5c842;font-weight:700;"></span>
       </div>
-      <div style="background:rgba(255,255,255,0.06);border-radius:99px;height:6px;overflow:hidden;">
-        <div id="lootbox-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width 0.4s;"></div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:99px;height:7px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);">
+        <div id="lootbox-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#f5c842,#e9a830);width:0%;transition:width 0.5s;box-shadow:0 0 8px rgba(233,168,48,0.6);"></div>
       </div>
     </div>
-    <button id="btn-lootbox-claim" class="btn" style="width:100%;padding:13px;border-radius:13px;background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#0d0d00;font-weight:800;font-size:0.9rem;border:none;box-shadow:0 4px 16px rgba(245,158,11,0.25);opacity:0.5;cursor:not-allowed;" disabled>&#127873; Claim to Main Balance</button>
-    <div style="font-size:0.63rem;color:var(--text-muted);text-align:center;margin-top:6px;" id="lootbox-timer">Watch ads to earn here</div>
+    <button id="btn-lootbox-claim" class="btn btn-primary btn-full" style="padding:14px;border-radius:14px;opacity:0.5;cursor:not-allowed;" disabled>&#127873; Claim to Main Balance</button>
+    <div style="font-size:0.62rem;color:var(--txt3);text-align:center;margin-top:8px;" id="lootbox-timer">Earn SP to fill lootbox</div>
   </div>
-  <div id="adexium-banner-container" style="margin-top:14px;min-height:60px;border-radius:14px;overflow:hidden;"></div>
 </section>
 
-</main>
-
-<!-- SPARK SECTION -->
+<!-- ═══ SPARK ═══ -->
 <section id="sec-spark" class="content-section" style="padding:0 0 90px;">
-  <div style="background:linear-gradient(135deg,#1a1200,#2d1f00);padding:22px 18px 26px;border-radius:0 0 24px 24px;margin-bottom:14px;border-bottom:1px solid rgba(245,158,11,0.2);text-align:center;">
-    <div style="font-size:2.6rem;margin-bottom:6px;filter:drop-shadow(0 0 16px rgba(250,204,21,0.9));">&#128161;</div>
-    <div style="font-size:1.25rem;font-weight:800;color:#facc15;">Spark Blast</div>
-    <div style="font-size:0.74rem;color:rgba(255,255,255,0.5);margin-top:3px;">Blast every 4 hours &#183; Win 10&#8211;20 SP randomly</div>
+  <!-- Hero -->
+  <div style="background:linear-gradient(155deg,#120e00,#1f1800,#2a2000);padding:24px 18px 28px;border-radius:0 0 28px 28px;margin-bottom:16px;border-bottom:1px solid rgba(250,204,21,0.18);text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 0 20px rgba(250,204,21,0.9));animation:bulbPulse 2s ease-in-out infinite;">&#128161;</div>
+    <div style="font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:#f5c842;">Spark Blast</div>
+    <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:0.3px;">Blast every 4 hours · Win 10–20 SP</div>
   </div>
+
   <div style="padding:0 14px;">
-    <div style="background:linear-gradient(145deg,#0d0d00,#111108);border:1.5px solid rgba(250,204,21,0.2);border-radius:22px;padding:28px 18px;text-align:center;margin-bottom:12px;">
-      <div id="spark-bulb-display" style="font-size:5rem;margin-bottom:10px;line-height:1;display:flex;align-items:center;justify-content:center;min-height:90px;transition:all 0.3s;filter:drop-shadow(0 0 20px rgba(250,204,21,0.9));animation:bulbPulse 2s ease-in-out infinite;">&#128161;</div>
-      <div id="spark-result-text" style="font-size:0.9rem;font-weight:700;min-height:24px;margin-bottom:18px;color:var(--text-muted);"></div>
-      <button id="btn-blast-spark" style="background:linear-gradient(145deg,#f59e0b,#fbbf24,#facc15);color:#0d0d00;border:none;border-radius:16px;padding:15px 32px;font-size:1rem;font-weight:800;cursor:pointer;width:100%;max-width:240px;box-shadow:0 6px 0 #92400e,0 8px 20px rgba(245,158,11,0.5);font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto;">
-        <span>&#9889;</span> Blast Spark!
-      </button>
-      <div style="font-size:0.67rem;color:var(--text-muted);margin-top:10px;line-height:1.5;">&#9889; Random 10&#8211;20 SP per blast &#183; &#8987; Cooldown: 4 hours</div>
-    </div>
-    <div id="spark-cooldown-banner" style="display:none;background:rgba(245,158,11,0.08);border:1.5px solid rgba(245,158,11,0.25);border-radius:12px;padding:10px 14px;margin-bottom:12px;text-align:center;font-size:0.82rem;color:#fbbf24;font-weight:700;">&#8987; Next blast in: <span id="spark-cooldown-text">--:--:--</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;">
-        <div id="spark-total-blasts" style="font-size:1.5rem;font-weight:800;color:#fbbf24;font-family:var(--mono);">0</div>
-        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">Total Blasts</div>
+    <!-- Blast card -->
+    <div class="card" style="background:linear-gradient(155deg,#120e00,#1a1400);border-color:rgba(250,204,21,0.2);text-align:center;padding:28px 18px;">
+      <div id="spark-bulb-display" style="font-size:5.5rem;margin-bottom:12px;line-height:1;display:flex;align-items:center;justify-content:center;min-height:100px;filter:drop-shadow(0 0 24px rgba(250,204,21,0.9));animation:bulbPulse 2s ease-in-out infinite;">&#128161;</div>
+      <div id="spark-result-text" style="font-size:0.9rem;font-weight:700;min-height:24px;margin-bottom:20px;color:var(--txt3);font-family:var(--font-display);"></div>
+
+      <!-- Cooldown banner -->
+      <div id="spark-cooldown-banner" style="display:none;background:rgba(255,255,255,0.04);border:1px solid var(--bdr2);border-radius:14px;padding:12px 16px;margin-bottom:16px;">
+        <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;">Next blast in</div>
+        <div id="spark-cooldown-text" style="font-family:var(--mono);font-size:1.8rem;font-weight:700;color:#f5c842;letter-spacing:2px;">00:00:00</div>
       </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;">
-        <div id="spark-total-earned" style="font-size:1.5rem;font-weight:800;color:#4ade80;font-family:var(--mono);">0</div>
-        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">&#9889; SP Earned</div>
-      </div>
+
+      <button id="btn-blast-spark" class="btn btn-primary btn-full" style="padding:16px;font-size:1rem;border-radius:16px;letter-spacing:0.3px;"><span>&#9889;</span> Blast Spark!</button>
     </div>
-    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">
-      <div style="font-weight:800;font-size:0.8rem;color:#fbbf24;margin-bottom:10px;">&#9889; Reward Info</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div style="background:rgba(250,204,21,0.06);border:1px solid rgba(250,204,21,0.15);border-radius:12px;padding:10px;text-align:center;">
-          <div style="font-size:1rem;">&#127919;</div>
-          <div style="font-weight:800;font-size:0.78rem;color:#fbbf24;margin-top:3px;">Min Reward</div>
-          <div style="font-size:0.8rem;color:#facc15;font-weight:700;">+10 SP</div>
-        </div>
-        <div style="background:rgba(250,204,21,0.06);border:1px solid rgba(250,204,21,0.15);border-radius:12px;padding:10px;text-align:center;">
-          <div style="font-size:1rem;">&#128293;</div>
-          <div style="font-weight:800;font-size:0.78rem;color:#fbbf24;margin-top:3px;">Max Reward</div>
-          <div style="font-size:0.8rem;color:#facc15;font-weight:700;">+20 SP</div>
-        </div>
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px;">
+      <div class="card" style="text-align:center;padding:16px;">
+        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;">Total Blasts</div>
+        <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#f5c842;" id="spark-total-blasts">0</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px;">
+        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;">SP Earned</div>
+        <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#22c98a;" id="spark-total-earned">0</div>
       </div>
     </div>
-    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:14px;">
-      <div style="font-weight:800;font-size:0.8rem;color:var(--text-sub);margin-bottom:10px;">&#128220; Recent Blasts</div>
-      <div id="spark-history" style="font-size:0.78rem;color:var(--text-muted);text-align:center;padding:8px 0;">No blasts yet</div>
+
+    <!-- History -->
+    <div class="card" style="margin-top:10px;">
+      <div class="sec-title" style="margin-bottom:10px;"><i class="fas fa-history"></i> Blast History</div>
+      <div id="spark-history">
+        <div class="empty-state"><i class="fas fa-bolt"></i><p>No blasts yet. Blast now!</p></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- REFER SECTION -->
-<section id="sec-refer" class="content-section" style="padding:14px 14px 90px;">
-  <div style="background:linear-gradient(145deg,#0a140a,#0d1a0d);border:1px solid rgba(16,185,129,0.2);border-radius:20px;padding:20px 18px;margin-bottom:14px;">
-    <div style="text-align:center;margin-bottom:16px;">
-      <div style="font-size:2rem;margin-bottom:6px;">&#128101;</div>
-      <div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">Refer &amp; Earn</div>
-      <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">Earn +100 SP when friend completes 10 tasks</div>
+<!-- ═══ REFER ═══ -->
+<section id="sec-refer" class="content-section">
+  <div class="card" style="background:linear-gradient(155deg,#040e1a,#061626,#082030);border-color:rgba(74,158,255,0.2);text-align:center;">
+    <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(74,158,255,0.1),transparent 70%);pointer-events:none;"></div>
+    <div style="font-size:2.2rem;margin-bottom:8px;">&#128101;</div>
+    <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:4px;">Refer &amp; Earn</div>
+    <div style="font-size:0.78rem;color:var(--txt3);margin-bottom:18px;line-height:1.6;">Invite friends · Earn +100 SP per valid referral</div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:14px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--blue);" id="ref-total">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Total</div>
+      </div>
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:14px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--blue);" id="ref-valid">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Valid</div>
+      </div>
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:14px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:#f5c842;" id="ref-earned">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">&#9889; SP</div>
+      </div>
     </div>
-    <div class="refer-stat-grid">
-      <div class="refer-stat-box"><div class="refer-stat-val" id="ref-total">0</div><div class="refer-stat-label">Total Refs</div></div>
-      <div class="refer-stat-box"><div class="refer-stat-val" id="ref-valid">0</div><div class="refer-stat-label">Valid Refs</div></div>
-      <div class="refer-stat-box"><div class="refer-stat-val" id="ref-earned">0</div><div class="refer-stat-label">&#9889; Earned</div></div>
-    </div>
-    <div class="info-box" style="margin-bottom:12px;">
-      &#127873; Refer reward: <b>+100 SP</b><br>
-      &#10003; Valid when friend completes <b>10 tasks</b><br>
-      <span style="font-size:0.7rem;color:var(--text-muted);">SP goes to Lootbox</span>
-    </div>
-    <input type="text" class="input-field" id="invite-link" readonly placeholder="Loading...">
+
+    <input type="text" class="input-field" id="invite-link" readonly placeholder="Loading link...">
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-outline btn-full" id="invite-copy"><i class="fas fa-copy"></i> Copy</button>
+      <button class="btn btn-ghost btn-full" id="invite-copy"><i class="fas fa-copy"></i> Copy</button>
       <button class="btn btn-primary btn-full" id="invite-share"><i class="fas fa-share-alt"></i> Share</button>
     </div>
   </div>
 </section>
 
+</main>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <div class="b-nav-item active" data-target="sec-home"><i class="fas fa-home"></i><span>Home</span></div>
-  <div class="b-nav-item" data-target="sec-ads"><i class="fas fa-play-circle"></i><span>Earn</span></div>
+  <div class="b-nav-item active" data-target="sec-home"><i class="fas fa-house"></i><span>Home</span></div>
+  <div class="b-nav-item" data-target="sec-earn"><i class="fas fa-box-open"></i><span>Earn</span></div>
   <div class="b-nav-item" data-target="sec-spark"><i class="fas fa-bolt"></i><span>Spark</span></div>
   <div class="b-nav-item" data-target="sec-refer"><i class="fas fa-users"></i><span>Refer</span></div>
 </nav>
 
-<!-- MODALS -->
+<!-- ═══════════ MODALS ═══════════ -->
 
-<!-- JOIN -->
+<!-- JOIN MODAL -->
 <div class="modal-bg" id="modal-join" style="z-index:5000;">
-  <div class="modal-box" style="border-color:rgba(245,158,11,0.3);">
-    <div style="font-size:2.4rem;margin-bottom:10px;">&#128274;</div>
-    <div class="modal-title">Membership Required</div>
-    <div class="modal-sub">Join our Channel &amp; Community to continue.</div>
-    <a href="https://t.me/coinly_task" target="_blank" style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:linear-gradient(135deg,#0088cc,#0099dd);border-radius:13px;text-decoration:none;color:#fff;font-weight:700;font-size:0.88rem;margin-bottom:9px;">
-      <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;"><i class="fab fa-telegram-plane"></i></div>
-      <div style="flex:1;text-align:left;"><div>Step 1 &#8212; Official Channel</div><div style="font-size:0.7rem;opacity:0.8;font-weight:400;">t.me/coinly_task</div></div>
+  <div class="modal-box" style="border-radius:26px 26px 0 0;border-top:2px solid rgba(233,168,48,0.3);">
+    <div style="font-size:2.5rem;margin-bottom:10px;">&#128274;</div>
+    <div class="modal-title">Join to Continue</div>
+    <div class="modal-sub">Join our official Channel &amp; Community first.</div>
+    <a href="https://t.me/TonsparkSp" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(145deg,#0077bb,#0099dd);border-radius:15px;text-decoration:none;color:#fff;font-weight:700;font-size:0.88rem;margin-bottom:10px;box-shadow:0 4px 0 #004d80,0 6px 20px rgba(0,153,221,0.3);font-family:var(--font-display);">
+      <div style="width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fab fa-telegram-plane"></i></div>
+      <div style="flex:1;text-align:left;"><div>Step 1 — Official Channel</div><div style="font-size:0.68rem;opacity:0.8;font-weight:400;margin-top:1px;">t.me/TonsparkSp</div></div>
       <i class="fas fa-arrow-right" style="opacity:0.7;"></i>
     </a>
-    <a href="https://t.me/newTon_Gc" target="_blank" style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:linear-gradient(135deg,#0ea5e9,#06b6d4);border-radius:13px;text-decoration:none;color:#fff;font-weight:700;font-size:0.88rem;margin-bottom:16px;">
-      <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-users"></i></div>
-      <div style="flex:1;text-align:left;"><div>Step 2 &#8212; Community</div><div style="font-size:0.7rem;opacity:0.8;font-weight:400;">t.me/newTon_Gc</div></div>
+    <a href="https://t.me/Tonsparksp_chats" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(145deg,#0994c9,#06b6d4);border-radius:15px;text-decoration:none;color:#fff;font-weight:700;font-size:0.88rem;margin-bottom:18px;box-shadow:0 4px 0 #057292,0 6px 20px rgba(6,182,212,0.3);font-family:var(--font-display);">
+      <div style="width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-users"></i></div>
+      <div style="flex:1;text-align:left;"><div>Step 2 — Official Community</div><div style="font-size:0.68rem;opacity:0.8;font-weight:400;margin-top:1px;">t.me/Tonsparksp_chats</div></div>
       <i class="fas fa-arrow-right" style="opacity:0.7;"></i>
     </a>
-    <button class="btn btn-accent btn-full" id="btn-verify-join"><i class="fas fa-check-circle"></i> I've Joined &#8212; Verify</button>
-    <div id="join-error" style="font-size:0.77rem;margin-top:10px;min-height:18px;text-align:center;"></div>
+    <button class="btn btn-green btn-full" id="btn-verify-join" style="padding:15px;border-radius:14px;"><i class="fas fa-check-circle"></i> I've Joined — Verify</button>
+    <div id="join-error" style="font-size:0.76rem;margin-top:10px;min-height:18px;text-align:center;color:var(--red);"></div>
   </div>
 </div>
 
-<!-- WELCOME -->
-<div class="modal-bg" id="modal-welcome" style="z-index:6000;">
-  <div class="modal-box" style="border-color:rgba(245,158,11,0.4);">
-    <div style="font-size:3rem;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(250,204,21,0.9));">&#9889;</div>
-    <div class="modal-title">Welcome to TonSpark!</div>
-    <div style="background:rgba(245,158,11,0.08);border:1.5px solid rgba(245,158,11,0.2);border-radius:14px;padding:16px;margin:14px 0;">
-      <div style="font-family:var(--mono);font-size:1.8rem;font-weight:800;color:#facc15;">+5 &#9889; SP</div>
-      <div style="font-size:0.8rem;color:var(--text-muted);">Welcome Spark Bonus</div>
-    </div>
-    <button class="btn btn-primary btn-full close-modal">Let's Go! &#128640;</button>
-  </div>
-</div>
-
-<!-- WHAT'S NEW -->
+<!-- WHAT'S NEW MODAL -->
 <div class="modal-bg" id="modal-whats-new" style="z-index:6500;">
-  <div class="modal-box" style="border-color:rgba(245,158,11,0.3);padding:0;overflow:hidden;max-height:90vh;">
-    <div style="background:linear-gradient(135deg,#1a1200,#2d1f00);padding:22px 20px 18px;text-align:center;">
-      <div style="font-size:2rem;margin-bottom:6px;">&#9889;</div>
-      <div style="font-size:1.15rem;font-weight:800;color:#facc15;">Welcome to TonSpark!</div>
-      <div style="font-size:0.76rem;color:rgba(255,255,255,0.6);margin-top:4px;">Here's how everything works</div>
+  <div class="modal-box" style="padding:0;border-radius:26px 26px 0 0;border-top:2px solid rgba(250,204,21,0.3);">
+    <div style="background:linear-gradient(155deg,#120e00,#1c1800);padding:24px 20px 18px;text-align:center;border-radius:26px 26px 0 0;">
+      <div style="font-size:2.2rem;margin-bottom:8px;">&#9889;</div>
+      <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:#f5c842;">Welcome to TonSpark!</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:4px;">Here's how everything works</div>
     </div>
     <div style="padding:18px;overflow-y:auto;max-height:55vh;">
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(245,158,11,0.06);border-radius:14px;margin-bottom:10px;border:1.5px solid rgba(245,158,11,0.15);">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#10003;</div>
-        <div><div style="font-weight:800;font-size:0.86rem;color:#fbbf24;">Tasks</div><div style="font-size:0.74rem;color:var(--text-muted);margin-top:2px;line-height:1.5;">Complete tasks to earn SP. GO &#8594; Join &#8594; VERIFY &#8594; +10 SP.</div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(233,168,48,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(233,168,48,0.12);">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(233,168,48,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#10003;</div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#f5c842;">Tasks</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Complete tasks to earn SP. Join → Verify → +10 SP each.</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(16,185,129,0.06);border-radius:14px;margin-bottom:10px;border:1.5px solid rgba(16,185,129,0.15);">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#9654;&#65039;</div>
-        <div><div style="font-weight:800;font-size:0.86rem;color:#4ade80;">Earn (Ads)</div><div style="font-size:0.74rem;color:var(--text-muted);margin-top:2px;line-height:1.5;">Watch ads to earn SP. Goes to Lootbox. Min 150 SP to claim (2x/day).</div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(34,201,138,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(34,201,138,0.12);">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(34,201,138,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#127873;</div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#22c98a;">Earn</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Fill lootbox with SP. Claim when 150+ SP. Max 2x/day.</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(250,204,21,0.06);border-radius:14px;margin-bottom:10px;border:1.5px solid rgba(250,204,21,0.15);">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(250,204,21,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128161;</div>
-        <div><div style="font-weight:800;font-size:0.86rem;color:#facc15;">Spark Blast</div><div style="font-size:0.74rem;color:var(--text-muted);margin-top:2px;line-height:1.5;">Blast every 4 hours. Win 10&#8211;20 SP randomly per blast.</div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(250,204,21,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(250,204,21,0.12);">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(250,204,21,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#128161;</div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#f5c842;">Spark Blast</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Blast every 4 hours. Win 10–20 SP randomly.</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(239,68,68,0.06);border-radius:14px;margin-bottom:10px;border:1.5px solid rgba(239,68,68,0.15);">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(239,68,68,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128184;</div>
-        <div><div style="font-weight:800;font-size:0.86rem;color:#f87171;">Withdraw</div><div style="font-size:0.74rem;color:var(--text-muted);margin-top:2px;line-height:1.5;">Min 1000 SP &#183; Tonkeeper only &#183; 20K SP = 0.6 TON &#8776; $1 USDT &#183; 1x/day.</div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(232,78,78,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(232,78,78,0.12);">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(232,78,78,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#128184;</div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#f87171;">Withdraw</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Min 1000 SP · Tonkeeper · 20K SP = 0.6 TON ≈ $1 · 1x/day</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(16,185,129,0.06);border-radius:14px;border:1.5px solid rgba(16,185,129,0.15);">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128101;</div>
-        <div><div style="font-weight:800;font-size:0.86rem;color:#4ade80;">Refer &amp; Earn</div><div style="font-size:0.74rem;color:var(--text-muted);margin-top:2px;line-height:1.5;">Earn +100 SP when your friend completes 10 tasks.</div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(74,158,255,0.05);border-radius:15px;border:1px solid rgba(74,158,255,0.12);">
+        <div style="width:38px;height:38px;border-radius:11px;background:rgba(74,158,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#128101;</div>
+        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:var(--blue);">Refer &amp; Earn</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Earn +100 SP when your friend completes 10 tasks.</div></div>
       </div>
     </div>
-    <div style="padding:16px 20px;border-top:1px solid var(--border);">
-      <button class="btn btn-primary btn-full" id="btn-whats-new-close" style="border-radius:14px;padding:14px;font-size:0.95rem;">&#128640; Got it &#8212; Let's Start!</button>
+    <div style="padding:16px 20px;border-top:1px solid var(--bdr);">
+      <button class="btn btn-primary btn-full" id="btn-whats-new-close" style="border-radius:15px;padding:15px;font-size:0.95rem;">&#128640; Got it — Let's Start!</button>
     </div>
   </div>
 </div>
 
-<!-- ALERT -->
+<!-- ALERT MODAL -->
 <div class="modal-bg" id="modal-alert">
-  <div class="modal-box" style="max-width:290px;">
-    <i id="alert-icon" class="fas fa-info-circle" style="font-size:2.2rem;color:var(--primary);margin-bottom:12px;display:block;"></i>
-    <div id="alert-title" class="modal-title" style="margin-bottom:6px;">Notice</div>
-    <p id="alert-msg" style="font-size:0.85rem;color:var(--text-sub);margin-bottom:16px;"></p>
-    <button class="btn btn-primary btn-full close-modal">OK</button>
+  <div class="modal-box" style="max-width:340px;border-radius:22px 22px 0 0;padding-bottom:28px;">
+    <i id="alert-icon" class="fas fa-info-circle" style="font-size:2.4rem;color:var(--primary);margin-bottom:14px;display:block;"></i>
+    <div id="alert-title" class="modal-title" style="margin-bottom:8px;">Notice</div>
+    <p id="alert-msg" style="font-size:0.84rem;color:var(--txt3);margin-bottom:18px;line-height:1.7;"></p>
+    <button class="btn btn-primary btn-full close-modal" style="padding:14px;border-radius:14px;">OK</button>
   </div>
 </div>
 
-<!-- WITHDRAW -->
+<!-- WITHDRAW MODAL -->
 <div class="modal-bg" id="modal-withdraw">
   <div class="modal-box">
-    <div style="font-size:2rem;margin-bottom:8px;filter:drop-shadow(0 0 10px rgba(245,158,11,0.5));">&#128184;</div>
-    <div class="modal-title">Withdraw</div>
-    <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 12px;font-size:0.72rem;color:#fbbf24;margin-bottom:12px;text-align:left;line-height:1.7;">
-      <b>Requirements:</b><br>
-      &#10003; Min 10 tasks completed<br>
-      &#10003; Watch 10 ads today<br>
-      &#10003; Max 1 withdrawal per day<br>
-      &#9889; Min: 1000 SP
+    <!-- Balance at top -->
+    <div style="background:rgba(232,78,78,0.07);border:1px solid rgba(232,78,78,0.15);border-radius:16px;padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">Available Balance</div>
+        <div style="font-family:var(--mono);font-size:1.6rem;font-weight:700;color:#f5c842;" id="wd-balance">0 SP</div>
+        <div style="font-size:0.68rem;color:var(--txt3);margin-top:2px;" id="wd-balance-usdt">&#8776; $0.000 USDT</div>
+      </div>
+      <div style="font-size:2rem;">&#128184;</div>
     </div>
-    <div style="text-align:center;margin-bottom:14px;">
-      <div style="font-family:var(--mono);font-size:1.5rem;font-weight:800;color:#facc15;" id="wd-balance">0 SP</div>
-      <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;" id="wd-balance-usdt">&#8776; $0.000 USDT</div>
+
+    <div class="modal-title" style="margin-bottom:4px;">Withdraw SP</div>
+    <div class="modal-sub" style="margin-bottom:14px;">Min 10 tasks · 1x per day</div>
+
+    <!-- Requirements -->
+    <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.14);border-radius:14px;padding:12px 14px;margin-bottom:14px;text-align:left;">
+      <div style="font-family:var(--font-display);font-size:0.72rem;font-weight:800;color:#f5c842;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.8px;">Requirements</div>
+      <div style="font-size:0.78rem;color:var(--txt2);line-height:2;">&#10003; Min 10 tasks completed<br>&#10003; Max 1 withdrawal per day<br>&#9889; Min: 1000 SP</div>
     </div>
-    <div style="background:rgba(245,158,11,0.06);border:1.5px solid rgba(245,158,11,0.2);border-radius:13px;padding:12px;margin-bottom:14px;text-align:center;">
-      <i class="fas fa-gem" style="font-size:1.2rem;color:#fbbf24;display:block;margin-bottom:4px;"></i>
-      <div style="font-weight:800;font-size:0.85rem;color:var(--text-main);">Tonkeeper</div>
-      <div style="font-size:0.68rem;color:var(--text-muted);">Min 1000 SP &#183; 20K SP = 0.6 TON</div>
+
+    <!-- Method -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--bdr2);border-radius:14px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#2ddfaa,#22c98a);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(34,201,138,0.3);flex-shrink:0;"><i class="fas fa-wallet" style="color:#01160e;font-size:1rem;"></i></div>
+      <div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:0.9rem;color:var(--txt);">Tonkeeper</div>
+        <div style="font-size:0.68rem;color:var(--txt3);margin-top:2px;">Min 1000 SP · 20K SP = 0.6 TON</div>
+      </div>
     </div>
-    <label style="font-size:0.75rem;font-weight:700;color:var(--text-sub);display:block;margin-bottom:5px;">TON Wallet Address</label>
-    <input type="text" class="input-field" id="wd-address-ton" placeholder="UQ... or EQ... wallet address">
-    <label style="font-size:0.75rem;font-weight:700;color:var(--text-sub);display:block;margin-bottom:5px;">SP Amount <span style="color:var(--text-muted);">(Min 1000)</span></label>
-    <input type="number" class="input-field" id="wd-amount-ton" placeholder="e.g. 1000" min="1000">
-    <div id="wd-preview" style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:11px;padding:10px 13px;font-size:0.82rem;color:var(--text-sub);margin-bottom:14px;display:none;"></div>
+
+    <label style="font-size:0.7rem;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">TON Wallet Address</label>
+    <input type="text" class="input-field" id="wd-address" placeholder="UQ... or EQ... address">
+
+    <label style="font-size:0.7rem;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">SP Amount <span style="color:var(--txt3);font-weight:500;text-transform:none;">(Min 1000)</span></label>
+    <input type="number" class="input-field" id="wd-amount" placeholder="e.g. 1000" min="1000">
+
+    <div id="wd-preview" style="background:rgba(34,201,138,0.06);border:1px solid rgba(34,201,138,0.15);border-radius:12px;padding:11px 14px;font-size:0.82rem;color:var(--txt2);margin-bottom:14px;display:none;"></div>
+
     <div style="display:flex;gap:10px;margin-bottom:12px;">
-      <button class="btn btn-outline btn-full close-modal">Cancel</button>
+      <button class="btn btn-ghost btn-full close-modal">Cancel</button>
       <button class="btn btn-primary btn-full" id="wd-submit"><i class="fas fa-paper-plane"></i> Withdraw</button>
     </div>
-    <div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:10px 14px;">
-      <div style="font-size:0.68rem;font-weight:800;color:#4ade80;margin-bottom:6px;text-align:center;">&#128178; Exchange Rate</div>
-      <div style="text-align:center;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-        <div style="font-weight:800;font-size:0.8rem;color:#4ade80;">20,000 SP = 0.6 TON &#8776; $1 USDT</div>
-      </div>
-      <div style="font-size:0.63rem;color:var(--text-muted);text-align:center;margin-top:6px;">&#8987; Processing: 1&#8211;24 hours &#183; Max 1 withdraw/day</div>
+
+    <div style="background:rgba(34,201,138,0.04);border:1px solid rgba(34,201,138,0.12);border-radius:12px;padding:11px 14px;text-align:center;">
+      <div style="font-size:0.62rem;font-weight:700;color:#22c98a;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.6px;">&#128178; Exchange Rate</div>
+      <div style="font-family:var(--mono);font-weight:700;font-size:0.82rem;color:#4ade80;">20,000 SP = 0.6 TON &#8776; $1 USDT</div>
+      <div style="font-size:0.6rem;color:var(--txt3);margin-top:4px;">&#8987; Processing: 1–24h</div>
     </div>
   </div>
 </div>
 
-<!-- PROMO -->
-<div class="modal-bg" id="modal-promo">
-  <div class="modal-box">
-    <i class="fas fa-ticket-alt" style="font-size:2rem;color:#fbbf24;margin-bottom:12px;display:block;"></i>
-    <div class="modal-title">Redeem Code</div>
-    <div class="modal-sub">Enter promo code for bonus SP.</div>
-    <input type="text" class="input-field" id="promo-input" placeholder="Enter promo code">
-    <button class="btn btn-primary btn-full" id="promo-submit" style="margin-bottom:10px;">Redeem Now</button>
-    <button class="btn btn-outline btn-full close-modal">Close</button>
-  </div>
-</div>
-
-<!-- REFER MODAL (legacy) -->
+<!-- REFER MODAL -->
 <div class="modal-bg" id="modal-refer">
   <div class="modal-box">
-    <i class="fas fa-users" style="font-size:2rem;color:#fbbf24;margin-bottom:12px;display:block;"></i>
+    <i class="fas fa-users" style="font-size:2.2rem;color:#4a9eff;margin-bottom:12px;display:block;"></i>
     <div class="modal-title">Refer &amp; Earn</div>
-    <div class="refer-stat-grid" style="margin-bottom:14px;">
-      <div class="refer-stat-box"><div class="refer-stat-val" id="ref-total-m">0</div><div class="refer-stat-label">Total</div></div>
-      <div class="refer-stat-box"><div class="refer-stat-val" id="ref-valid-m">0</div><div class="refer-stat-label">Valid</div></div>
-      <div class="refer-stat-box"><div class="refer-stat-val" id="ref-earned-m">0</div><div class="refer-stat-label">&#9889; SP</div></div>
+    <div class="modal-sub">Earn +100 SP when friend completes 10 tasks.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:13px;padding:11px;text-align:center;">
+        <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--blue);" id="ref-total-m">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Total</div>
+      </div>
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:13px;padding:11px;text-align:center;">
+        <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--blue);" id="ref-valid-m">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Valid</div>
+      </div>
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:13px;padding:11px;text-align:center;">
+        <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:#f5c842;" id="ref-earned-m">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">&#9889; SP</div>
+      </div>
     </div>
     <input type="text" class="input-field" id="invite-link-m" readonly placeholder="Loading...">
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="btn btn-outline btn-full" id="invite-copy-m"><i class="fas fa-copy"></i> Copy</button>
+      <button class="btn btn-ghost btn-full" id="invite-copy-m"><i class="fas fa-copy"></i> Copy</button>
       <button class="btn btn-primary btn-full" id="invite-share-m"><i class="fas fa-share-alt"></i> Share</button>
     </div>
-    <button class="btn btn-outline btn-full close-modal">Close</button>
+    <button class="btn btn-ghost btn-full close-modal">Close</button>
   </div>
 </div>
 
-<!-- HISTORY -->
+<!-- PROMO MODAL -->
+<div class="modal-bg" id="modal-promo">
+  <div class="modal-box">
+    <i class="fas fa-ticket-alt" style="font-size:2.2rem;color:#f5c842;margin-bottom:12px;display:block;"></i>
+    <div class="modal-title">Redeem Promo Code</div>
+    <div class="modal-sub">Enter your promo code for bonus SP.</div>
+    <input type="text" class="input-field" id="promo-input" placeholder="Enter code...">
+    <button class="btn btn-primary btn-full" id="promo-submit" style="margin-bottom:10px;padding:14px;border-radius:14px;">Redeem Now</button>
+    <button class="btn btn-ghost btn-full close-modal">Close</button>
+  </div>
+</div>
+
+<!-- HISTORY MODAL -->
 <div class="modal-bg" id="modal-history">
   <div class="modal-box" style="text-align:left;">
     <div class="modal-title" style="text-align:center;margin-bottom:14px;">Transaction History</div>
     <div id="history-list" style="max-height:380px;overflow-y:auto;"></div>
-    <button class="btn btn-outline btn-full close-modal" style="margin-top:14px;">Close</button>
+    <button class="btn btn-ghost btn-full close-modal" style="margin-top:14px;">Close</button>
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!--                    FIREBASE + APP LOGIC                      -->
-<!-- ============================================================ -->
+<!-- ═══════════════════════════════════ -->
+<!--          FIREBASE + APP LOGIC      -->
+<!-- ═══════════════════════════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
 
-// NEW FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyA3QL1erSqYES6V49y-a1MKgrQCJkY87bQ",
   authDomain: "tonspark-c2f8a.firebaseapp.com",
@@ -547,45 +637,49 @@ const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
 const tg = window.Telegram.WebApp;
-const API_BASE = "https://coinly-task.vercel.app/api"; // update when new backend ready
+const API_BASE = "https://ton-spark-beta.vercel.app/api";
+const CHANNEL_URL   = "https://t.me/TonsparkSp";
+const COMMUNITY_URL = "https://t.me/Tonsparksp_chats";
+const CHANNEL_ID    = "@TonsparkSp";
+const GROUP_ID      = "@Tonsparksp_chats";
+const REFER_BASE    = "http://t.me/TonSparks_bot/startapp";
 
-// ── CONSTANTS ──
-const SP_TO_TON      = 0.00003;   // 20000 SP = 0.6 TON
-const SP_TO_USD      = 0.00005;   // 20000 SP = $1 USDT
-const DIAMOND_TO_TON = SP_TO_TON;
-const DIAMOND_TO_USD = SP_TO_USD;
-const MIN_WITHDRAW_SP        = 1000;
-const WITHDRAW_MIN_TASKS     = 10;
-const WITHDRAW_ADS_REQUIRED  = 10;
-const TASK_REWARD_DIAMOND    = 10;
-const REFER_REWARD_DIAMOND   = 100;
-const REFER_VALID_TASKS      = 10;
-const AD_LIMITS = {ad1:10, ad2:5, ad3:10, ad4:10};
-const AD_DIAMOND_REWARDS = {ad1:10, ad2:20, ad3:10, ad4:10};
-const SPARK_COOLDOWN_MS = 4 * 60 * 60 * 1000;
+const SP_TO_TON       = 0.00003;
+const SP_TO_USD       = 0.00005;
+const MIN_WITHDRAW    = 1000;
+const WITHDRAW_MIN_TASKS = 10;
+const TASK_REWARD     = 10;
+const REFER_REWARD    = 100;
+const REFER_TASKS     = 10;
+const LOOTBOX_MIN     = 150;
+const LOOTBOX_MAX_DAY = 2;
+const SPARK_CD        = 4 * 60 * 60 * 1000;
+const CACHE_TTL       = 5 * 60 * 1000;
 
-let currentUser = null, isAdRunning = false, isSubmitting = false;
-let _historyCache = null;
+let user = null, isSub = false, _histCache = null;
 
-// ── HELPERS ──
-function showAlert(title, msg, type='info'){
-  document.getElementById('alert-title').innerText = title;
-  document.getElementById('alert-msg').innerText = msg;
-  const icon = document.getElementById('alert-icon');
-  icon.className = type==='success'?'fas fa-check-circle':type==='error'?'fas fa-exclamation-triangle':'fas fa-info-circle';
-  icon.style.color = type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--primary)';
-  document.getElementById('modal-alert').classList.add('show');
-}
+function $(id){ return document.getElementById(id); }
 function getToday(){ return new Date().toLocaleDateString('en-US',{timeZone:'Asia/Dhaka'}); }
+
+function showAlert(title, msg, type='info'){
+  $('alert-title').innerText = title;
+  $('alert-msg').innerText = msg;
+  const ic = $('alert-icon');
+  ic.className = type==='success'?'fas fa-check-circle':type==='error'?'fas fa-triangle-exclamation':'fas fa-info-circle';
+  ic.style.color = type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--primary)';
+  $('modal-alert').classList.add('show');
+}
 function hideSplash(){
-  const s = document.getElementById('splash-screen');
-  if(!s||s.style.display==='none') return;
-  s.style.opacity='0'; setTimeout(()=>{ s.style.display='none'; },420);
+  const s=$('splash-screen'); if(!s||s.style.display==='none') return;
+  s.style.opacity='0'; setTimeout(()=>s.style.display='none',400);
 }
 
 // ── CLOSE MODALS ──
 document.querySelectorAll('.close-modal').forEach(b=>{
-  b.addEventListener('click',()=>{ document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show')); });
+  b.addEventListener('click',()=>document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show')));
+});
+document.querySelectorAll('.modal-bg').forEach(bg=>{
+  bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('show'); });
 });
 
 // ── NAV ──
@@ -593,456 +687,377 @@ document.querySelectorAll('.b-nav-item').forEach(item=>{
   item.addEventListener('click',()=>{
     document.querySelectorAll('.b-nav-item').forEach(i=>i.classList.remove('active'));
     item.classList.add('active');
-    const target = item.dataset.target;
+    const t=item.dataset.target;
     document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
-    const sec = document.getElementById(target);
-    if(sec) sec.classList.add('active');
-    if(target==='sec-spark') updateSparkUI();
+    const sec=$(t); if(sec) sec.classList.add('active');
+    if(t==='sec-spark') updateSparkUI();
   });
 });
 
 // ── UPDATE UI ──
 function updateUI(){
   hideSplash();
-  if(!currentUser) return;
-  try{ const sp=document.querySelector('#uid-display span'); if(sp) sp.innerText=currentUser.id||'---'; }catch(e){}
-  const bal = parseFloat(currentUser.diamondBalance||0);
-  const ton = parseFloat(currentUser.tonBalance||0);
-  document.getElementById('bal-diamond').innerText = Math.floor(bal);
-  document.getElementById('bal-usdt').innerText = `\u2248 $${(bal*SP_TO_USD).toFixed(3)} USDT`;
-  document.getElementById('bal-ton').innerText = ton.toFixed(4);
-  try{ document.getElementById('bal-diamond-2').innerText = Math.floor(bal); }catch(e){}
-  try{ document.getElementById('tasks-done-count').innerText = (currentUser.completedTasks||[]).length; }catch(e){}
-  try{ document.getElementById('ads-bal-diamond').innerText = Math.floor(bal); }catch(e){}
-  try{ document.getElementById('ads-bal-usdt').innerText = `\u2248 $${(bal*SP_TO_USD).toFixed(3)} USDT`; }catch(e){}
-  try{ document.getElementById('wd-balance').innerText = `${Math.floor(bal)} SP`; document.getElementById('wd-balance-usdt').innerText = `\u2248 $${(bal*SP_TO_USD).toFixed(3)} USDT`; }catch(e){}
-  // refer
+  if(!user) return;
+  try{ $('uid-val').innerText=user.id||'---'; }catch(e){}
+  const sp=parseFloat(user.diamondBalance||0);
+  const ton=parseFloat(user.tonBalance||0);
+  // Home
+  $('bal-sp').innerText=Math.floor(sp);
+  $('bal-usdt').innerText=`\u2248 $${(sp*SP_TO_USD).toFixed(3)} USDT`;
+  $('bal-ton').innerText=ton.toFixed(4);
+  try{ $('bal-sp-2').innerText=Math.floor(sp); }catch(e){}
+  try{ $('tasks-done-count').innerText=(user.completedTasks||[]).length; }catch(e){}
+  // Earn tab
+  try{ $('earn-bal-sp').innerText=Math.floor(sp); }catch(e){}
+  try{ $('earn-bal-usdt').innerText=`\u2248 $${(sp*SP_TO_USD).toFixed(3)} USDT`; }catch(e){}
+  // Withdraw
+  try{ $('wd-balance').innerText=`${Math.floor(sp)} SP`; $('wd-balance-usdt').innerText=`\u2248 $${(sp*SP_TO_USD).toFixed(3)} USDT`; }catch(e){}
+  // Refer
   try{
-    const link = `https://t.me/Coinlytix_bot/TaskEarn?startapp=${currentUser.id}`;
-    ['invite-link','invite-link-m'].forEach(id=>{ try{ document.getElementById(id).value=link; }catch(e){} });
-    document.getElementById('ref-total').innerText = currentUser.totalInvites||0;
-    document.getElementById('ref-valid').innerText = currentUser.validReferrals||0;
-    document.getElementById('ref-earned').innerText = currentUser.referralDiamondEarned||0;
-    try{ document.getElementById('ref-total-m').innerText = currentUser.totalInvites||0; }catch(e){}
-    try{ document.getElementById('ref-valid-m').innerText = currentUser.validReferrals||0; }catch(e){}
-    try{ document.getElementById('ref-earned-m').innerText = currentUser.referralDiamondEarned||0; }catch(e){}
+    const link=`${REFER_BASE}?startapp=${user.id}`;
+    $('invite-link').value=link;
+    $('ref-total').innerText=user.totalInvites||0;
+    $('ref-valid').innerText=user.validReferrals||0;
+    $('ref-earned').innerText=user.referralDiamondEarned||0;
+    try{ $('ref-total-m').innerText=user.totalInvites||0; $('ref-valid-m').innerText=user.validReferrals||0; $('ref-earned-m').innerText=user.referralDiamondEarned||0; const lm=$('invite-link-m'); if(lm) lm.value=link; }catch(e){}
   }catch(e){}
-  // ad limits
-  const updLim = (id, cloud, max)=>{
-    const loc=parseInt(localStorage.getItem(`coinly_${id}_${currentUser.id}`))||0, total=cloud+loc;
-    const lEl=document.getElementById(`limit-${id}`), btn=document.getElementById(`btn-${id}`);
-    if(lEl&&btn){
-      lEl.innerText=`${total}/${max} today`;
-      if(total>=max){ btn.disabled=true; btn.innerText='Done \u2713'; btn.classList.add('btn-disabled'); }
-      else{ btn.disabled=false; btn.classList.remove('btn-disabled'); }
-    }
-  };
-  updLim('ad1',currentUser.adsWatchedAd1||0,AD_LIMITS.ad1);
-  updLim('ad2',currentUser.adsWatchedAd2||0,AD_LIMITS.ad2);
-  updLim('ad3',currentUser.adsWatchedAd3||0,AD_LIMITS.ad3);
-  updLim('ad4',currentUser.adsWatchedAd4||0,AD_LIMITS.ad4);
   updateLootbox();
 }
 
 // ── LOOTBOX ──
 function updateLootbox(){
-  if(!currentUser) return;
-  const lb=parseFloat(currentUser.lootboxBalance||0);
+  if(!user) return;
+  const lb=parseFloat(user.lootboxBalance||0);
   const today=getToday();
-  const claimCount=currentUser.lootboxClaimCount||0;
-  const lastClaim=currentUser.lootboxClaimDate||'';
-  const claimsToday=lastClaim===today?claimCount:0;
-  const claimsLeft=Math.max(0,2-claimsToday);
-  const MIN_CLAIM=150;
-  const lbEl=document.getElementById('lootbox-balance');
-  const progText=document.getElementById('lootbox-progress-text');
-  const progBar=document.getElementById('lootbox-progress-bar');
-  const claimsEl=document.getElementById('lootbox-claims-left');
-  const claimBtn=document.getElementById('btn-lootbox-claim');
-  const timerEl=document.getElementById('lootbox-timer');
+  const claimsToday=(user.lootboxClaimDate===today)?(user.lootboxClaimCount||0):0;
+  const claimsLeft=Math.max(0,LOOTBOX_MAX_DAY-claimsToday);
+  const lbEl=$('lootbox-balance'), pT=$('lootbox-progress-text'), pB=$('lootbox-progress-bar');
+  const cL=$('lootbox-claims-left'), cBtn=$('btn-lootbox-claim'), tEl=$('lootbox-timer');
   if(lbEl) lbEl.innerText=lb.toFixed(1);
-  const pct=Math.min(100,(lb/MIN_CLAIM)*100);
-  if(progBar) progBar.style.width=pct+'%';
-  if(progText) progText.innerText=`${lb.toFixed(0)} / ${MIN_CLAIM} SP to claim`;
-  if(claimsEl) claimsEl.innerText=claimsLeft>0?`${claimsLeft} claim${claimsLeft!==1?'s':''} left`:'Daily limit reached';
-  if(claimBtn){ const can=lb>=MIN_CLAIM&&claimsLeft>0; claimBtn.disabled=!can; claimBtn.style.opacity=can?'1':'0.5'; claimBtn.style.cursor=can?'pointer':'not-allowed'; }
-  if(timerEl){
-    if(claimsLeft===0) timerEl.innerText='Daily claim limit reached. Come back tomorrow!';
-    else if(lb<MIN_CLAIM) timerEl.innerText=`Watch more ads — need ${(MIN_CLAIM-lb).toFixed(0)} more SP`;
-    else timerEl.innerText='Ready to claim!';
+  const pct=Math.min(100,(lb/LOOTBOX_MIN)*100);
+  if(pB) pB.style.width=pct+'%';
+  if(pT) pT.innerText=`${lb.toFixed(0)} / ${LOOTBOX_MIN} SP to claim`;
+  if(cL) cL.innerText=claimsLeft>0?`${claimsLeft} claim${claimsLeft!==1?'s':''} left`:'Daily limit reached';
+  if(cBtn){ const can=lb>=LOOTBOX_MIN&&claimsLeft>0; cBtn.disabled=!can; cBtn.style.opacity=can?'1':'0.5'; cBtn.style.cursor=can?'pointer':'not-allowed'; }
+  if(tEl){
+    if(claimsLeft===0) tEl.innerText='Daily claim limit reached. Come back tomorrow!';
+    else if(lb<LOOTBOX_MIN) tEl.innerText=`Need ${(LOOTBOX_MIN-lb).toFixed(0)} more SP to claim`;
+    else tEl.innerText='Ready to claim! ✓';
   }
 }
 
-// ── LOOTBOX CLAIM ──
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('btn-lootbox-claim')?.addEventListener('click',async()=>{
-    const lb=parseFloat(currentUser?.lootboxBalance||0); if(lb<150) return;
-    const btn=document.getElementById('btn-lootbox-claim');
-    btn.disabled=true; btn.innerHTML='<div class="loader-spin" style="margin:0 auto;width:16px;height:16px;border-width:2px;"></div>';
-    try{
-      const res=await fetch(`${API_BASE}/claimAd`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id,batch:{lootboxClaim:true}})});
-      const data=await res.json();
-      if(data.success){
-        const prev=parseFloat(currentUser.lootboxBalance||0);
-        currentUser.diamondBalance=(currentUser.diamondBalance||0)+prev;
-        currentUser.lootboxBalance=0; currentUser.lootboxClaimDate=getToday();
-        currentUser.lootboxClaimCount=(currentUser.lootboxClaimCount||0)+1;
-        try{ localStorage.removeItem(`coinly_u_${currentUser.id}`); localStorage.removeItem(`coinly_t_${currentUser.id}`); }catch(e){}
-        updateUI(); showAlert('\uD83C\uDF81 Claimed!',`+${prev.toFixed(0)} SP added to main balance!`,'success');
-      } else { showAlert('\u274C Failed',data.error||'Could not claim.','error'); updateLootbox(); }
-    }catch(e){ showAlert('Error','Server error. Try again.','error'); updateLootbox(); }
-  });
+$('btn-lootbox-claim').addEventListener('click',async()=>{
+  const lb=parseFloat(user?.lootboxBalance||0); if(lb<LOOTBOX_MIN) return;
+  const btn=$('btn-lootbox-claim');
+  btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  try{
+    const res=await fetch(`${API_BASE}/claimLootbox`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id})});
+    const data=await res.json();
+    if(data.success){ user.diamondBalance=(user.diamondBalance||0)+lb; user.lootboxBalance=0; user.lootboxClaimDate=getToday(); user.lootboxClaimCount=(user.lootboxClaimCount||0)+1; clearUserCache(); updateUI(); showAlert('\uD83C\uDF81 Claimed!',`+${lb.toFixed(0)} SP added to balance!`,'success'); }
+    else { showAlert('Failed',data.error||'Could not claim.','error'); updateLootbox(); }
+  }catch(e){ showAlert('Error','Server error.','error'); updateLootbox(); }
 });
 
-// ═══════════════════════════════
-// ── SPARK SYSTEM ──
-// ═══════════════════════════════
-function getSparkLastBlast(){ try{ return parseInt(localStorage.getItem(`ts_spark_${currentUser?.id}`)||'0'); }catch(e){ return 0; } }
-function setSparkLastBlast(){ try{ localStorage.setItem(`ts_spark_${currentUser?.id}`,String(Date.now())); }catch(e){} }
-function getSparkStats(){ try{ return JSON.parse(localStorage.getItem(`ts_sstats_${currentUser?.id}`)||'{"b":0,"e":0}'); }catch(e){ return {b:0,e:0}; } }
-function saveSparkStats(b,e){ try{ localStorage.setItem(`ts_sstats_${currentUser?.id}`,JSON.stringify({b,e})); }catch(e){} }
+// ── SPARK ──
+function sparkKey(k){ return `ts_spark_${k}_${user?.id}`; }
+function getLastBlast(){ try{ return parseInt(localStorage.getItem(sparkKey('last'))||'0'); }catch(e){ return 0; } }
+function setLastBlast(){ try{ localStorage.setItem(sparkKey('last'),String(Date.now())); }catch(e){} }
+function getSparkStats(){ try{ return JSON.parse(localStorage.getItem(sparkKey('stats'))||'{"b":0,"e":0}'); }catch(e){ return {b:0,e:0}; } }
+function saveSparkStats(b,e){ try{ localStorage.setItem(sparkKey('stats'),JSON.stringify({b,e})); }catch(e){} }
 
-let _sparkHistory=[], _sparkBlasting=false;
+let _sparkHistory=[], _blasting=false;
 
 function updateSparkUI(){
-  if(!currentUser) return;
-  const stats=getSparkStats();
-  const el_b=document.getElementById('spark-total-blasts');
-  const el_e=document.getElementById('spark-total-earned');
-  if(el_b) el_b.innerText=stats.b;
-  if(el_e) el_e.innerText=parseFloat(stats.e||0).toFixed(0);
-  const since=Date.now()-getSparkLastBlast();
-  const cdBanner=document.getElementById('spark-cooldown-banner');
-  const blastBtn=document.getElementById('btn-blast-spark');
-  const bulb=document.getElementById('spark-bulb-display');
-  if(since<SPARK_COOLDOWN_MS){
-    const rem=SPARK_COOLDOWN_MS-since;
-    const h=Math.floor(rem/3600000),m=Math.floor((rem%3600000)/60000),s=Math.floor((rem%60000)/1000);
-    if(cdBanner){ cdBanner.style.display='block'; document.getElementById('spark-cooldown-text').innerText=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
-    if(blastBtn){ blastBtn.disabled=true; blastBtn.style.opacity='0.45'; blastBtn.innerHTML='\u23F3 Cooldown Active'; }
-    if(bulb){ bulb.innerHTML='\uD83D\uDD0C'; bulb.style.filter='grayscale(1) brightness(0.4)'; bulb.style.animation='none'; }
+  if(!user) return;
+  const s=getSparkStats();
+  try{ $('spark-total-blasts').innerText=s.b; }catch(e){}
+  try{ $('spark-total-earned').innerText=parseFloat(s.e||0).toFixed(0); }catch(e){}
+  const since=Date.now()-getLastBlast();
+  const cdBanner=$('spark-cooldown-banner'), btn=$('btn-blast-spark'), bulb=$('spark-bulb-display');
+  if(since<SPARK_CD){
+    const rem=SPARK_CD-since;
+    const h=Math.floor(rem/3600000),m=Math.floor((rem%3600000)/60000),sc=Math.floor((rem%60000)/1000);
+    if(cdBanner){ cdBanner.style.display='block'; $('spark-cooldown-text').innerText=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`; }
+    if(btn){ btn.disabled=true; btn.style.opacity='0.4'; btn.innerHTML='\u23F3 Cooldown Active'; }
+    if(bulb){ bulb.innerHTML='\uD83D\uDD0C'; bulb.style.filter='grayscale(1) brightness(0.35)'; bulb.style.animation='none'; }
   } else {
     if(cdBanner) cdBanner.style.display='none';
-    if(blastBtn){ blastBtn.disabled=false; blastBtn.style.opacity='1'; blastBtn.innerHTML='<span>\u26A1</span> Blast Spark!'; }
-    if(bulb){ bulb.innerHTML='\uD83D\uDCA1'; bulb.style.filter='drop-shadow(0 0 20px rgba(250,204,21,0.9))'; bulb.style.animation='bulbPulse 2s ease-in-out infinite'; }
+    if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML='<span>\u26A1</span> Blast Spark!'; }
+    if(bulb){ bulb.innerHTML='\uD83D\uDCA1'; bulb.style.filter='drop-shadow(0 0 24px rgba(250,204,21,0.9))'; bulb.style.animation='bulbPulse 2s ease-in-out infinite'; }
   }
 }
-
-setInterval(()=>{ if(document.getElementById('sec-spark')?.classList.contains('active')) updateSparkUI(); },1000);
+setInterval(()=>{ if($('sec-spark')?.classList.contains('active')) updateSparkUI(); },1000);
 
 async function blastSpark(){
-  if(_sparkBlasting||!currentUser) return;
-  if(Date.now()-getSparkLastBlast()<SPARK_COOLDOWN_MS){ showAlert('Cooldown','Please wait for the timer.','error'); return; }
-  const blastBtn=document.getElementById('btn-blast-spark');
-  const bulb=document.getElementById('spark-bulb-display');
-  const resEl=document.getElementById('spark-result-text');
-  blastBtn.disabled=true; blastBtn.innerHTML='<div class="loader-spin" style="width:18px;height:18px;border-width:2.5px;"></div>';
-  _sparkBlasting=true;
-  if(bulb){ bulb.style.animation='none'; bulb.innerHTML='\u26A1'; bulb.style.filter='drop-shadow(0 0 40px rgba(250,204,21,1))'; bulb.style.transform='scale(1.3)'; }
+  if(_blasting||!user) return;
+  if(Date.now()-getLastBlast()<SPARK_CD){ showAlert('Cooldown','Please wait for the cooldown timer.','error'); return; }
+  _blasting=true;
+  const btn=$('btn-blast-spark'), bulb=$('spark-bulb-display'), resEl=$('spark-result-text');
+  btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  if(bulb){ bulb.style.animation='none'; bulb.innerHTML='\u26A1'; bulb.style.filter='drop-shadow(0 0 50px rgba(250,204,21,1))'; bulb.style.transform='scale(1.3)'; }
   await new Promise(r=>setTimeout(r,1200));
-  const reward=Math.floor(Math.random()*11)+10; // 10-20 SP
-  if(bulb){ bulb.innerHTML='\uD83D\uDCA1'; bulb.style.transform='scale(1)'; bulb.style.filter='drop-shadow(0 0 16px rgba(250,204,21,0.7))'; bulb.style.animation='none'; }
-  if(resEl){ resEl.innerText=`\u26A1 Blasted! +${reward} SP`; resEl.style.color='#facc15'; }
+  const reward=Math.floor(Math.random()*11)+10;
+  if(bulb){ bulb.innerHTML='\uD83D\uDCA1'; bulb.style.transform='scale(1)'; bulb.style.filter='drop-shadow(0 0 18px rgba(250,204,21,0.8))'; bulb.style.animation='none'; }
+  if(resEl){ resEl.innerText=`\u26A1 Blasted! +${reward} SP`; resEl.style.color='#f5c842'; }
   try{
-    const res=await fetch(`${API_BASE}/claimAd`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id,batch:{diceReward:reward}})});
+    const res=await fetch(`${API_BASE}/sparkBlast`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,reward})});
     const data=await res.json();
-    if(data.success!==false){
-      currentUser.diamondBalance=(currentUser.diamondBalance||0)+reward;
-      try{ localStorage.removeItem(`coinly_u_${currentUser.id}`); localStorage.removeItem(`coinly_t_${currentUser.id}`); }catch(e){}
-      updateUI(); showAlert('\u26A1 Spark Blasted!',`+${reward} SP added!`,'success');
-    }
+    if(data.success!==false){ user.diamondBalance=(user.diamondBalance||0)+reward; clearUserCache(); updateUI(); showAlert('\u26A1 Spark Blasted!',`+${reward} SP added to balance!`,'success'); }
   }catch(e){ console.warn('[spark]',e); }
-  setSparkLastBlast();
+  setLastBlast();
   const s=getSparkStats(); s.b++; s.e=parseFloat(s.e||0)+reward; saveSparkStats(s.b,s.e);
   _sparkHistory.unshift({reward,t:new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})});
   if(_sparkHistory.length>5) _sparkHistory.pop();
-  const histEl=document.getElementById('spark-history');
-  if(histEl) histEl.innerHTML=_sparkHistory.map(h=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.75rem;"><span>\uD83D\uDCA1 Spark Blast</span><span style="color:#facc15;font-weight:700;">+${h.reward} SP</span><span style="color:var(--text-muted);">${h.t}</span></div>`).join('');
-  updateSparkUI(); _sparkBlasting=false;
+  const hEl=$('spark-history');
+  if(hEl) hEl.innerHTML=_sparkHistory.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:0.76rem;"><span style="color:var(--txt2);">\uD83D\uDCA1 Spark Blast</span><span style="font-family:var(--mono);color:#f5c842;font-weight:700;">+${h.reward} SP</span><span style="color:var(--txt3);">${h.t}</span></div>`).join('');
+  updateSparkUI(); _blasting=false;
+}
+$('btn-blast-spark').addEventListener('click',blastSpark);
+
+// ── INIT ──
+function clearUserCache(){
+  if(!user) return;
+  try{ localStorage.removeItem(`ts_u_${user.id}`); localStorage.removeItem(`ts_ut_${user.id}`); }catch(e){}
 }
 
-document.addEventListener('DOMContentLoaded',()=>{ document.getElementById('btn-blast-spark')?.addEventListener('click',blastSpark); });
-
-// ═══════════════════════════════
-// ── INIT APP ──
-// ═══════════════════════════════
-const INIT_CACHE_TTL=5*60*1000;
 async function initApp(){
-  if(!tg.initDataUnsafe?.user) return document.body.innerHTML='<h3 style="text-align:center;margin-top:50px;color:#fbbf24;font-family:Outfit,sans-serif;">Open in Telegram.</h3>';
-  tg.ready(); tg.expand(); tg.setHeaderColor('#09090f');
+  if(!tg.initDataUnsafe?.user){
+    document.body.innerHTML='<h3 style="text-align:center;margin-top:80px;color:#f5c842;font-family:Sora,sans-serif;padding:0 20px;">Please open in Telegram.</h3>'; return;
+  }
+  tg.ready(); tg.expand(); tg.setHeaderColor('#0b0c14');
   const u=tg.initDataUnsafe.user, uid=String(u.id), today=getToday(), sp=tg.initDataUnsafe.start_param;
+
   try{
-    const ct=parseInt(localStorage.getItem(`coinly_t_${uid}`)||'0');
-    if(Date.now()-ct<INIT_CACHE_TTL){
-      const cu=JSON.parse(localStorage.getItem(`coinly_u_${uid}`)||'{}');
-      if(cu&&cu.id){ currentUser=cu; if(currentUser.isBanned) return showBanned(); updateUI(); checkCommunityJoin(); fetchTasks('all'); return; }
+    const ct=parseInt(localStorage.getItem(`ts_ut_${uid}`)||'0');
+    if(Date.now()-ct<CACHE_TTL){
+      const cu=JSON.parse(localStorage.getItem(`ts_u_${uid}`)||'{}');
+      if(cu&&cu.id){ user=cu; if(user.isBanned) return showBanned(); updateUI(); checkJoin(); fetchTasks('all'); return; }
     }
   }catch(e){}
+
   let apiData=null;
   try{
-    const res=await fetch(`${API_BASE}/init`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid,firstName:u.firstName||'',lastName:u.lastName||'',username:u.username||'',referrerCode:(sp&&sp!==uid)?sp:null})});
+    const res=await fetch(`${API_BASE}/init`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid,firstName:u.first_name||'',lastName:u.last_name||'',username:u.username||'',referrerCode:(sp&&sp!==uid)?sp:null})});
     apiData=await res.json();
-  }catch(e){ console.warn('[initApp]',e.message); }
-  if(apiData?.blocked) return document.body.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;text-align:center;background:#09090f;font-family:Outfit,sans-serif;"><div style="font-size:3rem;margin-bottom:16px;">\uD83D\uDEAB</div><h2 style="color:#f1f5f9;">Device Blocked</h2><p style="color:#64748b;">Multiple accounts not allowed.</p></div>';
+  }catch(e){ console.warn('[init]',e.message); }
+
+  if(apiData?.blocked){ document.body.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;background:var(--bg);font-family:Sora,sans-serif;"><div style="font-size:3rem;">\uD83D\uDEAB</div><h2 style="color:var(--txt);margin-top:12px;">Device Blocked</h2><p style="color:var(--txt3);">Multiple accounts detected.</p></div>'; return; }
+
   if(apiData?.user){
-    currentUser={id:uid,...apiData.user};
-    try{ const tc={...currentUser}; delete tc._pendingDeposit; delete tc._pendingTask; localStorage.setItem(`coinly_u_${uid}`,JSON.stringify(tc)); localStorage.setItem(`coinly_t_${uid}`,String(Date.now())); }catch(e){}
+    user={id:uid,...apiData.user};
+    try{ localStorage.setItem(`ts_u_${uid}`,JSON.stringify({...user})); localStorage.setItem(`ts_ut_${uid}`,String(Date.now())); }catch(e){}
   } else {
-    currentUser={id:uid,diamondBalance:0,tonBalance:0,completedTasks:[],lootboxBalance:0,totalInvites:0,validReferrals:0,referralDiamondEarned:0,telegramUsername:u.username||'',firstName:u.firstName||'',adsWatchedAd1:0,adsWatchedAd2:0,adsWatchedAd3:0,adsWatchedAd4:0,lastResetDate:today,joinGiftClaimed:false,isValidatedRef:false,isBanned:false};
+    user={id:uid,diamondBalance:0,tonBalance:0,completedTasks:[],lootboxBalance:0,totalInvites:0,validReferrals:0,referralDiamondEarned:0,telegramUsername:u.username||'',firstName:u.first_name||'',lastResetDate:today,isValidatedRef:false,isBanned:false};
   }
-  if(currentUser.isBanned) return showBanned();
+
+  if(user.isBanned) return showBanned();
   if(apiData?.isNew||apiData?.justCreated) maybeShowWhatsNew();
-  if(currentUser.lastResetDate!==today){
-    currentUser.adsWatchedAd1=0; currentUser.adsWatchedAd2=0; currentUser.adsWatchedAd3=0; currentUser.adsWatchedAd4=0; currentUser.lastResetDate=today;
-    ['ad1','ad2','ad3','ad4'].forEach(k=>{ try{ localStorage.setItem(`coinly_${k}_${uid}`,0); }catch(e){} });
-    fetch(`${API_BASE}/claimAd`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid,batch:{_resetOnly:true}})}).catch(()=>{});
-  }
-  updateUI(); checkCommunityJoin(); fetchTasks('all');
+  updateUI(); checkJoin(); fetchTasks('all');
 }
-function showBanned(){ document.body.innerHTML='<div style="text-align:center;padding-top:100px;font-family:Outfit,sans-serif;"><div style="font-size:3rem;">\uD83D\uDEAB</div><h3 style="color:#f1f5f9;margin-top:10px;">Account Banned.</h3></div>'; }
+
+function showBanned(){ document.body.innerHTML='<div style="text-align:center;padding-top:120px;font-family:Sora,sans-serif;"><div style="font-size:3rem;">\uD83D\uDEAB</div><h3 style="color:var(--txt);margin-top:12px;">Account Banned.</h3><p style="color:var(--txt3);margin-top:6px;font-size:0.85rem;">Contact support.</p></div>'; }
 
 // ── JOIN CHECK ──
-let _joinCheckInterval=null;
-async function checkCommunityJoin(){
+let _joinInterval=null;
+async function checkJoin(){
   try{
-    const res=await fetch(`${API_BASE}/checkJoin?userId=${currentUser.id}`);
-    if(!res.ok){ document.getElementById('modal-join').classList.remove('show'); return; }
+    const res=await fetch(`${API_BASE}/checkJoin?userId=${user.id}`);
+    if(!res.ok){ $('modal-join').classList.remove('show'); return; }
     const data=await res.json();
-    if(data.joined===true){ clearInterval(_joinCheckInterval); _joinCheckInterval=null; document.getElementById('modal-join').classList.remove('show'); currentUser.hasJoinedCommunity=true; }
-    else{ currentUser.hasJoinedCommunity=false; document.getElementById('modal-join').classList.add('show'); if(!_joinCheckInterval) _joinCheckInterval=setInterval(()=>checkCommunityJoin(),30000); }
-  }catch(e){ document.getElementById('modal-join').classList.remove('show'); }
+    if(data.joined===true){ clearInterval(_joinInterval); _joinInterval=null; $('modal-join').classList.remove('show'); user.hasJoinedCommunity=true; }
+    else { $('modal-join').classList.add('show'); if(!_joinInterval) _joinInterval=setInterval(checkJoin,15000); }
+  }catch(e){ $('modal-join').classList.remove('show'); }
 }
-document.getElementById('btn-verify-join').addEventListener('click',async()=>{
-  const btn=document.getElementById('btn-verify-join'),err=document.getElementById('join-error');
-  btn.innerHTML='<div class="loader-spin" style="margin:0;width:18px;height:18px;border-width:2px;"></div>'; btn.disabled=true; err.innerText='';
+
+$('btn-verify-join').addEventListener('click',async()=>{
+  const b=$('btn-verify-join'), er=$('join-error');
+  b.disabled=true; b.innerHTML='<div class="loader-spin"></div> Checking...';
+  er.innerText='';
   try{
-    const res=await fetch(`${API_BASE}/checkJoin?userId=${currentUser.id}`); const d=await res.json();
-    if(d.joined===true){ currentUser.hasJoinedCommunity=true; clearInterval(_joinCheckInterval); _joinCheckInterval=null; err.style.color='var(--green)'; err.innerText='\u2705 Verified!'; setTimeout(()=>{ document.getElementById('modal-join').classList.remove('show'); err.innerText=''; },800); }
-    else{ const m=[]; if(!d.channel) m.push('Channel'); if(!d.group) m.push('Community'); err.style.color='var(--red)'; err.innerText='\u274C Not joined: '+m.join(' & '); }
-  }catch(e){ document.getElementById('modal-join').classList.remove('show'); }
-  btn.innerHTML='<i class="fas fa-check-circle"></i> I\'ve Joined \u2014 Verify'; btn.disabled=false;
-});
-
-// ── ADS ──
-let _adPendingSync={}, _adSyncTimer=null;
-async function flushAdSync(){
-  if(!Object.keys(_adPendingSync).length) return;
-  const toSync={..._adPendingSync}; _adPendingSync={};
-  try{ await fetch(`${API_BASE}/claimAd`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id,batch:toSync})}); }catch(e){}
-}
-window.addEventListener('beforeunload',flushAdSync);
-
-async function adWrapper(btnId,sdkCall,successCb){
-  if(isAdRunning) return showAlert('Warning','Ad already running.','error');
-  const btn=document.getElementById(btnId); if(!btn) return;
-  const orig=btn.innerHTML; isAdRunning=true; btn.disabled=true;
-  btn.innerHTML='<div class="loader-spin" style="width:16px;height:16px;border-width:2px;"></div>';
-  try{
-    let adShown=false;
-    if(sdkCall){ try{ await sdkCall(); adShown=true; }catch(adErr){ const msg=(adErr?.message||adErr?.type||'').toLowerCase(); if(msg.includes('skip')||msg.includes('close')||msg.includes('dismiss')||msg.includes('full ad')||msg.includes('early')){ showAlert('Skipped','Watch the full ad to earn.','error'); } else { adShown=true; } } }
-    else { showAlert('Unavailable','Ad not available right now.','error'); }
-    if(adShown) await successCb();
-  }catch(e){ showAlert('Error','Something went wrong.','error'); }
-  finally{ isAdRunning=false; btn.innerHTML=orig; btn.disabled=false; }
-}
-
-const runAdMission=(type,btnId,sdk)=>adWrapper(btnId,sdk,async()=>{
-  const reward=AD_DIAMOND_REWARDS[type], fieldKey=`adsWatched${type.charAt(0).toUpperCase()+type.slice(1)}`, limit=AD_LIMITS[type]||10, current=currentUser[fieldKey]||0;
-  if(current>=limit){ showAlert('Limit Reached','Daily limit reached.','error'); return; }
-  currentUser.lootboxBalance=(currentUser.lootboxBalance||0)+reward; currentUser[fieldKey]=current+1;
-  _adPendingSync[type]=(_adPendingSync[type]||0)+1;
-  updateUI(); updateLootbox(); showAlert('Earned!',`+${reward} \u26A1 Added to Lootbox!`,'success');
-  clearTimeout(_adSyncTimer);
-  if(Object.values(_adPendingSync).reduce((a,b)=>a+b,0)>=5){ await flushAdSync(); } else { _adSyncTimer=setTimeout(flushAdSync,10000); }
-});
-
-const showMoneytagAd=()=>new Promise((resolve,reject)=>{
-  if(!window.show_10135525){ reject(new Error('Monetag not loaded')); return; }
-  let timerDone=false,adDone=false,rejected=false;
-  const tryResolve=()=>{ if(!rejected&&timerDone&&adDone) resolve(); };
-  const doReject=(r)=>{ if(!rejected){ rejected=true; reject(new Error(r)); } };
-  const timer=setTimeout(()=>{ timerDone=true; tryResolve(); },6000);
-  try{ const p=window.show_10135525(); Promise.resolve(p).then(()=>{ adDone=true; tryResolve(); }).catch(()=>{ clearTimeout(timer); doReject('Watch the full ad.'); }); }catch(e){ clearTimeout(timer); doReject('Ad unavailable.'); }
-});
-
-let _gigaPubReady=false;
-(function preloadGigaPub(){
-  if(typeof window.showGiga==='function'){ _gigaPubReady=true; return; }
-  const s=document.createElement('script'); s.src='https://ad.gigapub.tech/script?id=4088'; s.onload=()=>{ _gigaPubReady=true; }; document.head.appendChild(s);
-})();
-
-const showGigaAd=()=>new Promise(async(resolve,reject)=>{
-  if(typeof window.showGiga!=='function'){
-    try{ await new Promise((res,rej)=>{ let a=0; const c=setInterval(()=>{ a++; if(typeof window.showGiga==='function'){ clearInterval(c); res(); } else if(a>=25){ clearInterval(c); rej(new Error('GigaPub not loaded')); } },200); }); }catch(e){ reject(e); return; }
-  }
-  let adDone=false,timerDone=false,rejected=false;
-  const tryResolve=()=>{ if(!rejected&&timerDone&&adDone) resolve(); };
-  const doReject=(r)=>{ if(!rejected){ rejected=true; reject(new Error(r)); } };
-  const timer=setTimeout(()=>{ timerDone=true; tryResolve(); },6000);
-  try{ await window.showGiga(); adDone=true; tryResolve(); }catch(e){ clearTimeout(timer); doReject('Watch the full ad.'); }
-});
-
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('btn-ad1')?.addEventListener('click',()=>runAdMission('ad1','btn-ad1',()=>{ const o=window.Adsgram?.init({blockId:'int-35169'}); return o?.show?o.show():Promise.reject(new Error('SDK unavailable')); }));
-  document.getElementById('btn-ad2')?.addEventListener('click',()=>runAdMission('ad2','btn-ad2',()=>{ const o=window.Adsgram?.init({blockId:'35170'}); return o?.show?o.show():Promise.reject(new Error('SDK unavailable')); }));
-  document.getElementById('btn-ad3')?.addEventListener('click',()=>runAdMission('ad3','btn-ad3',showMoneytagAd));
-  document.getElementById('btn-ad4')?.addEventListener('click',()=>runAdMission('ad4','btn-ad4',showGigaAd));
+    const res=await fetch(`${API_BASE}/checkJoin?userId=${user.id}&force=1`);
+    const data=await res.json();
+    if(data.joined){ clearInterval(_joinInterval); _joinInterval=null; $('modal-join').classList.remove('show'); user.hasJoinedCommunity=true; }
+    else { er.innerText='Please join both Channel and Community first!'; b.disabled=false; b.innerHTML='<i class="fas fa-check-circle"></i> I\'ve Joined — Verify'; }
+  }catch(e){ er.innerText='Check failed. Try again.'; b.disabled=false; b.innerHTML='<i class="fas fa-check-circle"></i> I\'ve Joined — Verify'; }
 });
 
 // ── TASKS ──
-let taskFilter='all',_tasksCache=null,_tasksCacheTime=0;
-const TASKS_CACHE_TTL=5*60*1000;
-function _renderTasks(allTasks,filter,container){
-  container.innerHTML=''; let count=0;
-  const iconMap={telegram_channel:'fab fa-telegram-plane',telegram_group:'fas fa-users',telegram_bot:'fas fa-robot',social:'fas fa-play-circle'};
-  const clrMap={telegram_channel:'color:#0088cc;background:rgba(0,136,204,0.1);border:1px solid rgba(0,136,204,0.2)',telegram_group:'color:#a855f7;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.2)',telegram_bot:'color:#10b981;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)',social:'color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)'};
-  allTasks.forEach(t=>{
-    if((currentUser.completedTasks||[]).includes(t.id)) return;
-    if(filter!=='all'&&t.category!==filter) return;
-    count++; const cat=t.category||'social', rv=t.rewardDiamond||TASK_REWARD_DIAMOND;
-    container.innerHTML+=`<div class="task-card"><div class="t-icon" style="${clrMap[cat]||clrMap.social};border-radius:12px;"><i class="${iconMap[cat]||'fas fa-tasks'}"></i></div><div class="t-info"><div class="t-name">${t.title}</div><div class="t-reward">+${rv} \u26A1 SP</div></div><button class="btn t-task-btn" data-id="${t.id}" data-url="${t.url||''}" data-channel="${t.channelId||''}" data-cat="${cat}" style="padding:8px 14px;font-size:0.76rem;border-radius:10px;flex-shrink:0;background:rgba(245,158,11,0.1);border:1.5px solid rgba(245,158,11,0.3);color:#fbbf24;">GO</button></div>`;
-  });
-  if(!count) container.innerHTML='<div class="empty-state"><i class="fas fa-clipboard-check"></i><p>No tasks available right now.</p></div>';
-}
-async function fetchTasks(filter,forceRefresh){
-  taskFilter=filter; const container=document.getElementById('task-list-container');
-  container.innerHTML='<div style="text-align:center;padding:30px 0;"><div class="loader-spin" style="margin:0 auto;"></div></div>';
+let _tasksCache=null, taskFilter='all';
+async function fetchTasks(filter){
+  const container=$('task-list-container');
+  if(!container) return;
+  if(_tasksCache){ _renderTasks(_tasksCache,filter,container); return; }
+  container.innerHTML='<div style="text-align:center;padding:30px 0;"><div class="loader-spin" style="margin:0 auto;width:28px;height:28px;border-width:3px;"></div></div>';
   try{
-    const now=Date.now();
-    if(!forceRefresh&&_tasksCache&&(now-_tasksCacheTime)<TASKS_CACHE_TTL){ _renderTasks(_tasksCache,filter,container); return; }
-    const res=await fetch(`${API_BASE}/getTasks`); const data=await res.json();
-    _tasksCache=data.tasks||[]; _tasksCacheTime=Date.now(); _renderTasks(_tasksCache,filter,container);
-  }catch(e){ container.innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load tasks.</p><button onclick="fetchTasks(taskFilter)" style="margin-top:10px;padding:8px 20px;border-radius:10px;background:var(--primary);color:#000;border:none;font-weight:700;cursor:pointer;">Retry</button></div>`; }
+    const res=await fetch(`${API_BASE}/getTasks?userId=${user.id}`);
+    const data=await res.json();
+    _tasksCache=data.tasks||[]; _renderTasks(_tasksCache,filter,container);
+  }catch(e){ container.innerHTML='<div class="empty-state"><i class="fas fa-wifi-slash"></i><p>Failed to load tasks.</p></div>'; }
 }
-document.getElementById('task-list-container').addEventListener('click',async e=>{
-  const b=e.target.closest('.t-task-btn'); if(!b||b.disabled) return;
-  const {id,url,channel,cat}=b.dataset, txt=b.innerText.trim().toUpperCase();
-  if(txt==='GO'){ if(url) tg.openLink(url); b.innerText='VERIFY'; b.style.background='rgba(245,158,11,0.2)'; b.style.borderColor='#f59e0b'; return; }
-  if(txt==='VERIFY'){
-    b.disabled=true; b.innerHTML='<div class="loader-spin" style="margin:0;width:14px;height:14px;border-width:2px;"></div>';
-    try{
-      let ok=false;
-      if((cat==='telegram_channel'||cat==='telegram_group')&&channel&&channel.trim()){ const res=await fetch(`${API_BASE}/checkMember?userId=${currentUser.id}&channel=${encodeURIComponent(channel)}`); const d=await res.json(); if(d.joined===true||d.isMember===true) ok=true; else{ showAlert('Notice','Join first, then verify!','error'); b.innerText='VERIFY'; b.disabled=false; return; } }
-      else{ await new Promise(r=>setTimeout(r,2000)); ok=true; }
-      if(ok){
-        const claimRes=await fetch(`${API_BASE}/claimTask`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id,taskId:id})}); const claimData=await claimRes.json();
-        if(claimData.ok){ const earned=claimData.reward||TASK_REWARD_DIAMOND; currentUser.diamondBalance=(currentUser.diamondBalance||0)+earned; if(!currentUser.completedTasks) currentUser.completedTasks=[]; currentUser.completedTasks.push(id); _tasksCache=null; try{ localStorage.removeItem(`coinly_u_${currentUser.id}`); localStorage.removeItem(`coinly_t_${currentUser.id}`); }catch(e){} updateUI(); showAlert('Task Completed!',`+${earned} \u26A1 SP earned!`,'success'); b.parentElement.remove(); checkValidRef(); }
-        else{ showAlert('Error',claimData.error||'Claim failed.','error'); b.innerText='VERIFY'; b.disabled=false; }
+function _renderTasks(tasks,filter,container){
+  const done=user.completedTasks||[];
+  const filtered=filter==='all'?tasks:tasks.filter(t=>t.type===filter);
+  if(!filtered.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>No tasks in this category.</p></div>'; return; }
+  container.innerHTML=filtered.map(task=>{
+    const isDone=done.includes(task.id);
+    const iconMap={telegram_channel:'fab fa-telegram-plane',telegram_group:'fas fa-users',telegram_bot:'fas fa-robot',social:'fas fa-play-circle'};
+    const bgMap={telegram_channel:'rgba(0,136,204,0.12)',telegram_group:'rgba(233,168,48,0.1)',telegram_bot:'rgba(34,201,138,0.1)',social:'rgba(168,85,247,0.1)'};
+    const clrMap={telegram_channel:'#0099dd',telegram_group:'#e9a830',telegram_bot:'#22c98a',social:'#a855f7'};
+    const icon=iconMap[task.type]||'fas fa-star', bg=bgMap[task.type]||'rgba(233,168,48,0.1)', clr=clrMap[task.type]||'#f5c842';
+    return `<div class="task-card" data-taskid="${task.id}">
+      <div class="t-icon" style="background:${bg};border:1px solid ${clr}22;color:${clr};"><i class="${icon}"></i></div>
+      <div class="t-info">
+        <div class="t-name">${task.name||'Task'}</div>
+        <div class="t-reward"><span class="reward-pill"><i class="fas fa-bolt"></i> +${task.reward||TASK_REWARD} SP</span></div>
+      </div>
+      ${isDone
+        ?`<div style="font-size:0.72rem;font-weight:700;color:var(--green);display:flex;align-items:center;gap:4px;flex-shrink:0;"><i class="fas fa-check-circle"></i> Done</div>`
+        :`<button class="btn btn-primary task-btn" data-taskid="${task.id}" data-url="${task.url||''}" style="padding:9px 15px;font-size:0.8rem;border-radius:11px;flex-shrink:0;">GO</button>`
       }
-    }catch(er){ showAlert('Error','Verification failed.','error'); b.innerText='VERIFY'; b.disabled=false; }
-  }
-});
+    </div>`;
+  }).join('');
+  container.querySelectorAll('.task-btn').forEach(btn=>{
+    let clicked=false;
+    btn.addEventListener('click',async()=>{
+      if(clicked) return handleVerify(btn.dataset.taskid,btn);
+      clicked=true; btn.innerHTML='VERIFY'; btn.style.background='linear-gradient(155deg,#2ddfaa,#22c98a,#14a06e)'; btn.style.color='#01160e'; btn.style.boxShadow=null;
+      const url=btn.dataset.url;
+      if(url){ try{ tg.openLink?.(url); }catch(e){} }
+    });
+  });
+}
+async function handleVerify(taskId,btn){
+  btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  try{
+    const res=await fetch(`${API_BASE}/claimTask`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,taskId})});
+    const data=await res.json();
+    if(data.success){
+      if(!user.completedTasks) user.completedTasks=[];
+      user.completedTasks.push(taskId);
+      user.diamondBalance=(user.diamondBalance||0)+(data.reward||TASK_REWARD);
+      clearUserCache(); updateUI(); _tasksCache=null;
+      _renderTasks(await refetchTasks(),taskFilter,$('task-list-container'));
+      showAlert('\u2705 Task Done!',`+${data.reward||TASK_REWARD} SP earned!`,'success');
+      checkValidRef();
+    } else { showAlert('Not Verified',data.error||'Please complete the task first.','error'); btn.disabled=false; btn.innerHTML='VERIFY'; }
+  }catch(e){ showAlert('Error','Verification failed.','error'); btn.disabled=false; btn.innerHTML='VERIFY'; }
+}
+async function refetchTasks(){
+  try{ const res=await fetch(`${API_BASE}/getTasks?userId=${user.id}`); const data=await res.json(); _tasksCache=data.tasks||[]; return _tasksCache; }catch(e){ return _tasksCache||[]; }
+}
 document.querySelectorAll('.platform-pill').forEach(p=>p.addEventListener('click',()=>{
   document.querySelectorAll('.platform-pill').forEach(x=>x.classList.remove('active')); p.classList.add('active');
   taskFilter=p.dataset.filter;
-  if(_tasksCache) _renderTasks(_tasksCache,taskFilter,document.getElementById('task-list-container')); else fetchTasks(taskFilter);
+  if(_tasksCache) _renderTasks(_tasksCache,taskFilter,$('task-list-container')); else fetchTasks(taskFilter);
 }));
 
 // ── VALID REFER ──
 async function checkValidRef(){
-  if(!currentUser.referredBy||currentUser.isValidatedRef) return;
-  if((currentUser.completedTasks||[]).length>=REFER_VALID_TASKS){
+  if(!user.referredBy||user.isValidatedRef) return;
+  if((user.completedTasks||[]).length>=REFER_TASKS){
     try{
-      const res=await fetch(`${API_BASE}/claimRefer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id})}); const data=await res.json();
-      if(data.success&&!data.alreadyClaimed){ currentUser.isValidatedRef=true; currentUser.diamondBalance=(currentUser.diamondBalance||0)+(data.reward||REFER_REWARD_DIAMOND); try{ localStorage.removeItem(`coinly_u_${currentUser.id}`); localStorage.removeItem(`coinly_t_${currentUser.id}`); }catch(e){} updateUI(); }
+      const res=await fetch(`${API_BASE}/claimRefer`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id})});
+      const data=await res.json();
+      if(data.success&&!data.alreadyClaimed){ user.isValidatedRef=true; user.diamondBalance=(user.diamondBalance||0)+(data.reward||REFER_REWARD); clearUserCache(); updateUI(); }
     }catch(e){}
   }
 }
 
 // ── WITHDRAW ──
-document.getElementById('wd-amount-ton').addEventListener('input',()=>{
-  const a=parseFloat(document.getElementById('wd-amount-ton').value);
-  const prev=document.getElementById('wd-preview');
-  if(a&&a>=MIN_WITHDRAW_SP){ prev.style.display='block'; const ton=(a*SP_TO_TON).toFixed(4),usd=(a*SP_TO_USD).toFixed(3); prev.innerHTML=`<div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px;">20,000 SP = 0.6 TON \u2248 $1 USDT</div>You receive: <b style="color:#fbbf24;">${ton} TON</b> <span style="color:var(--text-muted);font-size:0.75rem;">(\u2248 $${usd})</span>`; }
-  else { prev.style.display='none'; }
+$('wd-amount').addEventListener('input',()=>{
+  const a=parseFloat($('wd-amount').value), prev=$('wd-preview');
+  if(a&&a>=MIN_WITHDRAW){
+    prev.style.display='block';
+    prev.innerHTML=`<div style="font-size:0.7rem;color:var(--txt3);margin-bottom:4px;">Exchange rate: 20,000 SP = 0.6 TON \u2248 $1 USDT</div>You receive: <b style="color:#f5c842;">${(a*SP_TO_TON).toFixed(4)} TON</b> <span style="color:var(--txt3);">(\u2248 $${(a*SP_TO_USD).toFixed(3)})</span>`;
+  } else prev.style.display='none';
 });
-document.getElementById('wd-submit').addEventListener('click',async()=>{
-  if(isSubmitting) return;
-  if(currentUser.withdrawBanned) return showAlert('\uD83D\uDEAB Banned','Your account has been banned from withdrawals.','error');
-  const amt=parseFloat(document.getElementById('wd-amount-ton').value);
-  const addr=document.getElementById('wd-address-ton').value.trim();
-  if(!addr) return showAlert('Error','Enter your TON wallet address.','error');
-  if(isNaN(amt)||amt<MIN_WITHDRAW_SP) return showAlert('Notice',`Minimum ${MIN_WITHDRAW_SP} SP required.`,'error');
-  if((currentUser.diamondBalance||0)<amt) return showAlert('Error','Insufficient SP balance.','error');
-  if(currentUser.lastWithdrawDate===getToday()) return showAlert('Daily Limit','You can only withdraw once per day.','error');
-  const tasksDone=(currentUser.completedTasks||[]).length;
-  if(tasksDone<WITHDRAW_MIN_TASKS) return showAlert('Not Eligible',`Complete at least ${WITHDRAW_MIN_TASKS} tasks first. (${tasksDone}/${WITHDRAW_MIN_TASKS})`,'error');
-  const totalAds=(currentUser.adsWatchedAd1||0)+(currentUser.adsWatchedAd2||0)+(currentUser.adsWatchedAd3||0)+(currentUser.adsWatchedAd4||0);
-  if(totalAds<WITHDRAW_ADS_REQUIRED) return showAlert('Not Eligible',`Watch ${WITHDRAW_ADS_REQUIRED-totalAds} more ads today. (${totalAds}/${WITHDRAW_ADS_REQUIRED})`,'error');
-  isSubmitting=true;
-  const btn=document.getElementById('wd-submit'); btn.disabled=true; btn.innerHTML='<div class="loader-spin" style="margin:0;width:15px;height:15px;border-width:2px;"></div>';
+
+$('wd-submit').addEventListener('click',async()=>{
+  if(isSub) return;
+  if(user.withdrawBanned) return showAlert('\uD83D\uDEAB Banned','Account banned from withdrawals.','error');
+  const amt=parseFloat($('wd-amount').value), addr=$('wd-address').value.trim();
+  if(!addr) return showAlert('Error','Enter TON wallet address.','error');
+  if(isNaN(amt)||amt<MIN_WITHDRAW) return showAlert('Notice',`Minimum ${MIN_WITHDRAW} SP required.`,'error');
+  if((user.diamondBalance||0)<amt) return showAlert('Error','Insufficient SP balance.','error');
+  if(user.lastWithdrawDate===getToday()) return showAlert('Daily Limit','Max 1 withdrawal per day.','error');
+  const done=(user.completedTasks||[]).length;
+  if(done<WITHDRAW_MIN_TASKS) return showAlert('Not Eligible',`Complete ${WITHDRAW_MIN_TASKS} tasks first. (${done}/${WITHDRAW_MIN_TASKS})`,'error');
+  isSub=true;
+  const btn=$('wd-submit'); btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
   try{
-    const wRes=await fetch(`${API_BASE}/notifyDeposit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'withdrawal',userId:currentUser.id,username:currentUser.telegramUsername||'',firstName:currentUser.firstName||'',method:'tonkeeper',address:addr,diamondAmount:amt,tasksDone:(currentUser.completedTasks||[]).length})});
-    const wData=await wRes.json();
-    if(wData.success){ currentUser.diamondBalance=wData.newBalance??(currentUser.diamondBalance-amt); currentUser.lastWithdrawDate=getToday(); _historyCache=null; try{ localStorage.removeItem(`coinly_u_${currentUser.id}`); localStorage.removeItem(`coinly_t_${currentUser.id}`); }catch(e){} updateUI(); ['wd-amount-ton','wd-address-ton'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); document.getElementById('wd-preview').style.display='none'; document.getElementById('modal-withdraw').classList.remove('show'); showAlert('Submitted! \u2705',`Withdrawal of ${amt} SP submitted. You'll get a Telegram notification when processed.`,'success'); }
-    else { showAlert('Error',wData.error||'Withdrawal failed.','error'); }
-  }catch(e){ showAlert('Error','Server error. Try again.','error'); }
-  finally{ isSubmitting=false; btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Withdraw'; }
+    const res=await fetch(`${API_BASE}/withdraw`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,username:user.telegramUsername||'',firstName:user.firstName||'',method:'tonkeeper',address:addr,amount:amt,tasksDone:done})});
+    const data=await res.json();
+    if(data.success){ user.diamondBalance=data.newBalance??(user.diamondBalance-amt); user.lastWithdrawDate=getToday(); _histCache=null; clearUserCache(); updateUI(); $('wd-amount').value=''; $('wd-address').value=''; $('wd-preview').style.display='none'; $('modal-withdraw').classList.remove('show'); showAlert('Submitted \u2705',`Withdrawal of ${amt} SP submitted! You'll receive a Telegram notification.`,'success'); }
+    else { showAlert('Error',data.error||'Withdrawal failed.','error'); }
+  }catch(e){ showAlert('Error','Server error. Please try again.','error'); }
+  finally{ isSub=false; btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Withdraw'; }
 });
 
 // ── PROMO ──
-document.getElementById('promo-submit').addEventListener('click',async()=>{
-  const code=document.getElementById('promo-input').value.trim();
-  if(!code) return showAlert('Error','Enter a promo code first.','error');
-  const btn=document.getElementById('promo-submit'); btn.disabled=true; btn.innerHTML='<div class="loader-spin" style="margin:0;width:15px;height:15px;border-width:2px;"></div>';
+$('promo-submit').addEventListener('click',async()=>{
+  const code=$('promo-input').value.trim();
+  if(!code) return showAlert('Error','Enter a promo code.','error');
+  const btn=$('promo-submit'); btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
   try{
-    const valRes=await fetch(`${API_BASE}/claimPromo`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id,code,validateOnly:true})}); const valData=await valRes.json();
-    if(!valData.valid){ let msg='Invalid or expired code.'; if(valData.reason==='already_used') msg='Already used this code.'; else if(valData.reason==='expired') msg='Code has expired.'; else if(valData.reason==='not_found') msg='Code not found.'; showAlert('Invalid Code',msg,'error'); btn.disabled=false; btn.innerHTML='Redeem Now'; return; }
-    let adShown=false; try{ const o=window.Adsgram?.init({blockId:'int-35169'}); if(o?.show) await o.show(); adShown=true; }catch(e){ adShown=true; }
-    if(!adShown){ btn.disabled=false; btn.innerHTML='Redeem Now'; return; }
-    const claimRes=await fetch(`${API_BASE}/claimPromo`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:currentUser.id,code})}); const claimData=await claimRes.json();
-    if(claimData.success){ currentUser.diamondBalance=(currentUser.diamondBalance||0)+(claimData.reward||0); try{ localStorage.removeItem(`coinly_u_${currentUser.id}`); localStorage.removeItem(`coinly_t_${currentUser.id}`); }catch(e){} updateUI(); showAlert('\uD83C\uDF89 Redeemed!',`+${claimData.reward} \u26A1 SP added!`,'success'); document.getElementById('promo-input').value=''; document.getElementById('modal-promo').classList.remove('show'); }
-    else { showAlert('Error',claimData.error||'Redemption failed.','error'); }
+    const valRes=await fetch(`${API_BASE}/claimPromo`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,code,validateOnly:true})});
+    const vd=await valRes.json();
+    if(!vd.valid){
+      let msg='Invalid or expired code.';
+      if(vd.reason==='already_used') msg='Already used this code.';
+      else if(vd.reason==='expired') msg='Code has expired.';
+      else if(vd.reason==='not_found') msg='Code not found.';
+      showAlert('Invalid Code',msg,'error'); btn.disabled=false; btn.innerHTML='Redeem Now'; return;
+    }
+    const cr=await fetch(`${API_BASE}/claimPromo`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,code})});
+    const cd=await cr.json();
+    if(cd.success){ user.diamondBalance=(user.diamondBalance||0)+(cd.reward||0); clearUserCache(); updateUI(); showAlert('\uD83C\uDF89 Redeemed!',`+${cd.reward} \u26A1 SP added!`,'success'); $('promo-input').value=''; $('modal-promo').classList.remove('show'); }
+    else { showAlert('Error',cd.error||'Redemption failed.','error'); }
   }catch(e){ showAlert('Error','Server error.','error'); }
   btn.disabled=false; btn.innerHTML='Redeem Now';
 });
 
 // ── HISTORY ──
-document.getElementById('btn-history').addEventListener('click',async()=>{
-  document.getElementById('modal-history').classList.add('show');
-  if(_historyCache){ renderHistory(_historyCache); return; }
-  const list=document.getElementById('history-list'); list.innerHTML='<div style="text-align:center;padding:20px;"><div class="loader-spin" style="margin:0 auto;"></div></div>';
-  try{ const res=await fetch(`${API_BASE}/getHistory?userId=${currentUser.id}`); const data=await res.json(); _historyCache=data.history||[]; renderHistory(_historyCache); }catch(e){ list.innerHTML='<div class="empty-state"><p>Failed to load history.</p></div>'; }
+$('btn-history').addEventListener('click',async()=>{
+  $('modal-history').classList.add('show');
+  if(_histCache){ renderHistory(_histCache); return; }
+  const list=$('history-list');
+  list.innerHTML='<div style="text-align:center;padding:24px;"><div class="loader-spin" style="margin:0 auto;width:28px;height:28px;border-width:3px;"></div></div>';
+  try{
+    const res=await fetch(`${API_BASE}/getHistory?userId=${user.id}`);
+    const data=await res.json(); _histCache=data.history||[]; renderHistory(_histCache);
+  }catch(e){ list.innerHTML='<div class="empty-state"><p>Failed to load history.</p></div>'; }
 });
 function renderHistory(items){
-  const list=document.getElementById('history-list');
+  const list=$('history-list');
   if(!items.length){ list.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet.</p></div>'; return; }
-  list.innerHTML=items.map(h=>{ const col=h.type==='withdrawal'?'#f87171':'#4ade80'; const label=h.type==='withdrawal'?`-${h.amount} SP`:`+${h.amount} SP`; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">${h.note||h.type}</div><div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">${h.date||''}</div></div><span style="font-family:var(--mono);font-weight:800;color:${col};font-size:0.85rem;">${label}</span></div>`; }).join('');
+  list.innerHTML=items.map(h=>{
+    const col=h.type==='withdrawal'?'var(--red)':'var(--green)', label=h.type==='withdrawal'?`-${h.amount} SP`:`+${h.amount} SP`;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--bdr);">
+      <div><div style="font-size:0.82rem;font-weight:700;color:var(--txt);">${h.note||h.type}</div><div style="font-size:0.68rem;color:var(--txt3);margin-top:2px;">${h.date||''}</div></div>
+      <span style="font-family:var(--mono);font-weight:700;color:${col};font-size:0.84rem;">${label}</span>
+    </div>`;
+  }).join('');
 }
 
-// ── REFER ──
-function setupReferButtons(linkId,copyId,shareId){
-  const copy=document.getElementById(copyId), share=document.getElementById(shareId);
-  if(copy) copy.addEventListener('click',()=>{ const v=document.getElementById(linkId)?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Invite link copied.','success'); } });
-  if(share) share.addEventListener('click',()=>{ const v=document.getElementById(linkId)?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark and earn SP! \u26A1')}`); });
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  setupReferButtons('invite-link','invite-copy','invite-share');
-  setupReferButtons('invite-link-m','invite-copy-m','invite-share-m');
-});
-
-// ── MODAL OPENERS ──
-document.getElementById('uid-display').addEventListener('click',()=>{ const id=currentUser?.id||''; navigator.clipboard?.writeText(id).catch(()=>{}); showAlert('Copied!','User ID copied.','success'); });
-document.getElementById('btn-withdraw-inline').addEventListener('click',()=>{ document.getElementById('modal-withdraw').classList.add('show'); });
-document.getElementById('btn-refer-inline').addEventListener('click',()=>{ document.getElementById('modal-refer').classList.add('show'); });
-document.getElementById('btn-promo').addEventListener('click',()=>{ document.getElementById('modal-promo').classList.add('show'); });
-document.getElementById('btn-withdraw').addEventListener('click',()=>{ document.getElementById('modal-withdraw').classList.add('show'); });
-document.getElementById('btn-refer').addEventListener('click',()=>{ document.getElementById('modal-refer').classList.add('show'); });
+// ── REFER / PROMO / MODAL OPENERS ──
+$('uid-display').addEventListener('click',()=>{ navigator.clipboard?.writeText(user?.id||'').catch(()=>{}); showAlert('Copied!','User ID copied.','success'); });
+$('invite-copy').addEventListener('click',()=>{ const v=$('invite-link')?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Invite link copied.','success'); } });
+$('invite-share').addEventListener('click',()=>{ const v=$('invite-link')?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark and earn SP! \u26A1')}`); });
+$('invite-copy-m').addEventListener('click',()=>{ const v=$('invite-link-m')?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Invite link copied.','success'); } });
+$('invite-share-m').addEventListener('click',()=>{ const v=$('invite-link-m')?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark and earn SP! \u26A1')}`); });
+$('btn-withdraw-inline').addEventListener('click',()=>$('modal-withdraw').classList.add('show'));
+$('btn-refer-inline').addEventListener('click',()=>$('modal-refer').classList.add('show'));
+$('btn-promo').addEventListener('click',()=>$('modal-promo').classList.add('show'));
 
 // ── WHAT'S NEW ──
-function maybeShowWhatsNew(){ if(!currentUser) return; const key=`ts_wn_${currentUser.id}`; if(localStorage.getItem(key)) return; setTimeout(()=>{ document.getElementById('modal-whats-new')?.classList.add('show'); },600); }
-document.getElementById('btn-whats-new-close')?.addEventListener('click',()=>{ document.getElementById('modal-whats-new').classList.remove('show'); if(currentUser) localStorage.setItem(`ts_wn_${currentUser.id}`,'1'); });
+function maybeShowWhatsNew(){ if(!user) return; const k=`ts_wn_${user.id}`; if(localStorage.getItem(k)) return; setTimeout(()=>$('modal-whats-new')?.classList.add('show'),700); }
+$('btn-whats-new-close').addEventListener('click',()=>{ $('modal-whats-new').classList.remove('show'); if(user) localStorage.setItem(`ts_wn_${user.id}`,'1'); });
 
+// ── PERIODIC ──
 setInterval(updateLootbox,30000);
-
-// ── TON CONNECT ──
-async function initTonConnect(){
-  try{ new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://raw.githubusercontent.com/joksadda-cmd/Coinly-Task-/main/Tonconnect manifest.json',buttonRootId:'ton-connect-btn'}); }catch(e){}
-}
-
-initTonConnect();
-initApp();
 setTimeout(hideSplash,8000);
+
+initApp();
 </script>
 </body>
 </html>
