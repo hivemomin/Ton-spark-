@@ -19,550 +19,522 @@ document.onkeydown=function(e){
 </script>
 <style>
 :root{
-  --primary:#e9a830;--accent:#f5c842;--electric:#facc15;
-  --bg:#0b0c14;--card:#13141f;--card2:#1a1b28;--section:#0f1018;
-  --txt:#eef0f8;--txt2:#a0a8c0;--txt3:#565d78;
-  --bdr:#1e2035;--bdr2:#2a2d46;
-  --green:#22c98a;--red:#e84e4e;--blue:#4a9eff;
-  --shadow-card:0 8px 32px rgba(0,0,0,0.55),0 2px 8px rgba(0,0,0,0.4);
-  --shadow-btn:0 4px 0 #7a4d00,0 6px 20px rgba(233,168,48,0.3);
-  --shadow-green:0 4px 0 #0a6644,0 6px 20px rgba(34,201,138,0.3);
-  --shadow-red:0 4px 0 #881c1c,0 6px 20px rgba(232,78,78,0.25);
+  --primary:#e9a830;--accent:#f5c842;
+  --bg:#09090f;--card:#111118;--card2:#16172a;--deep:#0d0e1a;
+  --txt:#edf0f8;--txt2:#8892aa;--txt3:#3d4460;
+  --bdr:#1c1e32;--bdr2:#272a42;
+  --green:#1fcf88;--red:#e84e4e;--blue:#4a9eff;--purple:#9b7ef8;
   --font:'Manrope',sans-serif;
-  --font-display:'Sora',sans-serif;
+  --font-d:'Sora',sans-serif;
   --mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{
-  background:var(--bg);color:var(--txt);font-family:var(--font);
-  padding:64px 0 90px;min-height:100vh;
-  -webkit-tap-highlight-color:transparent;overflow-x:hidden;
-  background-image:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(233,168,48,0.08),transparent);
-}
+body{background:var(--bg);color:var(--txt);font-family:var(--font);padding:62px 0 84px;min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
 
-/* ── HEADER ── */
-.app-header{
-  position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;
-  background:rgba(11,12,20,0.94);backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(233,168,48,0.12);
-  display:flex;align-items:center;justify-content:space-between;padding:0 16px;
-}
-.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:800;font-size:1.12rem;color:var(--txt);}
-.brand-icon{
-  width:34px;height:34px;border-radius:11px;
-  background:linear-gradient(135deg,#f5c842,#e9a830,#c97f1a);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;box-shadow:0 0 16px rgba(233,168,48,0.4),inset 0 1px 0 rgba(255,255,255,0.25);
-}
-.brand .t{color:#e9a830;}
-.head-actions{display:flex;gap:8px;align-items:center;}
-.icon-btn{
-  width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.88rem;transition:all 0.15s;
-}
-.icon-btn:active{transform:scale(0.88);}
-#btn-promo{background:rgba(233,168,48,0.12);border:1px solid rgba(233,168,48,0.28);color:#f5c842;}
-#btn-history{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
+/* HEADER */
+.app-header{position:fixed;top:0;left:0;right:0;z-index:1000;height:58px;background:rgba(9,9,15,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(233,168,48,0.1);display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-d);font-weight:800;font-size:1.1rem;}
+.brand-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#f5c842,#c97f1a);display:flex;align-items:center;justify-content:center;font-size:0.95rem;box-shadow:0 0 14px rgba(233,168,48,0.35);}
+.brand-t{color:#e9a830;}
+.head-r{display:flex;gap:7px;}
+.hbtn{width:34px;height:34px;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.84rem;transition:all 0.14s;}
+.hbtn:active{transform:scale(0.88);}
+#btn-promo{background:rgba(233,168,48,0.1);border:1px solid rgba(233,168,48,0.25);color:#f5c842;}
+#btn-history{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);color:var(--txt2);}
 
-/* ── LAYOUT ── */
-.container{max-width:600px;margin:0 auto;padding:0 14px;}
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(9,9,15,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(233,168,48,0.08);display:flex;padding:7px 0 16px;z-index:1000;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--txt3);font-size:0.55rem;font-weight:700;font-family:var(--font-d);text-transform:uppercase;cursor:pointer;transition:0.18s;letter-spacing:0.5px;}
+.bn i{font-size:1.05rem;transition:0.2s;}
+.bn.active{color:var(--primary);}
+.bn.active i{filter:drop-shadow(0 0 7px rgba(233,168,48,0.7));transform:translateY(-1px);}
 
-/* ── CARDS ── */
-.card{
-  background:var(--card);border:1px solid var(--bdr);border-radius:22px;
-  padding:18px;margin-bottom:14px;
-  box-shadow:var(--shadow-card);
-  position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(233,168,48,0.2),transparent);
-}
+/* SECTIONS */
+.sec{display:none;animation:fIn 0.22s ease;}
+.sec.active{display:block;}
+@keyframes fIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.wrap{max-width:600px;margin:0 auto;padding:0 14px;}
 
-/* ── BUTTONS ── */
-.btn{
-  padding:12px 20px;border:none;border-radius:14px;
-  font-family:var(--font-display);font-weight:700;font-size:0.88rem;
-  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  transition:all 0.12s ease;letter-spacing:0.2px;
-}
+/* BUTTONS */
+.btn{padding:11px 18px;border:none;border-radius:13px;font-family:var(--font-d);font-weight:700;font-size:0.86rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:all 0.12s;letter-spacing:0.15px;}
 .btn:active{transform:translateY(2px);}
-.btn-primary{
-  background:linear-gradient(155deg,#f5c842,#e9a830,#c97f1a);
-  color:#1a0d00;box-shadow:var(--shadow-btn);
-}
-.btn-primary:active{box-shadow:0 1px 0 #7a4d00!important;}
-.btn-green{
-  background:linear-gradient(155deg,#2ddfaa,#22c98a,#14a06e);
-  color:#01160e;box-shadow:var(--shadow-green);
-}
-.btn-green:active{box-shadow:0 1px 0 #0a6644!important;}
-.btn-red{
-  background:linear-gradient(155deg,#f46b6b,#e84e4e,#c42c2c);
-  color:#fff;box-shadow:var(--shadow-red);
-}
-.btn-red:active{box-shadow:0 1px 0 #881c1c!important;}
-.btn-outline{
-  background:transparent;border:1.5px solid rgba(233,168,48,0.3);
-  color:#e9a830;box-shadow:none;
-}
-.btn-outline:active{background:rgba(233,168,48,0.08);}
+.btn-gold{background:linear-gradient(155deg,#f5c842,#e9a830,#c97f1a);color:#1a0c00;box-shadow:0 4px 0 #7a4d00,0 6px 18px rgba(233,168,48,0.28);}
+.btn-gold:active{box-shadow:0 1px 0 #7a4d00!important;}
+.btn-green{background:linear-gradient(155deg,#2ce9a0,#1fcf88,#0fa468);color:#001a0e;box-shadow:0 4px 0 #085c38,0 6px 18px rgba(31,207,136,0.28);}
+.btn-green:active{box-shadow:0 1px 0 #085c38!important;}
+.btn-red{background:linear-gradient(155deg,#f56b6b,#e84e4e,#c42c2c);color:#fff;box-shadow:0 4px 0 #801515,0 6px 18px rgba(232,78,78,0.24);}
+.btn-red:active{box-shadow:0 1px 0 #801515!important;}
+.btn-blue{background:linear-gradient(155deg,#6ab4ff,#4a9eff,#2677d4);color:#001233;box-shadow:0 4px 0 #0e3d80,0 6px 18px rgba(74,158,255,0.26);}
+.btn-blue:active{box-shadow:0 1px 0 #0e3d80!important;}
 .btn-ghost{background:rgba(255,255,255,0.05);border:1px solid var(--bdr2);color:var(--txt2);}
-.btn-ghost:active{background:rgba(255,255,255,0.09);}
-.btn-disabled{background:var(--card2)!important;color:var(--txt3)!important;box-shadow:none!important;cursor:not-allowed!important;}
 .btn-full{width:100%;}
+.btn-sm{padding:8px 14px;font-size:0.78rem;border-radius:10px;}
 
-/* ── INPUTS ── */
-.input-field{
-  width:100%;background:var(--section);
-  border:1.5px solid var(--bdr2);padding:14px 15px;border-radius:14px;
-  color:var(--txt);font-family:var(--font);font-size:0.9rem;
-  margin-bottom:12px;outline:none;transition:0.18s;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);
-}
-.input-field::placeholder{color:var(--txt3);}
-.input-field:focus{border-color:var(--primary);box-shadow:inset 0 2px 6px rgba(0,0,0,0.3),0 0 0 3px rgba(233,168,48,0.12);}
+/* INPUTS */
+.inp{width:100%;background:var(--deep);border:1.5px solid var(--bdr2);padding:13px 14px;border-radius:13px;color:var(--txt);font-family:var(--font);font-size:0.9rem;margin-bottom:11px;outline:none;transition:0.18s;box-shadow:inset 0 2px 5px rgba(0,0,0,0.35);}
+.inp::placeholder{color:var(--txt3);}
+.inp:focus{border-color:var(--primary);box-shadow:inset 0 2px 5px rgba(0,0,0,0.35),0 0 0 3px rgba(233,168,48,0.1);}
 
-/* ── SEC TITLE ── */
-.sec-title{
-  font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:var(--txt3);
-  margin-bottom:12px;display:flex;align-items:center;gap:7px;
-  text-transform:uppercase;letter-spacing:1.6px;
-}
-.sec-title i{color:var(--primary);}
-
-/* ── TASK CARDS ── */
-.task-card{
-  background:var(--card);border:1px solid var(--bdr);border-radius:16px;
-  padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;
-  transition:border-color 0.18s;
-}
-.task-card:hover{border-color:var(--bdr2);}
-.t-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.t-info{flex:1;min-width:0;}
-.t-name{font-size:0.88rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.t-reward{font-size:0.7rem;color:var(--primary);font-weight:600;margin-top:2px;}
-.reward-pill{
-  display:inline-flex;align-items:center;gap:4px;
-  background:rgba(233,168,48,0.1);border:1px solid rgba(233,168,48,0.22);
-  border-radius:20px;padding:3px 9px;font-size:0.7rem;font-weight:700;color:#f5c842;
-}
-
-/* ── PLATFORM PILLS ── */
-.platform-row{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;}
-.platform-row::-webkit-scrollbar{display:none;}
-.platform-pill{
-  flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:0.72rem;font-weight:700;
-  background:rgba(255,255,255,0.03);border:1px solid var(--bdr);color:var(--txt3);
-  cursor:pointer;transition:0.18s;white-space:nowrap;font-family:var(--font-display);
-}
-.platform-pill.active,.platform-pill:hover{background:rgba(233,168,48,0.1);color:#f5c842;border-color:rgba(233,168,48,0.3);}
-
-/* ── NAV ── */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(11,12,20,0.97);backdrop-filter:blur(20px);
-  border-top:1px solid rgba(233,168,48,0.1);
-  display:flex;padding:8px 0 18px;z-index:1000;
-}
-.b-nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
-  color:var(--txt3);font-size:0.58rem;font-weight:700;font-family:var(--font-display);
-  text-transform:uppercase;cursor:pointer;transition:0.18s;letter-spacing:0.6px;
-}
-.b-nav-item i{font-size:1.1rem;transition:0.2s;}
-.b-nav-item.active{color:var(--primary);}
-.b-nav-item.active i{filter:drop-shadow(0 0 8px rgba(233,168,48,0.7));transform:translateY(-1px);}
-
-/* ── SECTIONS ── */
-.content-section{display:none;animation:fadeSlide 0.22s ease;}
-.content-section.active{display:block;}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── MODALS ── */
-.modal-bg{
-  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
-  z-index:2000;display:none;align-items:flex-end;justify-content:center;padding:0;
-}
+/* MODALS */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:flex-end;justify-content:center;}
 .modal-bg.show{display:flex;}
-.modal-box{
-  background:var(--card);border:1px solid rgba(233,168,48,0.18);
-  border-radius:26px 26px 0 0;width:100%;max-width:480px;padding:24px;
-  text-align:center;
-  box-shadow:0 -24px 80px rgba(0,0,0,0.8);
-  animation:slideUp 0.3s cubic-bezier(0.175,0.885,0.32,1.15);
-  max-height:92vh;overflow-y:auto;
-}
-.modal-box::before{
-  content:'';display:block;width:38px;height:4px;background:var(--bdr2);
-  border-radius:4px;margin:0 auto 20px;
-}
+.modal-box{background:var(--card);border:1px solid rgba(233,168,48,0.15);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:22px;text-align:center;box-shadow:0 -20px 60px rgba(0,0,0,0.8);animation:slideUp 0.28s cubic-bezier(0.175,0.885,0.32,1.1);max-height:92vh;overflow-y:auto;}
+.modal-box::before{content:'';display:block;width:36px;height:4px;background:var(--bdr2);border-radius:4px;margin:0 auto 18px;}
 @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-title{font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:6px;}
-.modal-sub{font-size:0.82rem;color:var(--txt3);margin-bottom:16px;line-height:1.6;}
+.m-title{font-family:var(--font-d);font-size:1.08rem;font-weight:800;margin-bottom:5px;}
+.m-sub{font-size:0.8rem;color:var(--txt3);margin-bottom:14px;line-height:1.6;}
+.m-lbl{font-size:0.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:5px;text-align:left;}
 
-/* ── MISC ── */
-.loader-spin{
-  width:20px;height:20px;border:2.5px solid var(--bdr2);border-top-color:var(--primary);
-  border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;
-}
-@keyframes spin{100%{transform:rotate(360deg);}}
-.empty-state{text-align:center;padding:30px 20px;color:var(--txt3);}
-.empty-state i{font-size:2.5rem;opacity:0.25;display:block;margin-bottom:10px;}
-.empty-state p{font-size:0.85rem;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+/* MISC */
+.spin{width:20px;height:20px;border:2.5px solid var(--bdr2);border-top-color:var(--primary);border-radius:50%;animation:rot 0.8s linear infinite;display:inline-block;}
+@keyframes rot{100%{transform:rotate(360deg);}}
+.empty{text-align:center;padding:28px 16px;color:var(--txt3);}
+.empty i{font-size:2.4rem;opacity:0.22;display:block;margin-bottom:8px;}
+.empty p{font-size:0.83rem;}
 @keyframes bulbPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 18px rgba(250,204,21,0.8));}50%{transform:scale(1.12);filter:drop-shadow(0 0 38px rgba(250,204,21,1));}}
-@keyframes splashPulse{0%,100%{box-shadow:0 0 30px rgba(233,168,48,0.5);}50%{box-shadow:0 0 70px rgba(233,168,48,0.9);}}
+@keyframes splPulse{0%,100%{box-shadow:0 0 32px rgba(233,168,48,0.5);}50%{box-shadow:0 0 72px rgba(233,168,48,0.9);}}
 </style>
 </head>
 <body>
 
 <!-- SPLASH -->
-<div id="splash-screen" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#0b0c14,#0f1022);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Sora',sans-serif;transition:opacity 0.5s;">
-  <div style="width:88px;height:88px;border-radius:26px;background:linear-gradient(135deg,#f5c842,#e9a830,#c97f1a);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:18px;animation:splashPulse 1.5s ease-in-out infinite;box-shadow:0 0 40px rgba(233,168,48,0.4),inset 0 2px 0 rgba(255,255,255,0.3);">&#9889;</div>
-  <div style="font-size:1.8rem;font-weight:800;color:#eef0f8;">Ton<span style="color:#e9a830;">Spark</span></div>
-  <div style="font-size:0.76rem;color:rgba(255,255,255,0.35);margin-top:6px;letter-spacing:1px;text-transform:uppercase;">Earn SP · Withdraw TON</div>
-  <div style="position:relative;width:44px;height:44px;margin-top:32px;">
-    <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(233,168,48,0.08);"></div>
-    <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:#e9a830;animation:spin 0.9s linear infinite;"></div>
-  </div>
+<div id="splash" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#09090f,#0c0d1c);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Sora',sans-serif;transition:opacity 0.5s;">
+  <div style="width:90px;height:90px;border-radius:26px;background:linear-gradient(135deg,#f5c842,#c97f1a);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:18px;animation:splPulse 1.5s ease-in-out infinite;box-shadow:inset 0 2px 0 rgba(255,255,255,0.28);">&#9889;</div>
+  <div style="font-size:1.8rem;font-weight:800;">Ton<span style="color:#e9a830;">Spark</span></div>
+  <div style="font-size:0.72rem;color:rgba(255,255,255,0.32);margin-top:6px;letter-spacing:1.2px;text-transform:uppercase;">Earn SP · Withdraw TON</div>
+  <div style="position:relative;width:42px;height:42px;margin-top:32px;"><div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(233,168,48,0.08);"></div><div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:#e9a830;animation:rot 0.9s linear infinite;"></div></div>
 </div>
 
 <!-- HEADER -->
 <header class="app-header">
-  <div class="brand">
-    <div class="brand-icon">&#9889;</div>
-    Ton<span class="t">Spark</span>
-  </div>
-  <div class="head-actions">
-    <div class="icon-btn" id="btn-promo"><i class="fas fa-ticket-alt"></i></div>
-    <div class="icon-btn" id="btn-history"><i class="fas fa-clock-rotate-left"></i></div>
+  <div class="brand"><div class="brand-icon">&#9889;</div>Ton<span class="brand-t">Spark</span></div>
+  <div class="head-r">
+    <div class="hbtn" id="btn-promo"><i class="fas fa-ticket-alt"></i></div>
+    <div class="hbtn" id="btn-history"><i class="fas fa-clock-rotate-left"></i></div>
   </div>
 </header>
 
-<main class="container">
+<!-- ═══════════════ HOME ═══════════════ -->
+<section id="sec-home" class="sec active">
+<div class="wrap">
 
-<!-- ═══ HOME ═══ -->
-<section id="sec-home" class="content-section active">
+  <!-- Balance Hero -->
+  <div style="background:linear-gradient(150deg,#0f0e00,#161200,#1e1800);border:1px solid rgba(233,168,48,0.2);border-radius:24px;padding:20px 18px;margin-bottom:16px;box-shadow:0 12px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(233,168,48,0.1),transparent 70%);pointer-events:none;"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(245,200,66,0.35),transparent);"></div>
 
-  <!-- Balance Hero Card -->
-  <div class="card" style="background:linear-gradient(155deg,#0f1000,#161300,#1c1700);border-color:rgba(233,168,48,0.2);">
-    <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(233,168,48,0.1),transparent 70%);pointer-events:none;"></div>
     <!-- User row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:44px;height:44px;border-radius:14px;background:rgba(233,168,48,0.1);border:1px solid rgba(233,168,48,0.22);display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);">&#9889;</div>
+        <div style="width:42px;height:42px;border-radius:13px;background:rgba(233,168,48,0.1);border:1.5px solid rgba(233,168,48,0.2);display:flex;align-items:center;justify-content:center;font-size:1.25rem;">&#9889;</div>
         <div>
-          <div style="font-family:var(--font-display);font-weight:800;font-size:0.92rem;color:var(--txt);">My Wallet</div>
-          <div id="uid-display" style="font-family:var(--mono);font-size:0.65rem;color:#e9a830;background:rgba(233,168,48,0.08);border:1px solid rgba(233,168,48,0.15);padding:3px 8px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:3px;"><i class="fas fa-hashtag" style="font-size:0.52rem;"></i><span id="uid-val">...</span></div>
+          <div style="font-family:var(--font-d);font-weight:800;font-size:0.9rem;">My Wallet</div>
+          <div id="uid-display" style="font-family:var(--mono);font-size:0.64rem;color:#e9a830;background:rgba(233,168,48,0.08);border:1px solid rgba(233,168,48,0.18);padding:3px 8px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:3px;"><i class="fas fa-hashtag" style="font-size:0.5rem;"></i><span id="uid-val">...</span></div>
         </div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:0.56rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;">TON</div>
+      <div style="text-align:right;background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.14);border-radius:11px;padding:8px 12px;">
+        <div style="font-size:0.54rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">TON</div>
         <div style="font-family:var(--mono);font-size:0.82rem;font-weight:700;color:var(--blue);" id="bal-ton">0.0000</div>
       </div>
     </div>
 
-    <!-- SP Big Number -->
-    <div style="border-top:1px solid rgba(233,168,48,0.1);border-bottom:1px solid rgba(233,168,48,0.1);padding:18px 0 16px;margin-bottom:16px;text-align:center;">
-      <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--txt3);margin-bottom:6px;">&#9889; SP Balance</div>
-      <div style="font-family:var(--mono);font-size:3rem;font-weight:700;color:#f5c842;letter-spacing:-2px;line-height:1;" id="bal-sp">0</div>
-      <div style="font-size:0.72rem;color:var(--txt3);margin-top:6px;" id="bal-usdt">&#8776; $0.000 USDT</div>
+    <!-- SP big -->
+    <div style="border-top:1px solid rgba(233,168,48,0.1);border-bottom:1px solid rgba(233,168,48,0.1);padding:18px 0 15px;margin-bottom:15px;text-align:center;">
+      <div style="font-size:0.56rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--txt3);margin-bottom:7px;">&#9889; SP Balance</div>
+      <div style="font-family:var(--mono);font-size:3.2rem;font-weight:700;color:#f5c842;letter-spacing:-2px;line-height:1;" id="bal-sp">0</div>
+      <div style="font-size:0.7rem;color:var(--txt3);margin-top:6px;" id="bal-usdt">&#8776; $0.000 USDT</div>
     </div>
 
-    <!-- Stats row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <div style="background:rgba(250,204,21,0.05);border:1px solid rgba(250,204,21,0.1);border-radius:14px;padding:11px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);">
-        <div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">&#9889; Total SP</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:700;color:#f5c842;" id="bal-sp-2">0</div>
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      <div style="background:rgba(245,200,66,0.05);border:1px solid rgba(245,200,66,0.1);border-radius:13px;padding:10px;text-align:center;">
+        <div style="font-size:0.52rem;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);margin-bottom:4px;">SP Total</div>
+        <div style="font-family:var(--mono);font-size:1.05rem;font-weight:700;color:#f5c842;" id="bal-sp-2">0</div>
       </div>
-      <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.1);border-radius:14px;padding:11px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);">
-        <div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">Tasks Done</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:700;color:#fb923c;" id="tasks-done-count">0</div>
+      <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.1);border-radius:13px;padding:10px;text-align:center;">
+        <div style="font-size:0.52rem;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);margin-bottom:4px;">Tasks</div>
+        <div style="font-family:var(--mono);font-size:1.05rem;font-weight:700;color:#fb923c;" id="tasks-done-count">0</div>
       </div>
-    </div>
-
-    <!-- Action buttons -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <button id="btn-withdraw-inline" class="btn btn-red" style="padding:12px;font-size:0.82rem;border-radius:13px;"><i class="fas fa-arrow-up-from-bracket"></i> Withdraw</button>
-      <button id="btn-refer-inline" class="btn btn-green" style="padding:12px;font-size:0.82rem;border-radius:13px;"><i class="fas fa-user-plus"></i> Refer &amp; Earn</button>
+      <div style="background:rgba(31,207,136,0.05);border:1px solid rgba(31,207,136,0.1);border-radius:13px;padding:10px;text-align:center;">
+        <div style="font-size:0.52rem;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);margin-bottom:4px;">Refers</div>
+        <div style="font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--green);" id="ref-count-home">0</div>
+      </div>
     </div>
   </div>
 
-  <!-- Tasks -->
-  <h2 class="sec-title"><i class="fas fa-clipboard-check"></i> Available Tasks</h2>
-  <div class="platform-row">
-    <div class="platform-pill active" data-filter="all">All</div>
-    <div class="platform-pill" data-filter="telegram_channel"><i class="fab fa-telegram-plane"></i> Channel</div>
-    <div class="platform-pill" data-filter="telegram_group"><i class="fas fa-users"></i> Group</div>
-    <div class="platform-pill" data-filter="telegram_bot"><i class="fas fa-robot"></i> Bot</div>
-    <div class="platform-pill" data-filter="social"><i class="fas fa-play"></i> Social</div>
+  <!-- Quick Actions — 3 boxes -->
+  <div style="font-family:var(--font-d);font-size:0.65rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:7px;"><i class="fas fa-grid-2" style="color:var(--primary);"></i> Quick Actions</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+    <!-- Withdraw box -->
+    <div style="background:linear-gradient(150deg,#1a0505,#220808);border:1px solid rgba(232,78,78,0.22);border-radius:18px;padding:16px;cursor:pointer;transition:0.18s;position:relative;overflow:hidden;" onclick="document.getElementById('modal-withdraw').classList.add('show')" id="quick-withdraw">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(232,78,78,0.4),transparent);"></div>
+      <div style="width:40px;height:40px;border-radius:13px;background:rgba(232,78,78,0.15);border:1px solid rgba(232,78,78,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:10px;">&#128184;</div>
+      <div style="font-family:var(--font-d);font-size:0.88rem;font-weight:800;color:#f87171;margin-bottom:3px;">Withdraw</div>
+      <div style="font-size:0.66rem;color:var(--txt3);line-height:1.5;">Min 1000 SP<br>1x per day</div>
+      <div style="position:absolute;bottom:12px;right:14px;color:rgba(232,78,78,0.3);font-size:1.4rem;"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </div>
+
+    <!-- Promo box -->
+    <div style="background:linear-gradient(150deg,#0a0a1a,#10103c);border:1px solid rgba(155,126,248,0.22);border-radius:18px;padding:16px;cursor:pointer;transition:0.18s;position:relative;overflow:hidden;" onclick="document.getElementById('modal-promo').classList.add('show')" id="quick-promo">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,126,248,0.4),transparent);"></div>
+      <div style="width:40px;height:40px;border-radius:13px;background:rgba(155,126,248,0.15);border:1px solid rgba(155,126,248,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:10px;">&#127914;</div>
+      <div style="font-family:var(--font-d);font-size:0.88rem;font-weight:800;color:#b29bf9;margin-bottom:3px;">Promo Code</div>
+      <div style="font-size:0.66rem;color:var(--txt3);line-height:1.5;">Bonus SP<br>Enter code</div>
+      <div style="position:absolute;bottom:12px;right:14px;color:rgba(155,126,248,0.3);font-size:1.4rem;"><i class="fas fa-ticket-alt"></i></div>
+    </div>
   </div>
-  <div id="task-list-container"></div>
+
+  <!-- Refer box (full width) -->
+  <div style="background:linear-gradient(150deg,#001828,#002240);border:1px solid rgba(74,158,255,0.22);border-radius:18px;padding:16px 18px;cursor:pointer;margin-bottom:16px;position:relative;overflow:hidden;" onclick="document.getElementById('modal-refer').classList.add('show')">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,158,255,0.4),transparent);"></div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="width:46px;height:46px;border-radius:14px;background:rgba(74,158,255,0.15);border:1px solid rgba(74,158,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">&#128101;</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-d);font-size:0.92rem;font-weight:800;color:var(--blue);margin-bottom:3px;">Refer &amp; Earn</div>
+        <div style="font-size:0.7rem;color:var(--txt3);">Invite friends · Earn +100 SP per valid referral</div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--blue);" id="ref-count-home2">0</div>
+        <div style="font-size:0.58rem;color:var(--txt3);text-align:center;">refers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info table -->
+  <div style="background:var(--card);border:1px solid var(--bdr);border-radius:18px;overflow:hidden;margin-bottom:6px;">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:7px;">
+      <i class="fas fa-circle-info" style="color:var(--primary);font-size:0.82rem;"></i>
+      <span style="font-family:var(--font-d);font-size:0.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;">Exchange Rate &amp; Info</span>
+    </div>
+    <div style="padding:0 4px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-bottom:1px solid var(--bdr);">
+        <span style="font-size:0.76rem;color:var(--txt2);display:flex;align-items:center;gap:7px;"><i class="fas fa-arrow-right-arrow-left" style="color:var(--primary);font-size:0.7rem;"></i>Rate</span>
+        <span style="font-family:var(--mono);font-size:0.76rem;font-weight:700;color:#f5c842;">20,000 SP = 0.6 TON</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-bottom:1px solid var(--bdr);">
+        <span style="font-size:0.76rem;color:var(--txt2);display:flex;align-items:center;gap:7px;"><i class="fas fa-dollar-sign" style="color:var(--green);font-size:0.7rem;"></i>USD Value</span>
+        <span style="font-family:var(--mono);font-size:0.76rem;font-weight:700;color:var(--green);">20,000 SP &#8776; $1 USDT</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-bottom:1px solid var(--bdr);">
+        <span style="font-size:0.76rem;color:var(--txt2);display:flex;align-items:center;gap:7px;"><i class="fas fa-shield-check" style="color:var(--blue);font-size:0.7rem;"></i>Min Withdraw</span>
+        <span style="font-family:var(--mono);font-size:0.76rem;font-weight:700;color:var(--blue);">1,000 SP</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;">
+        <span style="font-size:0.76rem;color:var(--txt2);display:flex;align-items:center;gap:7px;"><i class="fas fa-clock" style="color:var(--txt3);font-size:0.7rem;"></i>Processing</span>
+        <span style="font-size:0.76rem;color:var(--txt3);">1–24 hours</span>
+      </div>
+    </div>
+  </div>
+
+</div>
 </section>
 
-<!-- ═══ EARN ═══ (Lootbox only — no ads) -->
-<section id="sec-earn" class="content-section">
-  <!-- Balance strip -->
-  <div class="card" style="background:linear-gradient(155deg,#04200e,#062c14,#083618);border-color:rgba(34,201,138,0.2);">
-    <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(34,201,138,0.1),transparent 70%);pointer-events:none;"></div>
+<!-- ═══════════════ TASKS ═══════════════ -->
+<section id="sec-tasks" class="sec">
+<div class="wrap">
+  <!-- Tasks header card -->
+  <div style="background:linear-gradient(150deg,#030f1a,#051828,#082030);border:1px solid rgba(74,158,255,0.18);border-radius:20px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,158,255,0.35),transparent);"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:var(--font-d);font-size:1.05rem;font-weight:800;color:var(--txt);margin-bottom:3px;">&#9989; Available Tasks</div>
+        <div style="font-size:0.72rem;color:var(--txt3);">Complete tasks · Earn +10 SP each</div>
+      </div>
+      <div style="text-align:right;background:rgba(74,158,255,0.08);border:1px solid rgba(74,158,255,0.15);border-radius:11px;padding:8px 12px;">
+        <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--blue);" id="tasks-done-count2">0</div>
+        <div style="font-size:0.55rem;color:var(--txt3);margin-top:1px;text-transform:uppercase;letter-spacing:0.5px;">Done</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter pills -->
+  <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;" id="pill-row">
+    <div class="fpill active" data-filter="all">All</div>
+    <div class="fpill" data-filter="telegram_channel"><i class="fab fa-telegram-plane"></i> Channel</div>
+    <div class="fpill" data-filter="telegram_group"><i class="fas fa-users"></i> Group</div>
+    <div class="fpill" data-filter="telegram_bot"><i class="fas fa-robot"></i> Bot</div>
+    <div class="fpill" data-filter="social"><i class="fas fa-play"></i> Social</div>
+  </div>
+  <style>
+  .fpill{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:0.7rem;font-weight:700;background:rgba(255,255,255,0.03);border:1px solid var(--bdr);color:var(--txt3);cursor:pointer;transition:0.18s;white-space:nowrap;font-family:var(--font-d);}
+  .fpill.active,.fpill:hover{background:rgba(74,158,255,0.1);color:var(--blue);border-color:rgba(74,158,255,0.28);}
+  #pill-row::-webkit-scrollbar{display:none;}
+  </style>
+
+  <div id="task-list-container"></div>
+</div>
+</section>
+
+<!-- ═══════════════ EARN ═══════════════ -->
+<section id="sec-earn" class="sec">
+<div class="wrap">
+  <!-- Earn header -->
+  <div style="background:linear-gradient(150deg,#031408,#041f0c,#062810);border:1px solid rgba(31,207,136,0.18);border-radius:20px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(31,207,136,0.35),transparent);"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:4px;">&#9889; SP Balance</div>
-        <div style="font-family:var(--mono);font-size:1.9rem;font-weight:700;color:#fff;" id="earn-bal-sp">0</div>
-        <div style="font-size:0.68rem;color:rgba(255,255,255,0.5);margin-top:2px;" id="earn-bal-usdt">&#8776; $0.000 USDT</div>
+        <div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.35);margin-bottom:4px;">&#9889; SP Balance</div>
+        <div style="font-family:var(--mono);font-size:2rem;font-weight:700;color:#fff;" id="earn-bal-sp">0</div>
+        <div style="font-size:0.66rem;color:rgba(255,255,255,0.4);margin-top:2px;" id="earn-bal-usdt">&#8776; $0.000 USDT</div>
       </div>
-      <div style="text-align:right;background:rgba(34,201,138,0.12);border:1px solid rgba(34,201,138,0.22);border-radius:12px;padding:10px 14px;">
-        <div style="font-size:0.6rem;color:rgba(255,255,255,0.5);margin-bottom:2px;">Claim to earn</div>
-        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:#22c98a;">+SP daily</div>
-      </div>
+      <div style="font-size:2.5rem;">&#127873;</div>
     </div>
   </div>
 
   <!-- Lootbox card -->
-  <div class="card" style="border-color:rgba(233,168,48,0.18);">
-    <div style="position:absolute;top:-10px;right:-10px;font-size:5rem;opacity:0.03;pointer-events:none;">&#127873;</div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-      <span style="font-size:1.4rem;">&#127873;</span>
+  <div style="background:var(--card);border:1px solid rgba(233,168,48,0.15);border-radius:20px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(233,168,48,0.25),transparent);"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span style="font-size:1.5rem;">&#127873;</span>
       <div>
-        <div style="font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--txt);">Lootbox</div>
-        <div style="font-size:0.7rem;color:var(--txt3);margin-top:1px;">Earn SP · Claim to main balance</div>
+        <div style="font-family:var(--font-d);font-weight:800;font-size:0.98rem;">Lootbox</div>
+        <div style="font-size:0.68rem;color:var(--txt3);margin-top:1px;">Fill it · Claim to main balance</div>
       </div>
     </div>
-    <div style="height:1px;background:var(--bdr);margin:12px 0;"></div>
-    <div style="font-size:0.7rem;color:var(--txt3);margin-bottom:14px;line-height:1.7;">Collect <b style="color:#f5c842;">min 150 SP</b> in lootbox, then claim to main balance. Max <b style="color:#f5c842;">2x per day</b>.</div>
-
-    <!-- Lootbox balance display -->
-    <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.12);border-radius:16px;padding:16px 18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="background:rgba(245,200,66,0.04);border:1px solid rgba(245,200,66,0.1);border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt3);margin-bottom:5px;">Lootbox Balance</div>
-        <div style="font-family:var(--mono);font-size:2.1rem;font-weight:700;color:#f5c842;line-height:1;" id="lootbox-balance">0.0</div>
-        <div style="font-size:0.62rem;color:var(--txt3);margin-top:3px;">&#9889; SP</div>
+        <div style="font-size:0.56px;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt3);margin-bottom:5px;font-size:0.56rem;">Lootbox SP</div>
+        <div style="font-family:var(--mono);font-size:2.2rem;font-weight:700;color:#f5c842;line-height:1;" id="lootbox-balance">0.0</div>
       </div>
       <div style="font-size:2.8rem;">&#127873;</div>
     </div>
-
-    <!-- Progress bar -->
     <div style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--txt3);margin-bottom:6px;">
+      <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--txt3);margin-bottom:5px;">
         <span id="lootbox-progress-text">0 / 150 SP to claim</span>
         <span id="lootbox-claims-left" style="color:#f5c842;font-weight:700;"></span>
       </div>
-      <div style="background:rgba(255,255,255,0.05);border-radius:99px;height:7px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);">
-        <div id="lootbox-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#f5c842,#e9a830);width:0%;transition:width 0.5s;box-shadow:0 0 8px rgba(233,168,48,0.6);"></div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:99px;height:7px;overflow:hidden;box-shadow:inset 0 1px 4px rgba(0,0,0,0.4);">
+        <div id="lootbox-progress-bar" style="height:100%;border-radius:99px;background:linear-gradient(90deg,#f5c842,#e9a830);width:0%;transition:width 0.5s;box-shadow:0 0 8px rgba(233,168,48,0.5);"></div>
       </div>
     </div>
-    <button id="btn-lootbox-claim" class="btn btn-primary btn-full" style="padding:14px;border-radius:14px;opacity:0.5;cursor:not-allowed;" disabled>&#127873; Claim to Main Balance</button>
-    <div style="font-size:0.62rem;color:var(--txt3);text-align:center;margin-top:8px;" id="lootbox-timer">Earn SP to fill lootbox</div>
+    <button id="btn-lootbox-claim" class="btn btn-gold btn-full" style="padding:13px;border-radius:13px;opacity:0.5;cursor:not-allowed;" disabled>&#127873; Claim to Main Balance</button>
+    <div style="font-size:0.6rem;color:var(--txt3);text-align:center;margin-top:7px;" id="lootbox-timer">Earn SP to fill lootbox</div>
   </div>
+</div>
 </section>
 
-<!-- ═══ SPARK ═══ -->
-<section id="sec-spark" class="content-section" style="padding:0 0 90px;">
-  <!-- Hero -->
-  <div style="background:linear-gradient(155deg,#120e00,#1f1800,#2a2000);padding:24px 18px 28px;border-radius:0 0 28px 28px;margin-bottom:16px;border-bottom:1px solid rgba(250,204,21,0.18);text-align:center;">
-    <div style="font-size:3rem;margin-bottom:8px;filter:drop-shadow(0 0 20px rgba(250,204,21,0.9));animation:bulbPulse 2s ease-in-out infinite;">&#128161;</div>
-    <div style="font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:#f5c842;">Spark Blast</div>
-    <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:0.3px;">Blast every 4 hours · Win 10–20 SP</div>
+<!-- ═══════════════ SPARK ═══════════════ -->
+<section id="sec-spark" class="sec" style="padding-bottom:90px;">
+  <!-- Hero banner -->
+  <div style="background:linear-gradient(150deg,#100c00,#1c1400,#241b00);padding:22px 18px 26px;margin-bottom:14px;border-bottom:1px solid rgba(245,200,66,0.15);text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(250,204,21,0.1),transparent 70%);pointer-events:none;"></div>
+    <div style="font-size:3.2rem;margin-bottom:8px;filter:drop-shadow(0 0 22px rgba(250,204,21,0.9));animation:bulbPulse 2s ease-in-out infinite;">&#128161;</div>
+    <div style="font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:#f5c842;">Spark Blast</div>
+    <div style="font-size:0.7rem;color:rgba(255,255,255,0.38);margin-top:4px;letter-spacing:0.3px;">Blast every 4 hours · Win 10–20 SP</div>
   </div>
 
   <div style="padding:0 14px;">
     <!-- Blast card -->
-    <div class="card" style="background:linear-gradient(155deg,#120e00,#1a1400);border-color:rgba(250,204,21,0.2);text-align:center;padding:28px 18px;">
+    <div style="background:linear-gradient(150deg,#100c00,#181200);border:1.5px solid rgba(245,200,66,0.18);border-radius:22px;padding:26px 18px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(245,200,66,0.3),transparent);"></div>
       <div id="spark-bulb-display" style="font-size:5.5rem;margin-bottom:12px;line-height:1;display:flex;align-items:center;justify-content:center;min-height:100px;filter:drop-shadow(0 0 24px rgba(250,204,21,0.9));animation:bulbPulse 2s ease-in-out infinite;">&#128161;</div>
-      <div id="spark-result-text" style="font-size:0.9rem;font-weight:700;min-height:24px;margin-bottom:20px;color:var(--txt3);font-family:var(--font-display);"></div>
-
-      <!-- Cooldown banner -->
-      <div id="spark-cooldown-banner" style="display:none;background:rgba(255,255,255,0.04);border:1px solid var(--bdr2);border-radius:14px;padding:12px 16px;margin-bottom:16px;">
-        <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;">Next blast in</div>
-        <div id="spark-cooldown-text" style="font-family:var(--mono);font-size:1.8rem;font-weight:700;color:#f5c842;letter-spacing:2px;">00:00:00</div>
+      <div id="spark-result-text" style="font-size:0.88rem;font-weight:700;min-height:22px;margin-bottom:18px;color:var(--txt3);font-family:var(--font-d);"></div>
+      <div id="spark-cooldown-banner" style="display:none;background:rgba(255,255,255,0.04);border:1px solid var(--bdr2);border-radius:13px;padding:12px;margin-bottom:16px;">
+        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:5px;">Next blast in</div>
+        <div id="spark-cooldown-text" style="font-family:var(--mono);font-size:1.9rem;font-weight:700;color:#f5c842;letter-spacing:3px;">00:00:00</div>
       </div>
-
-      <button id="btn-blast-spark" class="btn btn-primary btn-full" style="padding:16px;font-size:1rem;border-radius:16px;letter-spacing:0.3px;"><span>&#9889;</span> Blast Spark!</button>
+      <button id="btn-blast-spark" class="btn btn-gold btn-full" style="padding:15px;font-size:0.98rem;border-radius:15px;"><span>&#9889;</span> Blast Spark!</button>
     </div>
 
-    <!-- Stats -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px;">
-      <div class="card" style="text-align:center;padding:16px;">
-        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;">Total Blasts</div>
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div style="background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.35);">
+        <div style="font-size:0.56rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:5px;">Total Blasts</div>
         <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#f5c842;" id="spark-total-blasts">0</div>
       </div>
-      <div class="card" style="text-align:center;padding:16px;">
-        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:6px;">SP Earned</div>
-        <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#22c98a;" id="spark-total-earned">0</div>
+      <div style="background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.35);">
+        <div style="font-size:0.56rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:5px;">SP Earned</div>
+        <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--green);" id="spark-total-earned">0</div>
       </div>
     </div>
 
     <!-- History -->
-    <div class="card" style="margin-top:10px;">
-      <div class="sec-title" style="margin-bottom:10px;"><i class="fas fa-history"></i> Blast History</div>
-      <div id="spark-history">
-        <div class="empty-state"><i class="fas fa-bolt"></i><p>No blasts yet. Blast now!</p></div>
-      </div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:18px;padding:16px;">
+      <div style="font-family:var(--font-d);font-size:0.65rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><i class="fas fa-list" style="color:var(--primary);"></i> Blast History</div>
+      <div id="spark-history"><div class="empty"><i class="fas fa-bolt"></i><p>No blasts yet.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- ═══ REFER ═══ -->
-<section id="sec-refer" class="content-section">
-  <div class="card" style="background:linear-gradient(155deg,#040e1a,#061626,#082030);border-color:rgba(74,158,255,0.2);text-align:center;">
-    <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(74,158,255,0.1),transparent 70%);pointer-events:none;"></div>
-    <div style="font-size:2.2rem;margin-bottom:8px;">&#128101;</div>
-    <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:4px;">Refer &amp; Earn</div>
-    <div style="font-size:0.78rem;color:var(--txt3);margin-bottom:18px;line-height:1.6;">Invite friends · Earn +100 SP per valid referral</div>
+<!-- ═══════════════ REFER ═══════════════ -->
+<section id="sec-refer" class="sec">
+<div class="wrap">
+  <!-- Refer hero -->
+  <div style="background:linear-gradient(150deg,#020d1a,#041528,#061e36);border:1px solid rgba(74,158,255,0.2);border-radius:22px;padding:22px 18px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,158,255,0.4),transparent);"></div>
+    <div style="font-size:2.4rem;margin-bottom:8px;">&#128101;</div>
+    <div style="font-family:var(--font-d);font-size:1.1rem;font-weight:800;margin-bottom:4px;">Refer &amp; Earn</div>
+    <div style="font-size:0.76rem;color:var(--txt3);line-height:1.6;margin-bottom:18px;">Invite friends · Earn +100 SP when they complete 10 tasks</div>
 
+    <!-- Stats boxes -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
       <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:14px;padding:12px;">
         <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--blue);" id="ref-total">0</div>
-        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Total</div>
+        <div style="font-size:0.56rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Total</div>
       </div>
       <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:14px;padding:12px;">
         <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--blue);" id="ref-valid">0</div>
-        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Valid</div>
+        <div style="font-size:0.56rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Valid</div>
       </div>
-      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:14px;padding:12px;">
+      <div style="background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.15);border-radius:14px;padding:12px;">
         <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:#f5c842;" id="ref-earned">0</div>
-        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">&#9889; SP</div>
+        <div style="font-size:0.56rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">&#9889; SP</div>
       </div>
     </div>
 
-    <input type="text" class="input-field" id="invite-link" readonly placeholder="Loading link...">
-    <div style="display:flex;gap:8px;">
+    <input type="text" class="inp" id="invite-link" readonly placeholder="Loading link...">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <button class="btn btn-ghost btn-full" id="invite-copy"><i class="fas fa-copy"></i> Copy</button>
-      <button class="btn btn-primary btn-full" id="invite-share"><i class="fas fa-share-alt"></i> Share</button>
+      <button class="btn btn-blue btn-full" id="invite-share"><i class="fas fa-share-alt"></i> Share</button>
     </div>
   </div>
+
+  <!-- How it works table -->
+  <div style="background:var(--card);border:1px solid var(--bdr);border-radius:18px;overflow:hidden;">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:7px;">
+      <i class="fas fa-circle-question" style="color:var(--blue);font-size:0.82rem;"></i>
+      <span style="font-family:var(--font-d);font-size:0.66rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;">How it works</span>
+    </div>
+    <div style="padding:4px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--bdr);">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:var(--blue);font-family:var(--mono);flex-shrink:0;">1</div>
+        <span style="font-size:0.78rem;color:var(--txt2);">Share your invite link with friends</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--bdr);">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:var(--blue);font-family:var(--mono);flex-shrink:0;">2</div>
+        <span style="font-size:0.78rem;color:var(--txt2);">Friend joins &amp; completes 10 tasks</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(245,200,66,0.1);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:#f5c842;font-family:var(--mono);flex-shrink:0;">3</div>
+        <span style="font-size:0.78rem;color:var(--txt2);">You earn <b style="color:#f5c842;">+100 SP</b> automatically</span>
+      </div>
+    </div>
+  </div>
+</div>
 </section>
 
-</main>
-
-<!-- BOTTOM NAV -->
+<!-- BOTTOM NAV (5 tabs) -->
 <nav class="bottom-nav">
-  <div class="b-nav-item active" data-target="sec-home"><i class="fas fa-house"></i><span>Home</span></div>
-  <div class="b-nav-item" data-target="sec-earn"><i class="fas fa-box-open"></i><span>Earn</span></div>
-  <div class="b-nav-item" data-target="sec-spark"><i class="fas fa-bolt"></i><span>Spark</span></div>
-  <div class="b-nav-item" data-target="sec-refer"><i class="fas fa-users"></i><span>Refer</span></div>
+  <div class="bn active" data-target="sec-home"><i class="fas fa-house"></i><span>Home</span></div>
+  <div class="bn" data-target="sec-tasks"><i class="fas fa-list-check"></i><span>Tasks</span></div>
+  <div class="bn" data-target="sec-earn"><i class="fas fa-box-open"></i><span>Earn</span></div>
+  <div class="bn" data-target="sec-spark"><i class="fas fa-bolt"></i><span>Spark</span></div>
+  <div class="bn" data-target="sec-refer"><i class="fas fa-users"></i><span>Refer</span></div>
 </nav>
 
 <!-- ═══════════ MODALS ═══════════ -->
 
-<!-- JOIN MODAL -->
+<!-- JOIN -->
 <div class="modal-bg" id="modal-join" style="z-index:5000;">
-  <div class="modal-box" style="border-radius:26px 26px 0 0;border-top:2px solid rgba(233,168,48,0.3);">
+  <div class="modal-box" style="border-top:2px solid rgba(233,168,48,0.3);">
     <div style="font-size:2.5rem;margin-bottom:10px;">&#128274;</div>
-    <div class="modal-title">Join to Continue</div>
-    <div class="modal-sub">Join our official Channel &amp; Community first.</div>
-    <a href="https://t.me/TonsparkSp" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(145deg,#0077bb,#0099dd);border-radius:15px;text-decoration:none;color:#fff;font-weight:700;font-size:0.88rem;margin-bottom:10px;box-shadow:0 4px 0 #004d80,0 6px 20px rgba(0,153,221,0.3);font-family:var(--font-display);">
-      <div style="width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fab fa-telegram-plane"></i></div>
-      <div style="flex:1;text-align:left;"><div>Step 1 — Official Channel</div><div style="font-size:0.68rem;opacity:0.8;font-weight:400;margin-top:1px;">t.me/TonsparkSp</div></div>
+    <div class="m-title">Join to Continue</div>
+    <div class="m-sub">Join our official Channel &amp; Community first.</div>
+    <a href="https://t.me/TonsparkSp" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(145deg,#0077bb,#0099dd);border-radius:15px;text-decoration:none;color:#fff;font-weight:700;font-size:0.86rem;margin-bottom:10px;box-shadow:0 4px 0 #004d80,0 5px 18px rgba(0,153,221,0.28);font-family:var(--font-d);">
+      <div style="width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-telegram-plane"></i></div>
+      <div style="flex:1;text-align:left;"><div>Step 1 — Official Channel</div><div style="font-size:0.66rem;opacity:0.78;font-weight:400;margin-top:1px;">t.me/TonsparkSp</div></div>
       <i class="fas fa-arrow-right" style="opacity:0.7;"></i>
     </a>
-    <a href="https://t.me/Tonsparksp_chats" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(145deg,#0994c9,#06b6d4);border-radius:15px;text-decoration:none;color:#fff;font-weight:700;font-size:0.88rem;margin-bottom:18px;box-shadow:0 4px 0 #057292,0 6px 20px rgba(6,182,212,0.3);font-family:var(--font-display);">
-      <div style="width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-users"></i></div>
-      <div style="flex:1;text-align:left;"><div>Step 2 — Official Community</div><div style="font-size:0.68rem;opacity:0.8;font-weight:400;margin-top:1px;">t.me/Tonsparksp_chats</div></div>
+    <a href="https://t.me/Tonsparksp_chats" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(145deg,#0994c9,#06b6d4);border-radius:15px;text-decoration:none;color:#fff;font-weight:700;font-size:0.86rem;margin-bottom:18px;box-shadow:0 4px 0 #057292,0 5px 18px rgba(6,182,212,0.26);font-family:var(--font-d);">
+      <div style="width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-users"></i></div>
+      <div style="flex:1;text-align:left;"><div>Step 2 — Official Community</div><div style="font-size:0.66rem;opacity:0.78;font-weight:400;margin-top:1px;">t.me/Tonsparksp_chats</div></div>
       <i class="fas fa-arrow-right" style="opacity:0.7;"></i>
     </a>
-    <button class="btn btn-green btn-full" id="btn-verify-join" style="padding:15px;border-radius:14px;"><i class="fas fa-check-circle"></i> I've Joined — Verify</button>
-    <div id="join-error" style="font-size:0.76rem;margin-top:10px;min-height:18px;text-align:center;color:var(--red);"></div>
+    <button class="btn btn-green btn-full" id="btn-verify-join" style="padding:14px;border-radius:14px;"><i class="fas fa-check-circle"></i> I've Joined — Verify</button>
+    <div id="join-error" style="font-size:0.74rem;margin-top:9px;min-height:16px;text-align:center;color:var(--red);"></div>
   </div>
 </div>
 
-<!-- WHAT'S NEW MODAL -->
+<!-- WHAT'S NEW -->
 <div class="modal-bg" id="modal-whats-new" style="z-index:6500;">
-  <div class="modal-box" style="padding:0;border-radius:26px 26px 0 0;border-top:2px solid rgba(250,204,21,0.3);">
-    <div style="background:linear-gradient(155deg,#120e00,#1c1800);padding:24px 20px 18px;text-align:center;border-radius:26px 26px 0 0;">
-      <div style="font-size:2.2rem;margin-bottom:8px;">&#9889;</div>
-      <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:#f5c842;">Welcome to TonSpark!</div>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:4px;">Here's how everything works</div>
+  <div class="modal-box" style="padding:0;border-top:2px solid rgba(245,200,66,0.3);">
+    <div style="background:linear-gradient(150deg,#100c00,#1c1600);padding:22px 20px 16px;text-align:center;">
+      <div style="font-size:2.2rem;margin-bottom:7px;">&#9889;</div>
+      <div style="font-family:var(--font-d);font-size:1.15rem;font-weight:800;color:#f5c842;">Welcome to TonSpark!</div>
+      <div style="font-size:0.73rem;color:rgba(255,255,255,0.4);margin-top:4px;">Here's how everything works</div>
     </div>
-    <div style="padding:18px;overflow-y:auto;max-height:55vh;">
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(233,168,48,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(233,168,48,0.12);">
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(233,168,48,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#10003;</div>
-        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#f5c842;">Tasks</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Complete tasks to earn SP. Join → Verify → +10 SP each.</div></div>
+    <div style="padding:16px;overflow-y:auto;max-height:52vh;">
+      <div style="display:flex;gap:11px;align-items:flex-start;padding:12px;background:rgba(233,168,48,0.05);border-radius:14px;margin-bottom:9px;border:1px solid rgba(233,168,48,0.1);">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(233,168,48,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">&#10003;</div>
+        <div><div style="font-family:var(--font-d);font-weight:800;font-size:0.84rem;color:#f5c842;">Tasks</div><div style="font-size:0.72rem;color:var(--txt3);margin-top:2px;line-height:1.55;">Complete tasks to earn SP. Join → Verify → +10 SP.</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(34,201,138,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(34,201,138,0.12);">
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(34,201,138,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#127873;</div>
-        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#22c98a;">Earn</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Fill lootbox with SP. Claim when 150+ SP. Max 2x/day.</div></div>
+      <div style="display:flex;gap:11px;align-items:flex-start;padding:12px;background:rgba(31,207,136,0.05);border-radius:14px;margin-bottom:9px;border:1px solid rgba(31,207,136,0.1);">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(31,207,136,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">&#127873;</div>
+        <div><div style="font-family:var(--font-d);font-weight:800;font-size:0.84rem;color:var(--green);">Earn</div><div style="font-size:0.72rem;color:var(--txt3);margin-top:2px;line-height:1.55;">Fill lootbox. Claim when 150+ SP. Max 2x/day.</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(250,204,21,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(250,204,21,0.12);">
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(250,204,21,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#128161;</div>
-        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#f5c842;">Spark Blast</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Blast every 4 hours. Win 10–20 SP randomly.</div></div>
+      <div style="display:flex;gap:11px;align-items:flex-start;padding:12px;background:rgba(245,200,66,0.05);border-radius:14px;margin-bottom:9px;border:1px solid rgba(245,200,66,0.1);">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,200,66,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">&#128161;</div>
+        <div><div style="font-family:var(--font-d);font-weight:800;font-size:0.84rem;color:#f5c842;">Spark Blast</div><div style="font-size:0.72rem;color:var(--txt3);margin-top:2px;line-height:1.55;">Blast every 4 hours. Win 10–20 SP randomly.</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(232,78,78,0.05);border-radius:15px;margin-bottom:10px;border:1px solid rgba(232,78,78,0.12);">
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(232,78,78,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#128184;</div>
-        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:#f87171;">Withdraw</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Min 1000 SP · Tonkeeper · 20K SP = 0.6 TON ≈ $1 · 1x/day</div></div>
+      <div style="display:flex;gap:11px;align-items:flex-start;padding:12px;background:rgba(232,78,78,0.05);border-radius:14px;margin-bottom:9px;border:1px solid rgba(232,78,78,0.1);">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(232,78,78,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">&#128184;</div>
+        <div><div style="font-family:var(--font-d);font-weight:800;font-size:0.84rem;color:#f87171;">Withdraw</div><div style="font-size:0.72rem;color:var(--txt3);margin-top:2px;line-height:1.55;">Min 1000 SP · Tonkeeper · 20K SP = 0.6 TON · 1x/day</div></div>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(74,158,255,0.05);border-radius:15px;border:1px solid rgba(74,158,255,0.12);">
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(74,158,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">&#128101;</div>
-        <div><div style="font-family:var(--font-display);font-weight:800;font-size:0.86rem;color:var(--blue);">Refer &amp; Earn</div><div style="font-size:0.73rem;color:var(--txt3);margin-top:3px;line-height:1.6;">Earn +100 SP when your friend completes 10 tasks.</div></div>
+      <div style="display:flex;gap:11px;align-items:flex-start;padding:12px;background:rgba(74,158,255,0.05);border-radius:14px;border:1px solid rgba(74,158,255,0.1);">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(74,158,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">&#128101;</div>
+        <div><div style="font-family:var(--font-d);font-weight:800;font-size:0.84rem;color:var(--blue);">Refer &amp; Earn</div><div style="font-size:0.72rem;color:var(--txt3);margin-top:2px;line-height:1.55;">Earn +100 SP when friend completes 10 tasks.</div></div>
       </div>
     </div>
-    <div style="padding:16px 20px;border-top:1px solid var(--bdr);">
-      <button class="btn btn-primary btn-full" id="btn-whats-new-close" style="border-radius:15px;padding:15px;font-size:0.95rem;">&#128640; Got it — Let's Start!</button>
+    <div style="padding:14px 18px;border-top:1px solid var(--bdr);">
+      <button class="btn btn-gold btn-full" id="btn-whats-new-close" style="border-radius:14px;padding:14px;font-size:0.93rem;">&#128640; Got it — Let's Start!</button>
     </div>
   </div>
 </div>
 
-<!-- ALERT MODAL -->
+<!-- ALERT -->
 <div class="modal-bg" id="modal-alert">
-  <div class="modal-box" style="max-width:340px;border-radius:22px 22px 0 0;padding-bottom:28px;">
-    <i id="alert-icon" class="fas fa-info-circle" style="font-size:2.4rem;color:var(--primary);margin-bottom:14px;display:block;"></i>
-    <div id="alert-title" class="modal-title" style="margin-bottom:8px;">Notice</div>
-    <p id="alert-msg" style="font-size:0.84rem;color:var(--txt3);margin-bottom:18px;line-height:1.7;"></p>
-    <button class="btn btn-primary btn-full close-modal" style="padding:14px;border-radius:14px;">OK</button>
+  <div class="modal-box" style="max-width:340px;padding-bottom:26px;">
+    <i id="alert-icon" class="fas fa-info-circle" style="font-size:2.4rem;color:var(--primary);margin-bottom:13px;display:block;"></i>
+    <div id="alert-title" class="m-title" style="margin-bottom:7px;">Notice</div>
+    <p id="alert-msg" style="font-size:0.83rem;color:var(--txt3);margin-bottom:17px;line-height:1.7;"></p>
+    <button class="btn btn-gold btn-full close-modal" style="padding:13px;border-radius:13px;">OK</button>
   </div>
 </div>
 
 <!-- WITHDRAW MODAL -->
 <div class="modal-bg" id="modal-withdraw">
   <div class="modal-box">
-    <!-- Balance at top -->
-    <div style="background:rgba(232,78,78,0.07);border:1px solid rgba(232,78,78,0.15);border-radius:16px;padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+    <!-- Balance strip -->
+    <div style="background:rgba(232,78,78,0.07);border:1px solid rgba(232,78,78,0.16);border-radius:14px;padding:13px 15px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">Available Balance</div>
-        <div style="font-family:var(--mono);font-size:1.6rem;font-weight:700;color:#f5c842;" id="wd-balance">0 SP</div>
-        <div style="font-size:0.68rem;color:var(--txt3);margin-top:2px;" id="wd-balance-usdt">&#8776; $0.000 USDT</div>
+        <div style="font-size:0.56rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--txt3);margin-bottom:4px;">Available Balance</div>
+        <div style="font-family:var(--mono);font-size:1.55rem;font-weight:700;color:#f5c842;" id="wd-balance">0 SP</div>
+        <div style="font-size:0.65rem;color:var(--txt3);margin-top:2px;" id="wd-balance-usdt">&#8776; $0.000 USDT</div>
       </div>
       <div style="font-size:2rem;">&#128184;</div>
     </div>
+    <div class="m-title" style="margin-bottom:3px;">Withdraw SP</div>
+    <div class="m-sub">Tonkeeper wallet · Min 1000 SP · 1x per day</div>
 
-    <div class="modal-title" style="margin-bottom:4px;">Withdraw SP</div>
-    <div class="modal-sub" style="margin-bottom:14px;">Min 10 tasks · 1x per day</div>
-
-    <!-- Requirements -->
-    <div style="background:rgba(233,168,48,0.05);border:1px solid rgba(233,168,48,0.14);border-radius:14px;padding:12px 14px;margin-bottom:14px;text-align:left;">
-      <div style="font-family:var(--font-display);font-size:0.72rem;font-weight:800;color:#f5c842;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.8px;">Requirements</div>
-      <div style="font-size:0.78rem;color:var(--txt2);line-height:2;">&#10003; Min 10 tasks completed<br>&#10003; Max 1 withdrawal per day<br>&#9889; Min: 1000 SP</div>
-    </div>
-
-    <!-- Method -->
-    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--bdr2);border-radius:14px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:12px;">
-      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#2ddfaa,#22c98a);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(34,201,138,0.3);flex-shrink:0;"><i class="fas fa-wallet" style="color:#01160e;font-size:1rem;"></i></div>
-      <div>
-        <div style="font-family:var(--font-display);font-weight:800;font-size:0.9rem;color:var(--txt);">Tonkeeper</div>
-        <div style="font-size:0.68rem;color:var(--txt3);margin-top:2px;">Min 1000 SP · 20K SP = 0.6 TON</div>
+    <!-- Requirements table -->
+    <div style="background:var(--deep);border:1px solid var(--bdr2);border-radius:13px;overflow:hidden;margin-bottom:13px;">
+      <div style="padding:9px 13px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;font-size:0.76rem;">
+        <span style="color:var(--txt3);"><i class="fas fa-check" style="color:var(--green);margin-right:7px;font-size:0.68rem;"></i>Min tasks</span>
+        <span style="font-family:var(--mono);color:var(--txt2);">10 tasks</span>
+      </div>
+      <div style="padding:9px 13px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;font-size:0.76rem;">
+        <span style="color:var(--txt3);"><i class="fas fa-check" style="color:var(--green);margin-right:7px;font-size:0.68rem;"></i>Daily limit</span>
+        <span style="font-family:var(--mono);color:var(--txt2);">1 per day</span>
+      </div>
+      <div style="padding:9px 13px;display:flex;justify-content:space-between;font-size:0.76rem;">
+        <span style="color:var(--txt3);"><i class="fas fa-bolt" style="color:#f5c842;margin-right:7px;font-size:0.68rem;"></i>Minimum SP</span>
+        <span style="font-family:var(--mono);color:#f5c842;">1,000 SP</span>
       </div>
     </div>
 
-    <label style="font-size:0.7rem;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">TON Wallet Address</label>
-    <input type="text" class="input-field" id="wd-address" placeholder="UQ... or EQ... address">
-
-    <label style="font-size:0.7rem;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px;">SP Amount <span style="color:var(--txt3);font-weight:500;text-transform:none;">(Min 1000)</span></label>
-    <input type="number" class="input-field" id="wd-amount" placeholder="e.g. 1000" min="1000">
-
-    <div id="wd-preview" style="background:rgba(34,201,138,0.06);border:1px solid rgba(34,201,138,0.15);border-radius:12px;padding:11px 14px;font-size:0.82rem;color:var(--txt2);margin-bottom:14px;display:none;"></div>
-
-    <div style="display:flex;gap:10px;margin-bottom:12px;">
+    <label class="m-lbl">TON Wallet Address</label>
+    <input type="text" class="inp" id="wd-address" placeholder="UQ... or EQ... address">
+    <label class="m-lbl">Amount <span style="color:var(--txt3);font-weight:400;text-transform:none;">(min 1000)</span></label>
+    <input type="number" class="inp" id="wd-amount" placeholder="e.g. 1000" min="1000">
+    <div id="wd-preview" style="background:rgba(31,207,136,0.06);border:1px solid rgba(31,207,136,0.15);border-radius:12px;padding:10px 13px;font-size:0.8rem;color:var(--txt2);margin-bottom:13px;display:none;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;">
       <button class="btn btn-ghost btn-full close-modal">Cancel</button>
-      <button class="btn btn-primary btn-full" id="wd-submit"><i class="fas fa-paper-plane"></i> Withdraw</button>
+      <button class="btn btn-gold btn-full" id="wd-submit"><i class="fas fa-paper-plane"></i> Withdraw</button>
     </div>
-
-    <div style="background:rgba(34,201,138,0.04);border:1px solid rgba(34,201,138,0.12);border-radius:12px;padding:11px 14px;text-align:center;">
-      <div style="font-size:0.62rem;font-weight:700;color:#22c98a;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.6px;">&#128178; Exchange Rate</div>
-      <div style="font-family:var(--mono);font-weight:700;font-size:0.82rem;color:#4ade80;">20,000 SP = 0.6 TON &#8776; $1 USDT</div>
-      <div style="font-size:0.6rem;color:var(--txt3);margin-top:4px;">&#8987; Processing: 1–24h</div>
+    <div style="background:rgba(31,207,136,0.04);border:1px solid rgba(31,207,136,0.12);border-radius:12px;padding:10px;text-align:center;">
+      <div style="font-family:var(--mono);font-weight:700;font-size:0.8rem;color:var(--green);">20,000 SP = 0.6 TON &#8776; $1 USDT</div>
+      <div style="font-size:0.6rem;color:var(--txt3);margin-top:3px;">Processing: 1–24 hours</div>
     </div>
   </div>
 </div>
@@ -570,27 +542,27 @@ body{
 <!-- REFER MODAL -->
 <div class="modal-bg" id="modal-refer">
   <div class="modal-box">
-    <i class="fas fa-users" style="font-size:2.2rem;color:#4a9eff;margin-bottom:12px;display:block;"></i>
-    <div class="modal-title">Refer &amp; Earn</div>
-    <div class="modal-sub">Earn +100 SP when friend completes 10 tasks.</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
-      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:13px;padding:11px;text-align:center;">
+    <i class="fas fa-users" style="font-size:2.2rem;color:var(--blue);margin-bottom:11px;display:block;"></i>
+    <div class="m-title">Refer &amp; Earn</div>
+    <div class="m-sub">Earn +100 SP when friend completes 10 tasks.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px;">
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.14);border-radius:13px;padding:10px;text-align:center;">
         <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--blue);" id="ref-total-m">0</div>
-        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Total</div>
+        <div style="font-size:0.56rem;color:var(--txt3);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">Total</div>
       </div>
-      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:13px;padding:11px;text-align:center;">
+      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.14);border-radius:13px;padding:10px;text-align:center;">
         <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--blue);" id="ref-valid-m">0</div>
-        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">Valid</div>
+        <div style="font-size:0.56rem;color:var(--txt3);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">Valid</div>
       </div>
-      <div style="background:rgba(74,158,255,0.07);border:1px solid rgba(74,158,255,0.15);border-radius:13px;padding:11px;text-align:center;">
+      <div style="background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.14);border-radius:13px;padding:10px;text-align:center;">
         <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:#f5c842;" id="ref-earned-m">0</div>
-        <div style="font-size:0.58rem;color:var(--txt3);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;">&#9889; SP</div>
+        <div style="font-size:0.56rem;color:var(--txt3);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">&#9889; SP</div>
       </div>
     </div>
-    <input type="text" class="input-field" id="invite-link-m" readonly placeholder="Loading...">
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
+    <input type="text" class="inp" id="invite-link-m" readonly placeholder="Loading...">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;">
       <button class="btn btn-ghost btn-full" id="invite-copy-m"><i class="fas fa-copy"></i> Copy</button>
-      <button class="btn btn-primary btn-full" id="invite-share-m"><i class="fas fa-share-alt"></i> Share</button>
+      <button class="btn btn-blue btn-full" id="invite-share-m"><i class="fas fa-share-alt"></i> Share</button>
     </div>
     <button class="btn btn-ghost btn-full close-modal">Close</button>
   </div>
@@ -599,11 +571,11 @@ body{
 <!-- PROMO MODAL -->
 <div class="modal-bg" id="modal-promo">
   <div class="modal-box">
-    <i class="fas fa-ticket-alt" style="font-size:2.2rem;color:#f5c842;margin-bottom:12px;display:block;"></i>
-    <div class="modal-title">Redeem Promo Code</div>
-    <div class="modal-sub">Enter your promo code for bonus SP.</div>
-    <input type="text" class="input-field" id="promo-input" placeholder="Enter code...">
-    <button class="btn btn-primary btn-full" id="promo-submit" style="margin-bottom:10px;padding:14px;border-radius:14px;">Redeem Now</button>
+    <i class="fas fa-ticket-alt" style="font-size:2.2rem;color:var(--purple);margin-bottom:11px;display:block;"></i>
+    <div class="m-title">Promo Code</div>
+    <div class="m-sub">Enter your promo code to get bonus SP.</div>
+    <input type="text" class="inp" id="promo-input" placeholder="Enter code...">
+    <button class="btn btn-gold btn-full" id="promo-submit" style="margin-bottom:9px;padding:13px;border-radius:13px;">Redeem Now</button>
     <button class="btn btn-ghost btn-full close-modal">Close</button>
   </div>
 </div>
@@ -611,15 +583,13 @@ body{
 <!-- HISTORY MODAL -->
 <div class="modal-bg" id="modal-history">
   <div class="modal-box" style="text-align:left;">
-    <div class="modal-title" style="text-align:center;margin-bottom:14px;">Transaction History</div>
+    <div class="m-title" style="text-align:center;margin-bottom:13px;">Transaction History</div>
     <div id="history-list" style="max-height:380px;overflow-y:auto;"></div>
-    <button class="btn btn-ghost btn-full close-modal" style="margin-top:14px;">Close</button>
+    <button class="btn btn-ghost btn-full close-modal" style="margin-top:13px;">Close</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════ -->
-<!--          FIREBASE + APP LOGIC      -->
-<!-- ═══════════════════════════════════ -->
+<!-- ═══════════════ SCRIPT ═══════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
@@ -633,16 +603,14 @@ const firebaseConfig = {
   appId: "1:547574447312:web:f9a4be3d539f1c8c47b2d5",
   measurementId: "G-69MSYK6MJ3"
 };
-const app = initializeApp(firebaseConfig);
-getAnalytics(app);
+initializeApp(firebaseConfig);
+getAnalytics(initializeApp(firebaseConfig));
 
 const tg = window.Telegram.WebApp;
-const API_BASE = "https://ton-spark-beta.vercel.app/api";
-const CHANNEL_URL   = "https://t.me/TonsparkSp";
-const COMMUNITY_URL = "https://t.me/Tonsparksp_chats";
-const CHANNEL_ID    = "@TonsparkSp";
-const GROUP_ID      = "@Tonsparksp_chats";
-const REFER_BASE    = "http://t.me/TonSparks_bot/startapp";
+const API_BASE   = "https://ton-spark-beta.vercel.app/api";
+const REFER_BASE = "http://t.me/TonSparks_bot/startapp";
+const CHANNEL_ID = "@TonsparkSp";
+const GROUP_ID   = "@Tonsparksp_chats";
 
 const SP_TO_TON       = 0.00003;
 const SP_TO_USD       = 0.00005;
@@ -657,78 +625,72 @@ const SPARK_CD        = 4 * 60 * 60 * 1000;
 const CACHE_TTL       = 5 * 60 * 1000;
 
 let user = null, isSub = false, _histCache = null;
-
-function $(id){ return document.getElementById(id); }
-function getToday(){ return new Date().toLocaleDateString('en-US',{timeZone:'Asia/Dhaka'}); }
+const $ = id => document.getElementById(id);
+const getToday = () => new Date().toLocaleDateString('en-US',{timeZone:'Asia/Dhaka'});
 
 function showAlert(title, msg, type='info'){
   $('alert-title').innerText = title;
   $('alert-msg').innerText = msg;
-  const ic = $('alert-icon');
+  const ic=$('alert-icon');
   ic.className = type==='success'?'fas fa-check-circle':type==='error'?'fas fa-triangle-exclamation':'fas fa-info-circle';
   ic.style.color = type==='success'?'var(--green)':type==='error'?'var(--red)':'var(--primary)';
   $('modal-alert').classList.add('show');
 }
 function hideSplash(){
-  const s=$('splash-screen'); if(!s||s.style.display==='none') return;
+  const s=$('splash'); if(!s||s.style.display==='none') return;
   s.style.opacity='0'; setTimeout(()=>s.style.display='none',400);
 }
+function clearUserCache(){
+  if(!user) return;
+  try{ localStorage.removeItem(`ts_u_${user.id}`); localStorage.removeItem(`ts_ut_${user.id}`); }catch(e){}
+}
 
-// ── CLOSE MODALS ──
-document.querySelectorAll('.close-modal').forEach(b=>{
-  b.addEventListener('click',()=>document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show')));
-});
-document.querySelectorAll('.modal-bg').forEach(bg=>{
-  bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('show'); });
-});
+// Close modals
+document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show'))));
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('show'); }));
 
-// ── NAV ──
-document.querySelectorAll('.b-nav-item').forEach(item=>{
+// Nav
+document.querySelectorAll('.bn').forEach(item=>{
   item.addEventListener('click',()=>{
-    document.querySelectorAll('.b-nav-item').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.bn').forEach(i=>i.classList.remove('active'));
     item.classList.add('active');
     const t=item.dataset.target;
-    document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
     const sec=$(t); if(sec) sec.classList.add('active');
     if(t==='sec-spark') updateSparkUI();
+    if(t==='sec-tasks'&&!_tasksCache) fetchTasks('all');
   });
 });
 
-// ── UPDATE UI ──
+// Update UI
 function updateUI(){
   hideSplash();
   if(!user) return;
   try{ $('uid-val').innerText=user.id||'---'; }catch(e){}
   const sp=parseFloat(user.diamondBalance||0);
-  const ton=parseFloat(user.tonBalance||0);
-  // Home
   $('bal-sp').innerText=Math.floor(sp);
   $('bal-usdt').innerText=`\u2248 $${(sp*SP_TO_USD).toFixed(3)} USDT`;
-  $('bal-ton').innerText=ton.toFixed(4);
+  $('bal-ton').innerText=parseFloat(user.tonBalance||0).toFixed(4);
   try{ $('bal-sp-2').innerText=Math.floor(sp); }catch(e){}
-  try{ $('tasks-done-count').innerText=(user.completedTasks||[]).length; }catch(e){}
-  // Earn tab
+  const td=(user.completedTasks||[]).length;
+  try{ $('tasks-done-count').innerText=td; }catch(e){}
+  try{ $('tasks-done-count2').innerText=td; }catch(e){}
+  const refs=user.totalInvites||0;
+  try{ $('ref-count-home').innerText=refs; }catch(e){}
+  try{ $('ref-count-home2').innerText=refs; }catch(e){}
   try{ $('earn-bal-sp').innerText=Math.floor(sp); }catch(e){}
   try{ $('earn-bal-usdt').innerText=`\u2248 $${(sp*SP_TO_USD).toFixed(3)} USDT`; }catch(e){}
-  // Withdraw
   try{ $('wd-balance').innerText=`${Math.floor(sp)} SP`; $('wd-balance-usdt').innerText=`\u2248 $${(sp*SP_TO_USD).toFixed(3)} USDT`; }catch(e){}
-  // Refer
-  try{
-    const link=`${REFER_BASE}?startapp=${user.id}`;
-    $('invite-link').value=link;
-    $('ref-total').innerText=user.totalInvites||0;
-    $('ref-valid').innerText=user.validReferrals||0;
-    $('ref-earned').innerText=user.referralDiamondEarned||0;
-    try{ $('ref-total-m').innerText=user.totalInvites||0; $('ref-valid-m').innerText=user.validReferrals||0; $('ref-earned-m').innerText=user.referralDiamondEarned||0; const lm=$('invite-link-m'); if(lm) lm.value=link; }catch(e){}
-  }catch(e){}
+  const link=`${REFER_BASE}?startapp=${user.id}`;
+  try{ $('invite-link').value=link; $('ref-total').innerText=refs; $('ref-valid').innerText=user.validReferrals||0; $('ref-earned').innerText=user.referralDiamondEarned||0; }catch(e){}
+  try{ $('invite-link-m').value=link; $('ref-total-m').innerText=refs; $('ref-valid-m').innerText=user.validReferrals||0; $('ref-earned-m').innerText=user.referralDiamondEarned||0; }catch(e){}
   updateLootbox();
 }
 
-// ── LOOTBOX ──
+// Lootbox
 function updateLootbox(){
   if(!user) return;
-  const lb=parseFloat(user.lootboxBalance||0);
-  const today=getToday();
+  const lb=parseFloat(user.lootboxBalance||0), today=getToday();
   const claimsToday=(user.lootboxClaimDate===today)?(user.lootboxClaimCount||0):0;
   const claimsLeft=Math.max(0,LOOTBOX_MAX_DAY-claimsToday);
   const lbEl=$('lootbox-balance'), pT=$('lootbox-progress-text'), pB=$('lootbox-progress-bar');
@@ -737,34 +699,27 @@ function updateLootbox(){
   const pct=Math.min(100,(lb/LOOTBOX_MIN)*100);
   if(pB) pB.style.width=pct+'%';
   if(pT) pT.innerText=`${lb.toFixed(0)} / ${LOOTBOX_MIN} SP to claim`;
-  if(cL) cL.innerText=claimsLeft>0?`${claimsLeft} claim${claimsLeft!==1?'s':''} left`:'Daily limit reached';
+  if(cL) cL.innerText=claimsLeft>0?`${claimsLeft} claims left`:'Daily limit reached';
   if(cBtn){ const can=lb>=LOOTBOX_MIN&&claimsLeft>0; cBtn.disabled=!can; cBtn.style.opacity=can?'1':'0.5'; cBtn.style.cursor=can?'pointer':'not-allowed'; }
-  if(tEl){
-    if(claimsLeft===0) tEl.innerText='Daily claim limit reached. Come back tomorrow!';
-    else if(lb<LOOTBOX_MIN) tEl.innerText=`Need ${(LOOTBOX_MIN-lb).toFixed(0)} more SP to claim`;
-    else tEl.innerText='Ready to claim! ✓';
-  }
+  if(tEl){ if(claimsLeft===0) tEl.innerText='Come back tomorrow!'; else if(lb<LOOTBOX_MIN) tEl.innerText=`Need ${(LOOTBOX_MIN-lb).toFixed(0)} more SP`; else tEl.innerText='Ready to claim! ✓'; }
 }
-
 $('btn-lootbox-claim').addEventListener('click',async()=>{
   const lb=parseFloat(user?.lootboxBalance||0); if(lb<LOOTBOX_MIN) return;
-  const btn=$('btn-lootbox-claim');
-  btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  const btn=$('btn-lootbox-claim'); btn.disabled=true; btn.innerHTML='<div class="spin"></div>';
   try{
     const res=await fetch(`${API_BASE}/claimLootbox`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id})});
     const data=await res.json();
-    if(data.success){ user.diamondBalance=(user.diamondBalance||0)+lb; user.lootboxBalance=0; user.lootboxClaimDate=getToday(); user.lootboxClaimCount=(user.lootboxClaimCount||0)+1; clearUserCache(); updateUI(); showAlert('\uD83C\uDF81 Claimed!',`+${lb.toFixed(0)} SP added to balance!`,'success'); }
+    if(data.success){ user.diamondBalance=(user.diamondBalance||0)+lb; user.lootboxBalance=0; user.lootboxClaimDate=getToday(); user.lootboxClaimCount=(user.lootboxClaimCount||0)+1; clearUserCache(); updateUI(); showAlert('\uD83C\uDF81 Claimed!',`+${lb.toFixed(0)} SP added!`,'success'); }
     else { showAlert('Failed',data.error||'Could not claim.','error'); updateLootbox(); }
   }catch(e){ showAlert('Error','Server error.','error'); updateLootbox(); }
 });
 
-// ── SPARK ──
+// Spark
 function sparkKey(k){ return `ts_spark_${k}_${user?.id}`; }
 function getLastBlast(){ try{ return parseInt(localStorage.getItem(sparkKey('last'))||'0'); }catch(e){ return 0; } }
 function setLastBlast(){ try{ localStorage.setItem(sparkKey('last'),String(Date.now())); }catch(e){} }
 function getSparkStats(){ try{ return JSON.parse(localStorage.getItem(sparkKey('stats'))||'{"b":0,"e":0}'); }catch(e){ return {b:0,e:0}; } }
 function saveSparkStats(b,e){ try{ localStorage.setItem(sparkKey('stats'),JSON.stringify({b,e})); }catch(e){} }
-
 let _sparkHistory=[], _blasting=false;
 
 function updateSparkUI(){
@@ -775,11 +730,10 @@ function updateSparkUI(){
   const since=Date.now()-getLastBlast();
   const cdBanner=$('spark-cooldown-banner'), btn=$('btn-blast-spark'), bulb=$('spark-bulb-display');
   if(since<SPARK_CD){
-    const rem=SPARK_CD-since;
-    const h=Math.floor(rem/3600000),m=Math.floor((rem%3600000)/60000),sc=Math.floor((rem%60000)/1000);
+    const rem=SPARK_CD-since, h=Math.floor(rem/3600000), m=Math.floor((rem%3600000)/60000), sc=Math.floor((rem%60000)/1000);
     if(cdBanner){ cdBanner.style.display='block'; $('spark-cooldown-text').innerText=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`; }
     if(btn){ btn.disabled=true; btn.style.opacity='0.4'; btn.innerHTML='\u23F3 Cooldown Active'; }
-    if(bulb){ bulb.innerHTML='\uD83D\uDD0C'; bulb.style.filter='grayscale(1) brightness(0.35)'; bulb.style.animation='none'; }
+    if(bulb){ bulb.innerHTML='\uD83D\uDD0C'; bulb.style.filter='grayscale(1) brightness(0.3)'; bulb.style.animation='none'; }
   } else {
     if(cdBanner) cdBanner.style.display='none';
     if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML='<span>\u26A1</span> Blast Spark!'; }
@@ -793,40 +747,34 @@ async function blastSpark(){
   if(Date.now()-getLastBlast()<SPARK_CD){ showAlert('Cooldown','Please wait for the cooldown timer.','error'); return; }
   _blasting=true;
   const btn=$('btn-blast-spark'), bulb=$('spark-bulb-display'), resEl=$('spark-result-text');
-  btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
-  if(bulb){ bulb.style.animation='none'; bulb.innerHTML='\u26A1'; bulb.style.filter='drop-shadow(0 0 50px rgba(250,204,21,1))'; bulb.style.transform='scale(1.3)'; }
+  btn.disabled=true; btn.innerHTML='<div class="spin"></div>';
+  if(bulb){ bulb.style.animation='none'; bulb.innerHTML='\u26A1'; bulb.style.filter='drop-shadow(0 0 55px rgba(250,204,21,1))'; bulb.style.transform='scale(1.3)'; }
   await new Promise(r=>setTimeout(r,1200));
   const reward=Math.floor(Math.random()*11)+10;
-  if(bulb){ bulb.innerHTML='\uD83D\uDCA1'; bulb.style.transform='scale(1)'; bulb.style.filter='drop-shadow(0 0 18px rgba(250,204,21,0.8))'; bulb.style.animation='none'; }
+  if(bulb){ bulb.innerHTML='\uD83D\uDCA1'; bulb.style.transform='scale(1)'; bulb.style.filter='drop-shadow(0 0 20px rgba(250,204,21,0.8))'; bulb.style.animation='none'; }
   if(resEl){ resEl.innerText=`\u26A1 Blasted! +${reward} SP`; resEl.style.color='#f5c842'; }
   try{
     const res=await fetch(`${API_BASE}/sparkBlast`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,reward})});
     const data=await res.json();
-    if(data.success!==false){ user.diamondBalance=(user.diamondBalance||0)+reward; clearUserCache(); updateUI(); showAlert('\u26A1 Spark Blasted!',`+${reward} SP added to balance!`,'success'); }
+    if(data.success!==false){ user.diamondBalance=(user.diamondBalance||0)+reward; clearUserCache(); updateUI(); showAlert('\u26A1 Spark Blasted!',`+${reward} SP added!`,'success'); }
   }catch(e){ console.warn('[spark]',e); }
   setLastBlast();
   const s=getSparkStats(); s.b++; s.e=parseFloat(s.e||0)+reward; saveSparkStats(s.b,s.e);
   _sparkHistory.unshift({reward,t:new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})});
   if(_sparkHistory.length>5) _sparkHistory.pop();
   const hEl=$('spark-history');
-  if(hEl) hEl.innerHTML=_sparkHistory.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:0.76rem;"><span style="color:var(--txt2);">\uD83D\uDCA1 Spark Blast</span><span style="font-family:var(--mono);color:#f5c842;font-weight:700;">+${h.reward} SP</span><span style="color:var(--txt3);">${h.t}</span></div>`).join('');
+  if(hEl) hEl.innerHTML=_sparkHistory.map(h=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:0.74rem;"><span style="color:var(--txt2);">\uD83D\uDCA1 Spark Blast</span><span style="font-family:var(--mono);color:#f5c842;font-weight:700;">+${h.reward} SP</span><span style="color:var(--txt3);">${h.t}</span></div>`).join('');
   updateSparkUI(); _blasting=false;
 }
 $('btn-blast-spark').addEventListener('click',blastSpark);
 
-// ── INIT ──
-function clearUserCache(){
-  if(!user) return;
-  try{ localStorage.removeItem(`ts_u_${user.id}`); localStorage.removeItem(`ts_ut_${user.id}`); }catch(e){}
-}
-
+// Init
 async function initApp(){
   if(!tg.initDataUnsafe?.user){
     document.body.innerHTML='<h3 style="text-align:center;margin-top:80px;color:#f5c842;font-family:Sora,sans-serif;padding:0 20px;">Please open in Telegram.</h3>'; return;
   }
-  tg.ready(); tg.expand(); tg.setHeaderColor('#0b0c14');
+  tg.ready(); tg.expand(); tg.setHeaderColor('#09090f');
   const u=tg.initDataUnsafe.user, uid=String(u.id), today=getToday(), sp=tg.initDataUnsafe.start_param;
-
   try{
     const ct=parseInt(localStorage.getItem(`ts_ut_${uid}`)||'0');
     if(Date.now()-ct<CACHE_TTL){
@@ -834,30 +782,21 @@ async function initApp(){
       if(cu&&cu.id){ user=cu; if(user.isBanned) return showBanned(); updateUI(); checkJoin(); fetchTasks('all'); return; }
     }
   }catch(e){}
-
   let apiData=null;
   try{
     const res=await fetch(`${API_BASE}/init`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid,firstName:u.first_name||'',lastName:u.last_name||'',username:u.username||'',referrerCode:(sp&&sp!==uid)?sp:null})});
     apiData=await res.json();
   }catch(e){ console.warn('[init]',e.message); }
-
   if(apiData?.blocked){ document.body.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;background:var(--bg);font-family:Sora,sans-serif;"><div style="font-size:3rem;">\uD83D\uDEAB</div><h2 style="color:var(--txt);margin-top:12px;">Device Blocked</h2><p style="color:var(--txt3);">Multiple accounts detected.</p></div>'; return; }
-
-  if(apiData?.user){
-    user={id:uid,...apiData.user};
-    try{ localStorage.setItem(`ts_u_${uid}`,JSON.stringify({...user})); localStorage.setItem(`ts_ut_${uid}`,String(Date.now())); }catch(e){}
-  } else {
-    user={id:uid,diamondBalance:0,tonBalance:0,completedTasks:[],lootboxBalance:0,totalInvites:0,validReferrals:0,referralDiamondEarned:0,telegramUsername:u.username||'',firstName:u.first_name||'',lastResetDate:today,isValidatedRef:false,isBanned:false};
-  }
-
+  if(apiData?.user){ user={id:uid,...apiData.user}; try{ localStorage.setItem(`ts_u_${uid}`,JSON.stringify({...user})); localStorage.setItem(`ts_ut_${uid}`,String(Date.now())); }catch(e){} }
+  else { user={id:uid,diamondBalance:0,tonBalance:0,completedTasks:[],lootboxBalance:0,totalInvites:0,validReferrals:0,referralDiamondEarned:0,telegramUsername:u.username||'',firstName:u.first_name||'',lastResetDate:today,isValidatedRef:false,isBanned:false}; }
   if(user.isBanned) return showBanned();
   if(apiData?.isNew||apiData?.justCreated) maybeShowWhatsNew();
   updateUI(); checkJoin(); fetchTasks('all');
 }
+function showBanned(){ document.body.innerHTML='<div style="text-align:center;padding-top:120px;font-family:Sora,sans-serif;"><div style="font-size:3rem;">\uD83D\uDEAB</div><h3 style="color:var(--txt);margin-top:12px;">Account Banned.</h3></div>'; }
 
-function showBanned(){ document.body.innerHTML='<div style="text-align:center;padding-top:120px;font-family:Sora,sans-serif;"><div style="font-size:3rem;">\uD83D\uDEAB</div><h3 style="color:var(--txt);margin-top:12px;">Account Banned.</h3><p style="color:var(--txt3);margin-top:6px;font-size:0.85rem;">Contact support.</p></div>'; }
-
-// ── JOIN CHECK ──
+// Join check
 let _joinInterval=null;
 async function checkJoin(){
   try{
@@ -868,11 +807,9 @@ async function checkJoin(){
     else { $('modal-join').classList.add('show'); if(!_joinInterval) _joinInterval=setInterval(checkJoin,15000); }
   }catch(e){ $('modal-join').classList.remove('show'); }
 }
-
 $('btn-verify-join').addEventListener('click',async()=>{
   const b=$('btn-verify-join'), er=$('join-error');
-  b.disabled=true; b.innerHTML='<div class="loader-spin"></div> Checking...';
-  er.innerText='';
+  b.disabled=true; b.innerHTML='<div class="spin"></div> Checking...'; er.innerText='';
   try{
     const res=await fetch(`${API_BASE}/checkJoin?userId=${user.id}&force=1`);
     const data=await res.json();
@@ -881,38 +818,36 @@ $('btn-verify-join').addEventListener('click',async()=>{
   }catch(e){ er.innerText='Check failed. Try again.'; b.disabled=false; b.innerHTML='<i class="fas fa-check-circle"></i> I\'ve Joined — Verify'; }
 });
 
-// ── TASKS ──
+// Tasks
 let _tasksCache=null, taskFilter='all';
 async function fetchTasks(filter){
-  const container=$('task-list-container');
-  if(!container) return;
+  const container=$('task-list-container'); if(!container) return;
   if(_tasksCache){ _renderTasks(_tasksCache,filter,container); return; }
-  container.innerHTML='<div style="text-align:center;padding:30px 0;"><div class="loader-spin" style="margin:0 auto;width:28px;height:28px;border-width:3px;"></div></div>';
+  container.innerHTML='<div style="text-align:center;padding:30px;"><div class="spin" style="margin:0 auto;width:28px;height:28px;border-width:3px;"></div></div>';
   try{
     const res=await fetch(`${API_BASE}/getTasks?userId=${user.id}`);
-    const data=await res.json();
-    _tasksCache=data.tasks||[]; _renderTasks(_tasksCache,filter,container);
-  }catch(e){ container.innerHTML='<div class="empty-state"><i class="fas fa-wifi-slash"></i><p>Failed to load tasks.</p></div>'; }
+    const data=await res.json(); _tasksCache=data.tasks||[]; _renderTasks(_tasksCache,filter,container);
+  }catch(e){ container.innerHTML='<div class="empty"><i class="fas fa-wifi-slash"></i><p>Failed to load tasks.</p></div>'; }
 }
 function _renderTasks(tasks,filter,container){
   const done=user.completedTasks||[];
   const filtered=filter==='all'?tasks:tasks.filter(t=>t.type===filter);
-  if(!filtered.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>No tasks in this category.</p></div>'; return; }
+  if(!filtered.length){ container.innerHTML='<div class="empty"><i class="fas fa-inbox"></i><p>No tasks here yet.</p></div>'; return; }
+  const iconMap={telegram_channel:'fab fa-telegram-plane',telegram_group:'fas fa-users',telegram_bot:'fas fa-robot',social:'fas fa-play-circle'};
+  const bgMap={telegram_channel:'rgba(0,136,204,0.12)',telegram_group:'rgba(233,168,48,0.1)',telegram_bot:'rgba(31,207,136,0.1)',social:'rgba(168,85,247,0.1)'};
+  const clrMap={telegram_channel:'#0099dd',telegram_group:'#e9a830',telegram_bot:'#1fcf88',social:'#a855f7'};
   container.innerHTML=filtered.map(task=>{
     const isDone=done.includes(task.id);
-    const iconMap={telegram_channel:'fab fa-telegram-plane',telegram_group:'fas fa-users',telegram_bot:'fas fa-robot',social:'fas fa-play-circle'};
-    const bgMap={telegram_channel:'rgba(0,136,204,0.12)',telegram_group:'rgba(233,168,48,0.1)',telegram_bot:'rgba(34,201,138,0.1)',social:'rgba(168,85,247,0.1)'};
-    const clrMap={telegram_channel:'#0099dd',telegram_group:'#e9a830',telegram_bot:'#22c98a',social:'#a855f7'};
     const icon=iconMap[task.type]||'fas fa-star', bg=bgMap[task.type]||'rgba(233,168,48,0.1)', clr=clrMap[task.type]||'#f5c842';
-    return `<div class="task-card" data-taskid="${task.id}">
-      <div class="t-icon" style="background:${bg};border:1px solid ${clr}22;color:${clr};"><i class="${icon}"></i></div>
-      <div class="t-info">
-        <div class="t-name">${task.name||'Task'}</div>
-        <div class="t-reward"><span class="reward-pill"><i class="fas fa-bolt"></i> +${task.reward||TASK_REWARD} SP</span></div>
+    return `<div style="background:var(--card);border:1px solid var(--bdr);border-radius:15px;padding:12px 13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;" data-taskid="${task.id}">
+      <div style="width:42px;height:42px;border-radius:12px;background:${bg};border:1px solid ${clr}22;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;color:${clr};"><i class="${icon}"></i></div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.87rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${task.name||'Task'}</div>
+        <div style="margin-top:3px;"><span style="display:inline-flex;align-items:center;gap:4px;background:rgba(233,168,48,0.1);border:1px solid rgba(233,168,48,0.2);border-radius:18px;padding:2px 8px;font-size:0.68rem;font-weight:700;color:#f5c842;"><i class="fas fa-bolt"></i> +${task.reward||TASK_REWARD} SP</span></div>
       </div>
       ${isDone
-        ?`<div style="font-size:0.72rem;font-weight:700;color:var(--green);display:flex;align-items:center;gap:4px;flex-shrink:0;"><i class="fas fa-check-circle"></i> Done</div>`
-        :`<button class="btn btn-primary task-btn" data-taskid="${task.id}" data-url="${task.url||''}" style="padding:9px 15px;font-size:0.8rem;border-radius:11px;flex-shrink:0;">GO</button>`
+        ?`<div style="font-size:0.7rem;font-weight:700;color:var(--green);display:flex;align-items:center;gap:4px;flex-shrink:0;"><i class="fas fa-check-circle"></i> Done</div>`
+        :`<button class="btn btn-gold task-btn btn-sm" data-taskid="${task.id}" data-url="${task.url||''}" style="flex-shrink:0;">GO</button>`
       }
     </div>`;
   }).join('');
@@ -920,38 +855,28 @@ function _renderTasks(tasks,filter,container){
     let clicked=false;
     btn.addEventListener('click',async()=>{
       if(clicked) return handleVerify(btn.dataset.taskid,btn);
-      clicked=true; btn.innerHTML='VERIFY'; btn.style.background='linear-gradient(155deg,#2ddfaa,#22c98a,#14a06e)'; btn.style.color='#01160e'; btn.style.boxShadow=null;
+      clicked=true; btn.innerHTML='VERIFY'; btn.style.background='linear-gradient(155deg,#2ce9a0,#1fcf88,#0fa468)'; btn.style.color='#001a0e'; btn.style.boxShadow='0 4px 0 #085c38';
       const url=btn.dataset.url;
       if(url){ try{ tg.openLink?.(url); }catch(e){} }
     });
   });
 }
 async function handleVerify(taskId,btn){
-  btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  btn.disabled=true; btn.innerHTML='<div class="spin"></div>';
   try{
     const res=await fetch(`${API_BASE}/claimTask`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,taskId})});
     const data=await res.json();
-    if(data.success){
-      if(!user.completedTasks) user.completedTasks=[];
-      user.completedTasks.push(taskId);
-      user.diamondBalance=(user.diamondBalance||0)+(data.reward||TASK_REWARD);
-      clearUserCache(); updateUI(); _tasksCache=null;
-      _renderTasks(await refetchTasks(),taskFilter,$('task-list-container'));
-      showAlert('\u2705 Task Done!',`+${data.reward||TASK_REWARD} SP earned!`,'success');
-      checkValidRef();
-    } else { showAlert('Not Verified',data.error||'Please complete the task first.','error'); btn.disabled=false; btn.innerHTML='VERIFY'; }
+    if(data.success){ if(!user.completedTasks) user.completedTasks=[]; user.completedTasks.push(taskId); user.diamondBalance=(user.diamondBalance||0)+(data.reward||TASK_REWARD); clearUserCache(); updateUI(); _tasksCache=null; fetchTasks(taskFilter); showAlert('\u2705 Done!',`+${data.reward||TASK_REWARD} SP earned!`,'success'); checkValidRef(); }
+    else { showAlert('Not Verified',data.error||'Please complete the task first.','error'); btn.disabled=false; btn.innerHTML='VERIFY'; }
   }catch(e){ showAlert('Error','Verification failed.','error'); btn.disabled=false; btn.innerHTML='VERIFY'; }
 }
-async function refetchTasks(){
-  try{ const res=await fetch(`${API_BASE}/getTasks?userId=${user.id}`); const data=await res.json(); _tasksCache=data.tasks||[]; return _tasksCache; }catch(e){ return _tasksCache||[]; }
-}
-document.querySelectorAll('.platform-pill').forEach(p=>p.addEventListener('click',()=>{
-  document.querySelectorAll('.platform-pill').forEach(x=>x.classList.remove('active')); p.classList.add('active');
+document.querySelectorAll('.fpill').forEach(p=>p.addEventListener('click',()=>{
+  document.querySelectorAll('.fpill').forEach(x=>x.classList.remove('active')); p.classList.add('active');
   taskFilter=p.dataset.filter;
   if(_tasksCache) _renderTasks(_tasksCache,taskFilter,$('task-list-container')); else fetchTasks(taskFilter);
 }));
 
-// ── VALID REFER ──
+// Valid refer
 async function checkValidRef(){
   if(!user.referredBy||user.isValidatedRef) return;
   if((user.completedTasks||[]).length>=REFER_TASKS){
@@ -963,97 +888,76 @@ async function checkValidRef(){
   }
 }
 
-// ── WITHDRAW ──
+// Withdraw
 $('wd-amount').addEventListener('input',()=>{
   const a=parseFloat($('wd-amount').value), prev=$('wd-preview');
-  if(a&&a>=MIN_WITHDRAW){
-    prev.style.display='block';
-    prev.innerHTML=`<div style="font-size:0.7rem;color:var(--txt3);margin-bottom:4px;">Exchange rate: 20,000 SP = 0.6 TON \u2248 $1 USDT</div>You receive: <b style="color:#f5c842;">${(a*SP_TO_TON).toFixed(4)} TON</b> <span style="color:var(--txt3);">(\u2248 $${(a*SP_TO_USD).toFixed(3)})</span>`;
-  } else prev.style.display='none';
+  if(a&&a>=MIN_WITHDRAW){ prev.style.display='block'; prev.innerHTML=`You receive: <b style="color:#f5c842;">${(a*SP_TO_TON).toFixed(4)} TON</b> <span style="color:var(--txt3);">(\u2248 $${(a*SP_TO_USD).toFixed(3)})</span>`; }
+  else prev.style.display='none';
 });
-
 $('wd-submit').addEventListener('click',async()=>{
   if(isSub) return;
   if(user.withdrawBanned) return showAlert('\uD83D\uDEAB Banned','Account banned from withdrawals.','error');
   const amt=parseFloat($('wd-amount').value), addr=$('wd-address').value.trim();
   if(!addr) return showAlert('Error','Enter TON wallet address.','error');
   if(isNaN(amt)||amt<MIN_WITHDRAW) return showAlert('Notice',`Minimum ${MIN_WITHDRAW} SP required.`,'error');
-  if((user.diamondBalance||0)<amt) return showAlert('Error','Insufficient SP balance.','error');
-  if(user.lastWithdrawDate===getToday()) return showAlert('Daily Limit','Max 1 withdrawal per day.','error');
+  if((user.diamondBalance||0)<amt) return showAlert('Error','Insufficient balance.','error');
+  if(user.lastWithdrawDate===getToday()) return showAlert('Daily Limit','1 withdrawal per day.','error');
   const done=(user.completedTasks||[]).length;
   if(done<WITHDRAW_MIN_TASKS) return showAlert('Not Eligible',`Complete ${WITHDRAW_MIN_TASKS} tasks first. (${done}/${WITHDRAW_MIN_TASKS})`,'error');
   isSub=true;
-  const btn=$('wd-submit'); btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  const btn=$('wd-submit'); btn.disabled=true; btn.innerHTML='<div class="spin"></div>';
   try{
     const res=await fetch(`${API_BASE}/withdraw`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,username:user.telegramUsername||'',firstName:user.firstName||'',method:'tonkeeper',address:addr,amount:amt,tasksDone:done})});
     const data=await res.json();
-    if(data.success){ user.diamondBalance=data.newBalance??(user.diamondBalance-amt); user.lastWithdrawDate=getToday(); _histCache=null; clearUserCache(); updateUI(); $('wd-amount').value=''; $('wd-address').value=''; $('wd-preview').style.display='none'; $('modal-withdraw').classList.remove('show'); showAlert('Submitted \u2705',`Withdrawal of ${amt} SP submitted! You'll receive a Telegram notification.`,'success'); }
+    if(data.success){ user.diamondBalance=data.newBalance??(user.diamondBalance-amt); user.lastWithdrawDate=getToday(); _histCache=null; clearUserCache(); updateUI(); $('wd-amount').value=''; $('wd-address').value=''; $('wd-preview').style.display='none'; $('modal-withdraw').classList.remove('show'); showAlert('Submitted \u2705',`Withdrawal of ${amt} SP submitted!`,'success'); }
     else { showAlert('Error',data.error||'Withdrawal failed.','error'); }
-  }catch(e){ showAlert('Error','Server error. Please try again.','error'); }
+  }catch(e){ showAlert('Error','Server error.','error'); }
   finally{ isSub=false; btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Withdraw'; }
 });
 
-// ── PROMO ──
+// Promo
 $('promo-submit').addEventListener('click',async()=>{
   const code=$('promo-input').value.trim();
   if(!code) return showAlert('Error','Enter a promo code.','error');
-  const btn=$('promo-submit'); btn.disabled=true; btn.innerHTML='<div class="loader-spin"></div>';
+  const btn=$('promo-submit'); btn.disabled=true; btn.innerHTML='<div class="spin"></div>';
   try{
     const valRes=await fetch(`${API_BASE}/claimPromo`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,code,validateOnly:true})});
     const vd=await valRes.json();
-    if(!vd.valid){
-      let msg='Invalid or expired code.';
-      if(vd.reason==='already_used') msg='Already used this code.';
-      else if(vd.reason==='expired') msg='Code has expired.';
-      else if(vd.reason==='not_found') msg='Code not found.';
-      showAlert('Invalid Code',msg,'error'); btn.disabled=false; btn.innerHTML='Redeem Now'; return;
-    }
+    if(!vd.valid){ let msg='Invalid or expired.'; if(vd.reason==='already_used') msg='Already used.'; else if(vd.reason==='expired') msg='Expired.'; else if(vd.reason==='not_found') msg='Not found.'; showAlert('Invalid',msg,'error'); btn.disabled=false; btn.innerHTML='Redeem Now'; return; }
     const cr=await fetch(`${API_BASE}/claimPromo`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,code})});
     const cd=await cr.json();
-    if(cd.success){ user.diamondBalance=(user.diamondBalance||0)+(cd.reward||0); clearUserCache(); updateUI(); showAlert('\uD83C\uDF89 Redeemed!',`+${cd.reward} \u26A1 SP added!`,'success'); $('promo-input').value=''; $('modal-promo').classList.remove('show'); }
-    else { showAlert('Error',cd.error||'Redemption failed.','error'); }
+    if(cd.success){ user.diamondBalance=(user.diamondBalance||0)+(cd.reward||0); clearUserCache(); updateUI(); showAlert('\uD83C\uDF89 Redeemed!',`+${cd.reward} SP added!`,'success'); $('promo-input').value=''; $('modal-promo').classList.remove('show'); }
+    else { showAlert('Error',cd.error||'Failed.','error'); }
   }catch(e){ showAlert('Error','Server error.','error'); }
   btn.disabled=false; btn.innerHTML='Redeem Now';
 });
 
-// ── HISTORY ──
+// History
 $('btn-history').addEventListener('click',async()=>{
   $('modal-history').classList.add('show');
   if(_histCache){ renderHistory(_histCache); return; }
-  const list=$('history-list');
-  list.innerHTML='<div style="text-align:center;padding:24px;"><div class="loader-spin" style="margin:0 auto;width:28px;height:28px;border-width:3px;"></div></div>';
-  try{
-    const res=await fetch(`${API_BASE}/getHistory?userId=${user.id}`);
-    const data=await res.json(); _histCache=data.history||[]; renderHistory(_histCache);
-  }catch(e){ list.innerHTML='<div class="empty-state"><p>Failed to load history.</p></div>'; }
+  const list=$('history-list'); list.innerHTML='<div style="text-align:center;padding:24px;"><div class="spin" style="margin:0 auto;width:28px;height:28px;border-width:3px;"></div></div>';
+  try{ const res=await fetch(`${API_BASE}/getHistory?userId=${user.id}`); const data=await res.json(); _histCache=data.history||[]; renderHistory(_histCache); }catch(e){ list.innerHTML='<div class="empty"><p>Failed to load.</p></div>'; }
 });
 function renderHistory(items){
   const list=$('history-list');
-  if(!items.length){ list.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet.</p></div>'; return; }
-  list.innerHTML=items.map(h=>{
-    const col=h.type==='withdrawal'?'var(--red)':'var(--green)', label=h.type==='withdrawal'?`-${h.amount} SP`:`+${h.amount} SP`;
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--bdr);">
-      <div><div style="font-size:0.82rem;font-weight:700;color:var(--txt);">${h.note||h.type}</div><div style="font-size:0.68rem;color:var(--txt3);margin-top:2px;">${h.date||''}</div></div>
-      <span style="font-family:var(--mono);font-weight:700;color:${col};font-size:0.84rem;">${label}</span>
-    </div>`;
-  }).join('');
+  if(!items.length){ list.innerHTML='<div class="empty"><i class="fas fa-receipt"></i><p>No transactions yet.</p></div>'; return; }
+  list.innerHTML=items.map(h=>{ const col=h.type==='withdrawal'?'var(--red)':'var(--green)', label=h.type==='withdrawal'?`-${h.amount} SP`:`+${h.amount} SP`; return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);"><div><div style="font-size:0.8rem;font-weight:700;color:var(--txt);">${h.note||h.type}</div><div style="font-size:0.65rem;color:var(--txt3);margin-top:2px;">${h.date||''}</div></div><span style="font-family:var(--mono);font-weight:700;color:${col};font-size:0.82rem;">${label}</span></div>`; }).join('');
 }
 
-// ── REFER / PROMO / MODAL OPENERS ──
+// Actions
 $('uid-display').addEventListener('click',()=>{ navigator.clipboard?.writeText(user?.id||'').catch(()=>{}); showAlert('Copied!','User ID copied.','success'); });
-$('invite-copy').addEventListener('click',()=>{ const v=$('invite-link')?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Invite link copied.','success'); } });
-$('invite-share').addEventListener('click',()=>{ const v=$('invite-link')?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark and earn SP! \u26A1')}`); });
-$('invite-copy-m').addEventListener('click',()=>{ const v=$('invite-link-m')?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Invite link copied.','success'); } });
-$('invite-share-m').addEventListener('click',()=>{ const v=$('invite-link-m')?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark and earn SP! \u26A1')}`); });
-$('btn-withdraw-inline').addEventListener('click',()=>$('modal-withdraw').classList.add('show'));
-$('btn-refer-inline').addEventListener('click',()=>$('modal-refer').classList.add('show'));
+$('invite-copy').addEventListener('click',()=>{ const v=$('invite-link')?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Link copied!','success'); } });
+$('invite-share').addEventListener('click',()=>{ const v=$('invite-link')?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark \u26A1 Earn SP!')}`); });
+$('invite-copy-m').addEventListener('click',()=>{ const v=$('invite-link-m')?.value; if(v){ navigator.clipboard?.writeText(v).catch(()=>{}); showAlert('Copied!','Link copied!','success'); } });
+$('invite-share-m').addEventListener('click',()=>{ const v=$('invite-link-m')?.value; if(v) tg.openTelegramLink?.(`https://t.me/share/url?url=${encodeURIComponent(v)}&text=${encodeURIComponent('Join TonSpark \u26A1 Earn SP!')}`); });
 $('btn-promo').addEventListener('click',()=>$('modal-promo').classList.add('show'));
 
-// ── WHAT'S NEW ──
+// What's new
 function maybeShowWhatsNew(){ if(!user) return; const k=`ts_wn_${user.id}`; if(localStorage.getItem(k)) return; setTimeout(()=>$('modal-whats-new')?.classList.add('show'),700); }
 $('btn-whats-new-close').addEventListener('click',()=>{ $('modal-whats-new').classList.remove('show'); if(user) localStorage.setItem(`ts_wn_${user.id}`,'1'); });
 
-// ── PERIODIC ──
+// Periodic
 setInterval(updateLootbox,30000);
 setTimeout(hideSplash,8000);
 
