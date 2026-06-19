@@ -1,0 +1,12 @@
+{
+  "name": "tonspark-backend",
+  "version": "1.0.0",
+  "description": "TonSpark Telegram Mini App backend — Vercel Serverless Functions + Firebase Firestore",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
