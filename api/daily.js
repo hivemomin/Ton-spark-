@@ -115,4 +115,4 @@ export default async function handler(req, res) {
     console.error('daily.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-             }
+}
