@@ -4,8 +4,9 @@ import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 
 // 25 SP = $1
-const MIN_WITHDRAW_SP = 2500; // ≈ $100 at the new rate — see note below
+const MIN_WITHDRAW_SP = 1000; // ≈ $40 before fee, ≈ $36 after 10% fee
 const SP_TO_USDT = 1 / 25;
+const WITHDRAW_FEE = 0.10; // 10% — same for Binance UID and TonKeeper
 
 // ── Withdraw gate requirements ──────────────────────────────────
 const MIN_TASKS_COMPLETED = 5;
@@ -98,7 +99,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Insufficient balance.' });
     }
 
-    const usdtAmount = parseFloat((amount * SP_TO_USDT).toFixed(4));
+    // The fee is applied here, server-side, so the amount actually paid out
+    // always matches what the fee-adjusted preview promised the user —
+    // previously this line ignored the fee entirely and paid the full
+    // gross amount, silently contradicting the "after fee" preview shown
+    // in the app.
+    const grossUsdt = amount * SP_TO_USDT;
+    const usdtAmount = parseFloat((grossUsdt * (1 - WITHDRAW_FEE)).toFixed(4));
 
     const doc = {
       telegramId: String(telegramId),
