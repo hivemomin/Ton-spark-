@@ -219,6 +219,7 @@ export default async function handler(req, res) {
         lightning: { lastClaim: null, totalClaims: 0, totalSp: 0 },
         completedTasks: [],
         dailyTasksClaimed: [],
+        totalAdsWatched: 0,
         promosUsed: [],
         isBanned: false,
         appOpens: 1,
@@ -248,4 +249,4 @@ export default async function handler(req, res) {
     console.error('user.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-          }
+        }
