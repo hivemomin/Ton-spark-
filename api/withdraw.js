@@ -3,9 +3,9 @@
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 
-// 25,000 SP = $1
-const MIN_WITHDRAW_SP = 2500; // ≈ $0.10
-const SP_TO_USDT = 1 / 25000;
+// 25 SP = $1
+const MIN_WITHDRAW_SP = 2500; // ≈ $100 at the new rate — see note below
+const SP_TO_USDT = 1 / 25;
 
 // ── Withdraw gate requirements ──────────────────────────────────
 const MIN_TASKS_COMPLETED = 5;
