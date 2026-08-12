@@ -65,14 +65,15 @@ export default async function handler(req, res) {
       if (type === 'refer') {
         const referredUsers = await users
           .find({ referredBy: String(telegramId) })
-          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, lightning: 1, referralValidPaid: 1, _id: 0 })
+          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, totalAdsWatched: 1, referralTask10Paid: 1, referralAds20Paid: 1, _id: 0 })
           .toArray();
 
         const referredSummary = referredUsers.map(r => ({
           firstName: r.firstName, username: r.username, createdAt: r.createdAt,
-          tasksDone: Math.min(r.completedTasks?.length || 0, 5),
-          lightningClaims: Math.min(r.lightning?.totalClaims || 0, 1),
-          valid: !!r.referralValidPaid,
+          tasksDone: Math.min(r.completedTasks?.length || 0, 10),
+          adsWatched: Math.min(r.totalAdsWatched || 0, 20),
+          task10Valid: !!r.referralTask10Paid,
+          ads20Valid: !!r.referralAds20Paid,
         }));
 
         return res.status(200).json({
@@ -83,7 +84,7 @@ export default async function handler(req, res) {
           totalRefEarned: user.totalRefEarned || 0,
           totalRefEarnedSP: user.totalRefEarnedSP || 0,
           referredUsers: referredSummary,
-          rewards: { onJoin: 500, onValid: 100, validReq: { tasks: 5, lightningClaims: 1 } },
+          rewards: { onJoin: 500, onTask10: 50, onAds20: 150, task10Req: 10, ads20Req: 20 },
         });
       }
 
@@ -155,27 +156,23 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Task already completed.' });
       }
 
-      // Referral milestone: once a referred user has completed 5 tasks AND
-      // claimed the Lightning Farm at least once, their referrer gets 100 SP —
-      // matches the Refer tab's advertised condition. Either action (a task
-      // here, or a claim in lightning.js) can be the one that completes the
-      // pair, so both files check the same two fields. referralValidPaid
-      // guards it to fire only once even if the fields change again later.
+      // Referral Tier 2: referrer gets 50 SP once their referred user has
+      // completed 10 (one-time) tasks. Fires once, guarded by
+      // referralTask10Paid so it can't double-pay on a later task.
       if (
-        (updated.completedTasks?.length || 0) >= 5 &&
-        (updated.lightning?.totalClaims || 0) >= 1 &&
+        (updated.completedTasks?.length || 0) >= 10 &&
         updated.referredBy &&
-        !updated.referralValidPaid
+        !updated.referralTask10Paid
       ) {
         const flagged = await users.findOneAndUpdate(
-          { telegramId: String(telegramId), referralValidPaid: { $ne: true } },
-          { $set: { referralValidPaid: true } },
+          { telegramId: String(telegramId), referralTask10Paid: { $ne: true } },
+          { $set: { referralTask10Paid: true } },
           { returnDocument: 'after' }
         );
         if (flagged?.value || flagged) {
           await users.updateOne(
             { telegramId: updated.referredBy },
-            { $inc: { goldBalance: 100, totalRefEarnedSP: 100 } }
+            { $inc: { spBalance: 50, totalRefEarnedSP: 50 } }
           );
         }
       }
@@ -188,4 +185,4 @@ export default async function handler(req, res) {
     console.error('tasks.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-          }
+            }
