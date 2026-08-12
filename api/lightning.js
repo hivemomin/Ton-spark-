@@ -85,7 +85,7 @@ export default async function handler(req, res) {
       },
       {
         $set: { 'lightning.lastClaim': now },
-        $inc: { spBalance: reward, 'lightning.totalClaims': 1, 'lightning.totalSp': reward },
+        $inc: { goldBalance: reward, 'lightning.totalClaims': 1, 'lightning.totalSp': reward },
       },
       { returnDocument: 'after' }
     );
@@ -112,7 +112,7 @@ export default async function handler(req, res) {
       if (flagged?.value || flagged) {
         await users.updateOne(
           { telegramId: updated.referredBy },
-          { $inc: { spBalance: 100, totalRefEarnedSP: 100 } }
+          { $inc: { goldBalance: 100, totalRefEarnedSP: 100 } }
         );
       }
     }
@@ -122,4 +122,4 @@ export default async function handler(req, res) {
     console.error('lightning.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-}
+      }
