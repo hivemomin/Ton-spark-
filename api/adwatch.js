@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     // Atomic path A: same-day counter still under the cap.
     let result = await users.findOneAndUpdate(
       { telegramId: tgId, 'gigaAds.date': today, 'gigaAds.count': { $lt: MAX_PER_DAY } },
-      { $inc: { spBalance: REWARD, 'gigaAds.count': 1 } },
+      { $inc: { goldBalance: REWARD, 'gigaAds.count': 1 } },
       { returnDocument: 'after' }
     );
     let updated = result?.value || result;
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
       // guarded so a stale doc can't be reset twice concurrently.
       result = await users.findOneAndUpdate(
         { telegramId: tgId, 'gigaAds.date': { $ne: today } },
-        { $set: { 'gigaAds.date': today, 'gigaAds.count': 1 }, $inc: { spBalance: REWARD } },
+        { $set: { 'gigaAds.date': today, 'gigaAds.count': 1 }, $inc: { goldBalance: REWARD } },
         { returnDocument: 'after' }
       );
       updated = result?.value || result;
