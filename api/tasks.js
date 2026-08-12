@@ -175,7 +175,7 @@ export default async function handler(req, res) {
         if (flagged?.value || flagged) {
           await users.updateOne(
             { telegramId: updated.referredBy },
-            { $inc: { spBalance: 100, totalRefEarnedSP: 100 } }
+            { $inc: { goldBalance: 100, totalRefEarnedSP: 100 } }
           );
         }
       }
