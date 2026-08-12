@@ -95,31 +95,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: `Not charged yet. ${Math.max(remaining, 1)} minutes left.` });
     }
 
-    // Referral milestone (mirror of the check in tasks.js) — either a task
-    // completion or a lightning claim can be the action that completes the
-    // "5 tasks + 1 lightning claim" pair.
-    if (
-      (updated.lightning?.totalClaims || 0) >= 1 &&
-      (updated.completedTasks?.length || 0) >= 5 &&
-      updated.referredBy &&
-      !updated.referralValidPaid
-    ) {
-      const flagged = await users.findOneAndUpdate(
-        { telegramId: tgId, referralValidPaid: { $ne: true } },
-        { $set: { referralValidPaid: true } },
-        { returnDocument: 'after' }
-      );
-      if (flagged?.value || flagged) {
-        await users.updateOne(
-          { telegramId: updated.referredBy },
-          { $inc: { goldBalance: 100, totalRefEarnedSP: 100 } }
-        );
-      }
-    }
-
     return res.status(200).json({ success: true, reward });
   } catch (err) {
     console.error('lightning.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-      }
+}
