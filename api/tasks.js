@@ -177,6 +177,22 @@ export default async function handler(req, res) {
         }
       }
 
+      // "Valid referral" gate flag (mirrors the same check in adwatch.js —
+      // either a task completion or an ad watch can be the action that
+      // crosses this threshold, so both files check it). Set on THIS user
+      // (the referee), pays nothing — it only unlocks the referrer's
+      // ability to withdraw above the free tier.
+      if (
+        (updated.completedTasks?.length || 0) >= 5 &&
+        (updated.totalAdsWatched || 0) >= 20 &&
+        !updated.refereeValid
+      ) {
+        await users.updateOne(
+          { telegramId: String(telegramId), refereeValid: { $ne: true } },
+          { $set: { refereeValid: true } }
+        );
+      }
+
       return res.status(200).json({ success: true, reward: task.reward });
     }
 
@@ -185,4 +201,4 @@ export default async function handler(req, res) {
     console.error('tasks.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-            }
+        }
