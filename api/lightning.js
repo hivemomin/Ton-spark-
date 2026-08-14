@@ -11,8 +11,8 @@ import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 
 const COOLDOWN_MS = 6 * 3600000; // 6 hours
-const MIN_REWARD = 10;
-const MAX_REWARD = 30;
+const MIN_REWARD = 200;
+const MAX_REWARD = 800;
 
 function rollBlastReward() {
   return MIN_REWARD + Math.floor(Math.random() * (MAX_REWARD - MIN_REWARD + 1));
