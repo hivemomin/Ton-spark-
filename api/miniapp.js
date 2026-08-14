@@ -8,20 +8,21 @@ const COOLDOWN_MS = 2 * 3600000; // 1 play every 2h, per game — ad required ev
 const GAMES = {
   spin: {
     label: 'Lucky Spin',
-    // Fixed 6 Gold values. Must stay in sync with SPIN_SEGMENTS in index.html
-    // (client draws the wheel from its own copy of these numbers and looks up
-    // index by value — the SET of 6 numbers must match, order doesn't matter).
-    values: [50, 80, 120, 160, 220, 300],
+    // Fixed 6 Gold values, range 100-500. Must stay in sync with SPIN_SEGMENTS
+    // in index.html (client draws the wheel from its own copy of these numbers
+    // and looks up index by value — the SET of 6 numbers must match, order
+    // doesn't matter).
+    values: [100, 150, 220, 300, 400, 500],
     weights: [130, 130, 120, 100, 80, 40], // sums to 600
   },
   chest: {
     label: 'Mystery Chest',
-    // [tierName, min, max, weight] — weights sum to 100 — Gold reward range 50-300
+    // [tierName, min, max, weight] — weights sum to 100 — Gold reward range 100-500
     tiers: [
-      ['Silver', 50, 100, 40],
-      ['Gold', 101, 180, 42],
-      ['Epic', 181, 250, 15],
-      ['Legendary', 251, 300, 3],
+      ['Silver', 100, 200, 40],
+      ['Gold', 201, 320, 42],
+      ['Epic', 321, 440, 15],
+      ['Legendary', 441, 500, 3],
     ],
   },
 };
@@ -137,4 +138,4 @@ export default async function handler(req, res) {
     console.error('miniapp.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-    }
+}
