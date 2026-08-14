@@ -18,6 +18,20 @@ const MAX_PER_DAY = 20; // per network
 const ADS_MILESTONE = 20;
 const ADS_MILESTONE_REWARD_SP = 150;
 
+// "Valid referral" gate (used by withdraw.js): a referred user counts as
+// valid once THEY have completed VALID_TASKS tasks AND watched VALID_ADS
+// ads. This is a separate, lower threshold from the Tier-2/Tier-3 SP
+// rewards above — it doesn't pay anyone, it just unlocks their referrer's
+// ability to withdraw above the free tier.
+const VALID_TASKS = 5;
+const VALID_ADS = 20;
+
+// How many recent ad-watch timestamps we keep per user — only needed to
+// answer "how many ads in the last 24h" for the withdraw gate, so this
+// only needs to comfortably exceed a day's worth of watches (max 40/day
+// across both networks) without growing the document unbounded.
+const AD_LOG_KEEP = 60;
+
 // Bangladesh runs a fixed UTC+6 offset with no DST, so shifting the current
 // UTC timestamp forward 6 hours and reading its UTC calendar date gives the
 // current Bangladesh calendar date — that's what "resets at midnight BDT"
@@ -47,6 +61,7 @@ export default async function handler(req, res) {
 
   const tgId = String(telegramId);
   const today = bdtDateKey();
+  const now = new Date();
 
   try {
     const db = await getDb();
@@ -66,7 +81,10 @@ export default async function handler(req, res) {
     // Atomic path A: same-day counter still under the cap.
     let result = await users.findOneAndUpdate(
       { telegramId: tgId, [`${field}.date`]: today, [`${field}.count`]: { $lt: MAX_PER_DAY } },
-      { $inc: { goldBalance: REWARD, [`${field}.count`]: 1, totalAdsWatched: 1 } },
+      {
+        $inc: { goldBalance: REWARD, [`${field}.count`]: 1, totalAdsWatched: 1 },
+        $push: { adWatchLog: { $each: [now], $slice: -AD_LOG_KEEP } },
+      },
       { returnDocument: 'after' }
     );
     let updated = result?.value || result;
@@ -80,7 +98,11 @@ export default async function handler(req, res) {
       // guarded so a stale doc can't be reset twice concurrently.
       result = await users.findOneAndUpdate(
         { telegramId: tgId, [`${field}.date`]: { $ne: today } },
-        { $set: { [`${field}.date`]: today, [`${field}.count`]: 1 }, $inc: { goldBalance: REWARD, totalAdsWatched: 1 } },
+        {
+          $set: { [`${field}.date`]: today, [`${field}.count`]: 1 },
+          $inc: { goldBalance: REWARD, totalAdsWatched: 1 },
+          $push: { adWatchLog: { $each: [now], $slice: -AD_LOG_KEEP } },
+        },
         { returnDocument: 'after' }
       );
       updated = result?.value || result;
@@ -106,9 +128,23 @@ export default async function handler(req, res) {
       }
     }
 
+    // "Valid referral" gate flag — set on THIS user (the referee), not the
+    // referrer, and pays nothing. It only unlocks the referrer's ability to
+    // withdraw above the free tier once this user has done enough.
+    if (
+      (updated.completedTasks?.length || 0) >= VALID_TASKS &&
+      totalAds >= VALID_ADS &&
+      !updated.refereeValid
+    ) {
+      await users.updateOne(
+        { telegramId: tgId, refereeValid: { $ne: true } },
+        { $set: { refereeValid: true } }
+      );
+    }
+
     return res.status(200).json({ success: true, reward: REWARD, count: updated[field].count, max: MAX_PER_DAY });
   } catch (err) {
     console.error('adwatch.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-      }
+                                 }
