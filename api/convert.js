@@ -24,8 +24,12 @@ export default async function handler(req, res) {
   if (amount < MIN_CONVERT_GOLD) {
     return res.status(400).json({ error: `Minimum conversion is ${MIN_CONVERT_GOLD.toLocaleString()} Gold.` });
   }
-  if (amount % 100 !== 0) {
-    return res.status(400).json({ error: 'Amount must be a round number ending in 00 (e.g. 5000, 5500, 6000, 10000).' });
+  // Must divide evenly by GOLD_PER_SP (40), not just be a multiple of 100 —
+  // e.g. 5100 % 100 === 0 but 5100 / 40 = 127.5, which would have credited
+  // a fractional SP balance. Multiples of 40 are still round, friendly
+  // numbers (5000, 5040, 5080, 5200, ...).
+  if (amount % GOLD_PER_SP !== 0) {
+    return res.status(400).json({ error: `Amount must be a multiple of ${GOLD_PER_SP} Gold (e.g. ${MIN_CONVERT_GOLD}, ${MIN_CONVERT_GOLD + GOLD_PER_SP}, ${MIN_CONVERT_GOLD + GOLD_PER_SP * 2}).` });
   }
 
   const tgUser = verifyTelegramInit(initData);
