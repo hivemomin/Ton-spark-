@@ -1,20 +1,22 @@
 // FILE PATH: api/adwatch.js
 //
-// GigaPub + Monetag ad-watch rewards — tracked and rewarded independently
-// per network. Each network allows up to MAX_PER_DAY watches, resetting at
-// midnight Bangladesh time (UTC+6), each crediting REWARD Gold. The client
-// shows the real ad via the matching SDK and only calls this endpoint once
-// that promise resolves — same trust model as the rest of the app's
-// ad/task flows (client-attested, not independently verifiable).
+// GigaPub + Monetag + Adsgram (block & interstitial) ad-watch rewards —
+// tracked and rewarded independently per network. Each network has its own
+// daily cap and Gold reward (see REWARD_MAP / MAX_PER_DAY_MAP below),
+// resetting at midnight Bangladesh time (UTC+6). The client shows the real
+// ad via the matching SDK and only calls this endpoint once that promise
+// resolves — same trust model as the rest of the app's ad/task flows
+// (client-attested, not independently verifiable).
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 
-const REWARD = 500; // Gold, per ad, same for both networks
-const MAX_PER_DAY = 20; // per network
+// Per-network Gold reward and daily watch cap.
+const REWARD_MAP = { giga: 500, monetag: 500, adsgram: 800, adsgram_int: 500 };
+const MAX_PER_DAY_MAP = { giga: 20, monetag: 20, adsgram: 10, adsgram_int: 10 };
 
 // Referral Tier 3: referrer earns this once their referred user has
-// watched ADS_MILESTONE ads in total, combined across both networks.
+// watched ADS_MILESTONE ads in total, combined across all networks.
 const ADS_MILESTONE = 20;
 const ADS_MILESTONE_REWARD_SP = 150;
 
@@ -28,8 +30,8 @@ const VALID_ADS = 20;
 
 // How many recent ad-watch timestamps we keep per user — only needed to
 // answer "how many ads in the last 24h" for the withdraw gate, so this
-// only needs to comfortably exceed a day's worth of watches (max 40/day
-// across both networks) without growing the document unbounded.
+// only needs to comfortably exceed a day's worth of watches (max 60/day
+// across all four networks) without growing the document unbounded.
 const AD_LOG_KEEP = 60;
 
 // Bangladesh runs a fixed UTC+6 offset with no DST, so shifting the current
@@ -38,7 +40,7 @@ const AD_LOG_KEEP = 60;
 // means here, without needing a timezone library.
 const bdtDateKey = () => new Date(Date.now() + 6 * 3600000).toISOString().slice(0, 10);
 
-const NETWORK_FIELD = { giga: 'gigaAds', monetag: 'monetagAds' };
+const NETWORK_FIELD = { giga: 'gigaAds', monetag: 'monetagAds', adsgram: 'adsgramAds', adsgram_int: 'adsgramIntAds' };
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://ton-spark-qu47.vercel.app');
@@ -52,7 +54,10 @@ export default async function handler(req, res) {
   if (!telegramId) return res.status(400).json({ error: 'telegramId required' });
 
   const field = NETWORK_FIELD[network];
-  if (!field) return res.status(400).json({ error: "network must be 'giga' or 'monetag'" });
+  if (!field) return res.status(400).json({ error: "network must be one of: giga, monetag, adsgram, adsgram_int" });
+
+  const REWARD = REWARD_MAP[network];
+  const MAX_PER_DAY = MAX_PER_DAY_MAP[network];
 
   const tgUser = verifyTelegramInit(initData);
   if (!tgUser || String(tgUser.id) !== String(telegramId)) {
@@ -112,7 +117,7 @@ export default async function handler(req, res) {
     }
 
     // Referral Tier 3 — fires once, the first time this user's lifetime
-    // ad-watch count (across both networks) reaches the milestone.
+    // ad-watch count (across all networks) reaches the milestone.
     const totalAds = updated.totalAdsWatched || 0;
     if (totalAds >= ADS_MILESTONE && updated.referredBy && !updated.referralAds20Paid) {
       const flagged = await users.findOneAndUpdate(
@@ -147,4 +152,4 @@ export default async function handler(req, res) {
     console.error('adwatch.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-                                 }
+      }
