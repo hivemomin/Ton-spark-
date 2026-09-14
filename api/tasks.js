@@ -15,6 +15,12 @@ const OFFICIAL_TARGETS = {
 // Valid task categories — admin panel assigns one of these to every task.
 const CATEGORIES = ['daily', 'exclusive', 'task', 'partner'];
 
+// "Valid referral" gate (mirrors adwatch.js — keep both in sync): a
+// referred user counts as valid once THEY have completed VALID_TASKS
+// tasks AND watched VALID_ADS ads.
+const VALID_TASKS = 10;
+const VALID_ADS = 10;
+
 // Returns true / false for a definite result, or null if verification
 // couldn't be performed (network/API error) — null is NOT treated as
 // "not a member", so a transient Telegram API hiccup doesn't wrongly
@@ -65,7 +71,7 @@ export default async function handler(req, res) {
       if (type === 'refer') {
         const referredUsers = await users
           .find({ referredBy: String(telegramId) })
-          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, totalAdsWatched: 1, referralTask10Paid: 1, referralAds20Paid: 1, _id: 0 })
+          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, totalAdsWatched: 1, referralTask10Paid: 1, referralAds20Paid: 1, refereeValid: 1, _id: 0 })
           .toArray();
 
         const referredSummary = referredUsers.map(r => ({
@@ -74,6 +80,10 @@ export default async function handler(req, res) {
           adsWatched: Math.min(r.totalAdsWatched || 0, 20),
           task10Valid: !!r.referralTask10Paid,
           ads20Valid: !!r.referralAds20Paid,
+          // "Valid referral" — this friend has completed VALID_TASKS tasks
+          // AND watched VALID_ADS ads, unlocking withdrawals above the free
+          // tier for the referrer.
+          isValidReferral: !!r.refereeValid,
         }));
 
         return res.status(200).json({
@@ -84,7 +94,10 @@ export default async function handler(req, res) {
           totalRefEarned: user.totalRefEarned || 0,
           totalRefEarnedSP: user.totalRefEarnedSP || 0,
           referredUsers: referredSummary,
-          rewards: { onJoin: 500, onTask10: 50, onAds20: 150, task10Req: 10, ads20Req: 20 },
+          rewards: {
+            onJoin: 500, onTask10: 50, onAds20: 150, task10Req: 10, ads20Req: 20,
+            validReferralTasksReq: VALID_TASKS, validReferralAdsReq: VALID_ADS,
+          },
         });
       }
 
@@ -183,8 +196,8 @@ export default async function handler(req, res) {
       // (the referee), pays nothing — it only unlocks the referrer's
       // ability to withdraw above the free tier.
       if (
-        (updated.completedTasks?.length || 0) >= 5 &&
-        (updated.totalAdsWatched || 0) >= 20 &&
+        (updated.completedTasks?.length || 0) >= VALID_TASKS &&
+        (updated.totalAdsWatched || 0) >= VALID_ADS &&
         !updated.refereeValid
       ) {
         await users.updateOne(
@@ -201,4 +214,4 @@ export default async function handler(req, res) {
     console.error('tasks.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-        }
+          }
