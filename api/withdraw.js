@@ -3,15 +3,23 @@
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 
-// 25 SP = $1
-const MIN_WITHDRAW_SP = 1000; // ≈ $40 before fee, ≈ $36 after 10% fee
-const SP_TO_USDT = 1 / 25;
+// Currency system: 1,000,000 Gold = 25,000 SP (see convert.js), and
+// 25,000 SP = $1 USDT.
+const MIN_WITHDRAW_SP = 1000; // ≈ $0.04 before fee, ≈ $0.036 after 10% fee
+const SP_TO_USDT = 1 / 25000;
 const WITHDRAW_FEE = 0.10; // 10% — same for Binance UID and TonKeeper
 
 // ── Withdraw gate requirements ──────────────────────────────────
 const MIN_TASKS_COMPLETED = 8;   // lifetime, one-time — no need to repeat
 const MIN_ADS_24H = 6;           // rolling 24h window, GigaPub + Monetag combined
 const FREE_WITHDRAW_USDT = 0.15; // withdrawals at/under this need no valid referral
+
+// "Valid referral" — a friend you referred counts as valid once THEY have
+// completed this many tasks AND watched this many ads (kept in sync with
+// VALID_TASKS/VALID_ADS in tasks.js and adwatch.js, which set the
+// refereeValid flag checked below).
+const VALID_REFERRAL_TASKS = 10;
+const VALID_REFERRAL_ADS = 10;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://ton-spark-qu47.vercel.app');
@@ -85,7 +93,7 @@ export default async function handler(req, res) {
       const validRefCount = await users.countDocuments({ referredBy: String(telegramId), refereeValid: true });
       hasValidReferral = validRefCount >= 1;
       if (!hasValidReferral)
-        missing.push(`get 1 valid referral (a friend who completed 5 tasks and watched 20 ads) — withdrawals over $${FREE_WITHDRAW_USDT} require this`);
+        missing.push(`get 1 valid referral (a friend who completed ${VALID_REFERRAL_TASKS} tasks and watched ${VALID_REFERRAL_ADS} ads) — withdrawals over $${FREE_WITHDRAW_USDT} require this`);
     }
 
     if (missing.length > 0) {
