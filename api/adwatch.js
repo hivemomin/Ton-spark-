@@ -1,6 +1,6 @@
 // FILE PATH: api/adwatch.js
 //
-// GigaPub + Monetag + USL Ads (Tower Ads) ad-watch rewards —
+// GigaPub + Monetag ad-watch rewards —
 // tracked and rewarded independently per network. Each network has its own
 // daily cap and Gold reward (see REWARD_MAP / MAX_PER_DAY_MAP below),
 // resetting at midnight Bangladesh time (UTC+6). The client shows the real
@@ -10,30 +10,18 @@
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
+import { guardAdClaim, saveAdClaimLog } from '../lib/security.js';
+import { maybeAwardValidReferral } from '../lib/referral.js';
 
 // Per-network Gold reward and daily watch cap.
-// Adsgram (block + interstitial) has been fully removed and replaced by
-// USL Ads (Tower Ads) — 10 watches/day, +600 Gold each.
-const REWARD_MAP = { giga: 500, monetag: 500, usl: 600 };
-const MAX_PER_DAY_MAP = { giga: 20, monetag: 20, usl: 10 };
-
-// Referral Tier 3: referrer earns this once their referred user has
-// watched ADS_MILESTONE ads in total, combined across all networks.
-const ADS_MILESTONE = 20;
-const ADS_MILESTONE_REWARD_SP = 150;
-
-// "Valid referral" gate (used by withdraw.js): a referred user counts as
-// valid once THEY have completed VALID_TASKS tasks AND watched VALID_ADS
-// ads. This is a separate threshold from the Tier-2/Tier-3 SP rewards
-// above — it doesn't pay anyone, it just unlocks their referrer's
-// ability to withdraw above the free tier.
-const VALID_TASKS = 10;
-const VALID_ADS = 10;
+// Only GigaPub and Monetag are supported (Adexium / USL / Adsgram removed).
+const REWARD_MAP = { giga: 500, monetag: 500 };
+const MAX_PER_DAY_MAP = { giga: 20, monetag: 20 };
 
 // How many recent ad-watch timestamps we keep per user — only needed to
 // answer "how many ads in the last 24h" for the withdraw gate, so this
 // only needs to comfortably exceed a day's worth of watches (max 60/day
-// across all four networks) without growing the document unbounded.
+// across all networks) without growing the document unbounded.
 const AD_LOG_KEEP = 60;
 
 // Bangladesh runs a fixed UTC+6 offset with no DST, so shifting the current
@@ -42,7 +30,7 @@ const AD_LOG_KEEP = 60;
 // means here, without needing a timezone library.
 const bdtDateKey = () => new Date(Date.now() + 6 * 3600000).toISOString().slice(0, 10);
 
-const NETWORK_FIELD = { giga: 'gigaAds', monetag: 'monetagAds', usl: 'uslAds' };
+const NETWORK_FIELD = { giga: 'gigaAds', monetag: 'monetagAds' };
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://ton-spark-qu47.vercel.app');
@@ -55,8 +43,10 @@ export default async function handler(req, res) {
   const network    = req.query?.network    || req.body?.network  || 'giga';
   if (!telegramId) return res.status(400).json({ error: 'telegramId required' });
 
-  const field = NETWORK_FIELD[network];
-  if (!field) return res.status(400).json({ error: "network must be one of: giga, monetag, usl" });
+  // GET ?network=all returns both networks in ONE request (fewer function calls).
+  const isAll = network === 'all' && req.method === 'GET';
+  const field = isAll ? null : NETWORK_FIELD[network];
+  if (!isAll && !field) return res.status(400).json({ error: "network must be one of: giga, monetag" });
 
   const REWARD = REWARD_MAP[network];
   const MAX_PER_DAY = MAX_PER_DAY_MAP[network];
@@ -77,13 +67,27 @@ export default async function handler(req, res) {
     if (!user) return res.status(404).json({ error: 'User not found' });
     if (user.isBanned) return res.status(403).json({ error: 'Account banned' });
 
-    const currentCount = user[field]?.date === today ? (user[field].count || 0) : 0;
-
     if (req.method === 'GET') {
-      return res.status(200).json({ success: true, count: currentCount, max: MAX_PER_DAY, reward: REWARD });
+      res.setHeader('Cache-Control', 'private, max-age=15');
+      const statusOf = (n) => {
+        const f = NETWORK_FIELD[n];
+        return {
+          count: user[f]?.date === today ? (user[f].count || 0) : 0,
+          max: MAX_PER_DAY_MAP[n],
+          reward: REWARD_MAP[n],
+        };
+      };
+      if (isAll) {
+        return res.status(200).json({ success: true, networks: { giga: statusOf('giga'), monetag: statusOf('monetag') } });
+      }
+      return res.status(200).json({ success: true, ...statusOf(network) });
     }
 
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+    // ── Anti-script guard (NEWTUBE botGuard): min gap between rewards + pattern rules ──
+    const guard = await guardAdClaim(db, user, req.body?.watchMs);
+    if (!guard.ok) return res.status(guard.status).json({ error: guard.error });
 
     // Atomic path A: same-day counter still under the cap.
     let result = await users.findOneAndUpdate(
@@ -118,40 +122,13 @@ export default async function handler(req, res) {
       }
     }
 
-    // Referral Tier 3 — fires once, the first time this user's lifetime
-    // ad-watch count (across all networks) reaches the milestone.
-    const totalAds = updated.totalAdsWatched || 0;
-    if (totalAds >= ADS_MILESTONE && updated.referredBy && !updated.referralAds20Paid) {
-      const flagged = await users.findOneAndUpdate(
-        { telegramId: tgId, referralAds20Paid: { $ne: true } },
-        { $set: { referralAds20Paid: true } },
-        { returnDocument: 'after' }
-      );
-      if (flagged?.value || flagged) {
-        await users.updateOne(
-          { telegramId: updated.referredBy },
-          { $inc: { spBalance: ADS_MILESTONE_REWARD_SP, totalRefEarnedSP: ADS_MILESTONE_REWARD_SP } }
-        );
-      }
-    }
+    // Remember this claim for the pattern rules, then check whether the referral just became valid (+300 SP to the referrer).
+    saveAdClaimLog(db, tgId, guard.samples);
+    await maybeAwardValidReferral(db, updated);
 
-    // "Valid referral" gate flag — set on THIS user (the referee), not the
-    // referrer, and pays nothing. It only unlocks the referrer's ability to
-    // withdraw above the free tier once this user has done enough.
-    if (
-      (updated.completedTasks?.length || 0) >= VALID_TASKS &&
-      totalAds >= VALID_ADS &&
-      !updated.refereeValid
-    ) {
-      await users.updateOne(
-        { telegramId: tgId, refereeValid: { $ne: true } },
-        { $set: { refereeValid: true } }
-      );
-    }
-
-    return res.status(200).json({ success: true, reward: REWARD, count: updated[field].count, max: MAX_PER_DAY });
+    return res.status(200).json({ success: true, reward: REWARD, count: updated[field].count, max: MAX_PER_DAY, newGold: updated.goldBalance });
   } catch (err) {
     console.error('adwatch.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-}
+            }
