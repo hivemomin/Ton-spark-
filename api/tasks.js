@@ -69,18 +69,18 @@ export default async function handler(req, res) {
       const { type } = req.query;
 
       if (type === 'refer') {
-        const referredUsers = await users
-          .find({ referredBy: String(telegramId) })
-          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, totalAdsWatched: 1, refereeValid: 1, _id: 0 })
-          .toArray();
-
-        const referredSummary = referredUsers.map(r => ({
+        // Newest 30 referrals only, with counts computed inside MongoDB — never pulls whole documents
+        // (an account with 1,000+ referrals used to load every one of them on each visit).
+        const referredSummary = (await users.aggregate([
+          { $match: { referredBy: String(telegramId) } },
+          { $sort: { createdAt: -1 } },
+          { $limit: 30 },
+          { $project: { _id: 0, firstName: 1, username: 1, createdAt: 1, refereeValid: 1,
+              tasksDone: { $size: { $ifNull: ['$completedTasks', []] } }, adsWatched: { $ifNull: ['$totalAdsWatched', 0] } } },
+        ]).toArray()).map(r => ({
           firstName: r.firstName, username: r.username, createdAt: r.createdAt,
-          tasksDone: Math.min(r.completedTasks?.length || 0, VALID_TASKS),
-          adsWatched: Math.min(r.totalAdsWatched || 0, VALID_ADS),
-          // "Valid referral" — this friend has completed VALID_TASKS tasks
-          // AND watched VALID_ADS ads, unlocking withdrawals above the free
-          // tier for the referrer.
+          tasksDone: Math.min(r.tasksDone || 0, VALID_TASKS),
+          adsWatched: Math.min(r.adsWatched || 0, VALID_ADS),
           isValidReferral: !!r.refereeValid,
         }));
 
@@ -94,6 +94,7 @@ export default async function handler(req, res) {
           commissionEarnedSP: user.referralCommissionEarned || 0,
           validReferrals: user.validReferralCount || 0,
           referredUsers: referredSummary,
+          listLimit: 30,
           rewards: {
             rewardSp: REFERRAL_REWARD_SP, commissionPercent: WITHDRAW_COMMISSION_PERCENT,
             validReferralTasksReq: VALID_TASKS, validReferralAdsReq: VALID_ADS,
@@ -181,4 +182,4 @@ export default async function handler(req, res) {
     console.error('tasks.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-        }
+            }
