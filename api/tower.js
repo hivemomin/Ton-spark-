@@ -18,7 +18,7 @@
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
-import { guardAdClaim, saveAdClaimLog } from '../lib/security.js';
+import { guardAdClaim } from '../lib/security.js';
 import { maybeAwardValidReferral } from '../lib/referral.js';
 
 const HOUR = 3600000;
@@ -126,7 +126,7 @@ export default async function handler(req, res) {
           $or: [{ [`${key}.lastClaim`]: { $exists: false } }, { [`${key}.lastClaim`]: null }, { [`${key}.lastClaim`]: { $lte: cutoff } }],
         },
         {
-          $set: { [`${key}.lastClaim`]: new Date(now) },
+          $set: { [`${key}.lastClaim`]: new Date(now), ...(guard ? { recentAdClaims: guard.samples } : {}) },
           $inc: { spBalance: cfg.reward, [`${key}.claims`]: 1, [`${key}.total`]: cfg.reward, ...(cfg.ads ? { totalAdsWatched: 1 } : {}) },
           ...(cfg.ads ? { $push: { adWatchLog: { $each: [new Date(now)], $slice: -AD_LOG_KEEP } } } : {}),
         },
@@ -138,7 +138,6 @@ export default async function handler(req, res) {
         const left = t?.lastClaim ? Math.max(1, Math.ceil((new Date(t.lastClaim).getTime() + cfg.intervalMs - now) / 60000)) : 1;
         return res.status(400).json({ error: `Not charged yet. ${left} min left.` });
       }
-      if (guard) saveAdClaimLog(db, tgId, guard.samples);
       if (cfg.ads) await maybeAwardValidReferral(db, updated);
       return res.status(200).json({ success: true, reward: cfg.reward, spBalance: updated.spBalance, towers: towerState(updated, now) });
     }
@@ -148,4 +147,4 @@ export default async function handler(req, res) {
     console.error('tower.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-}
+      }
