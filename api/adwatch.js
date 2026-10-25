@@ -2,7 +2,7 @@
 //
 // GigaPub + Monetag ad-watch rewards —
 // tracked and rewarded independently per network. Each network has its own
-// daily cap and Gold reward (see REWARD_MAP / MAX_PER_DAY_MAP below),
+// daily cap and SP reward (see REWARD_MAP / MAX_PER_DAY_MAP below),
 // resetting at midnight Bangladesh time (UTC+6). The client shows the real
 // ad via the matching SDK and only calls this endpoint once that promise
 // resolves — same trust model as the rest of the app's ad/task flows
@@ -10,12 +10,12 @@
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
-import { guardAdClaim, saveAdClaimLog } from '../lib/security.js';
+import { guardAdClaim } from '../lib/security.js';
 import { maybeAwardValidReferral } from '../lib/referral.js';
 
-// Per-network Gold reward and daily watch cap.
+// Per-network SP reward and daily watch cap.
 // Only GigaPub and Monetag are supported (Adexium / USL / Adsgram removed).
-const REWARD_MAP = { giga: 500, monetag: 500 };
+const REWARD_MAP = { giga: 12.5, monetag: 12.5 };
 const MAX_PER_DAY_MAP = { giga: 20, monetag: 20 };
 
 // How many recent ad-watch timestamps we keep per user — only needed to
@@ -93,7 +93,8 @@ export default async function handler(req, res) {
     let result = await users.findOneAndUpdate(
       { telegramId: tgId, [`${field}.date`]: today, [`${field}.count`]: { $lt: MAX_PER_DAY } },
       {
-        $inc: { goldBalance: REWARD, [`${field}.count`]: 1, totalAdsWatched: 1 },
+        $inc: { spBalance: REWARD, [`${field}.count`]: 1, totalAdsWatched: 1 },
+        $set: { recentAdClaims: guard.samples }, // pattern history saved in the SAME write (no extra DB call)
         $push: { adWatchLog: { $each: [now], $slice: -AD_LOG_KEEP } },
       },
       { returnDocument: 'after' }
@@ -110,8 +111,8 @@ export default async function handler(req, res) {
       result = await users.findOneAndUpdate(
         { telegramId: tgId, [`${field}.date`]: { $ne: today } },
         {
-          $set: { [`${field}.date`]: today, [`${field}.count`]: 1 },
-          $inc: { goldBalance: REWARD, totalAdsWatched: 1 },
+          $set: { [`${field}.date`]: today, [`${field}.count`]: 1, recentAdClaims: guard.samples },
+          $inc: { spBalance: REWARD, totalAdsWatched: 1 },
           $push: { adWatchLog: { $each: [now], $slice: -AD_LOG_KEEP } },
         },
         { returnDocument: 'after' }
@@ -123,12 +124,11 @@ export default async function handler(req, res) {
     }
 
     // Remember this claim for the pattern rules, then check whether the referral just became valid (+300 SP to the referrer).
-    saveAdClaimLog(db, tgId, guard.samples);
     await maybeAwardValidReferral(db, updated);
 
-    return res.status(200).json({ success: true, reward: REWARD, count: updated[field].count, max: MAX_PER_DAY, newGold: updated.goldBalance });
+    return res.status(200).json({ success: true, reward: REWARD, count: updated[field].count, max: MAX_PER_DAY, newSp: updated.spBalance });
   } catch (err) {
     console.error('adwatch.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-            }
+}
