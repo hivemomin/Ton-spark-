@@ -2,6 +2,8 @@
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
+import { maybeAwardValidReferral } from '../lib/referral.js';
+import { toSp, VALID_TASKS, VALID_ADS, REFERRAL_REWARD_SP, WITHDRAW_COMMISSION_PERCENT } from '../lib/constants.js';
 
 const BOT_LINK = 'http://t.me/TonSparks_bot/startapp';
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -15,11 +17,9 @@ const OFFICIAL_TARGETS = {
 // Valid task categories — admin panel assigns one of these to every task.
 const CATEGORIES = ['daily', 'exclusive', 'task', 'partner'];
 
-// "Valid referral" gate (mirrors adwatch.js — keep both in sync): a
-// referred user counts as valid once THEY have completed VALID_TASKS
-// tasks AND watched VALID_ADS ads.
-const VALID_TASKS = 10;
-const VALID_ADS = 10;
+// Rewards are paid in SP. Tasks created before Gold was removed store a Gold number → converted (÷ 40).
+// Tasks created from now on are saved with rewardUnit:'sp' and paid as-is.
+const spOf = (t) => (t.rewardUnit === 'sp' ? Number(t.reward) || 0 : toSp(t.reward));
 
 // Returns true / false for a definite result, or null if verification
 // couldn't be performed (network/API error) — null is NOT treated as
@@ -71,15 +71,13 @@ export default async function handler(req, res) {
       if (type === 'refer') {
         const referredUsers = await users
           .find({ referredBy: String(telegramId) })
-          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, totalAdsWatched: 1, referralTask10Paid: 1, referralAds20Paid: 1, refereeValid: 1, _id: 0 })
+          .project({ firstName: 1, username: 1, createdAt: 1, completedTasks: 1, totalAdsWatched: 1, refereeValid: 1, _id: 0 })
           .toArray();
 
         const referredSummary = referredUsers.map(r => ({
           firstName: r.firstName, username: r.username, createdAt: r.createdAt,
-          tasksDone: Math.min(r.completedTasks?.length || 0, 10),
-          adsWatched: Math.min(r.totalAdsWatched || 0, 20),
-          task10Valid: !!r.referralTask10Paid,
-          ads20Valid: !!r.referralAds20Paid,
+          tasksDone: Math.min(r.completedTasks?.length || 0, VALID_TASKS),
+          adsWatched: Math.min(r.totalAdsWatched || 0, VALID_ADS),
           // "Valid referral" — this friend has completed VALID_TASKS tasks
           // AND watched VALID_ADS ads, unlocking withdrawals above the free
           // tier for the referrer.
@@ -91,11 +89,13 @@ export default async function handler(req, res) {
           referCode: user.referCode,
           referLink: `${BOT_LINK}?startapp=${user.referCode}`,
           totalReferred: user.totalReferred || 0,
-          totalRefEarned: user.totalRefEarned || 0,
+          totalRefEarned: 0,
           totalRefEarnedSP: user.totalRefEarnedSP || 0,
+          commissionEarnedSP: user.referralCommissionEarned || 0,
+          validReferrals: user.validReferralCount || 0,
           referredUsers: referredSummary,
           rewards: {
-            onJoin: 500, onTask10: 50, onAds20: 150, task10Req: 10, ads20Req: 20,
+            rewardSp: REFERRAL_REWARD_SP, commissionPercent: WITHDRAW_COMMISSION_PERCENT,
             validReferralTasksReq: VALID_TASKS, validReferralAdsReq: VALID_ADS,
           },
         });
@@ -109,7 +109,7 @@ export default async function handler(req, res) {
       const allTasks = await tasksCol.find(query).toArray();
       const completedIds = user.completedTasks || [];
       const result = allTasks.map(t => ({
-        id: t.id, title: t.title, reward: t.reward,
+        id: t.id, title: t.title, reward: spOf(t),
         link: t.link, type: t.type, category: t.category || 'task',
         completed: completedIds.includes(t.id),
       }));
@@ -145,14 +145,14 @@ export default async function handler(req, res) {
         const claimKey = `${taskId}_${today}`;
         const result = await users.findOneAndUpdate(
           { telegramId: String(telegramId), dailyTasksClaimed: { $ne: claimKey } },
-          { $inc: { goldBalance: task.reward }, $push: { dailyTasksClaimed: claimKey } },
+          { $inc: { spBalance: spOf(task) }, $push: { dailyTasksClaimed: claimKey } },
           { returnDocument: 'after' }
         );
         const updated = result?.value || result;
         if (!updated) {
           return res.status(400).json({ error: 'Already claimed today. Come back tomorrow.' });
         }
-        return res.status(200).json({ success: true, reward: task.reward });
+        return res.status(200).json({ success: true, reward: spOf(task) });
       }
 
       // Atomic claim: only succeeds if this task isn't already in
@@ -161,7 +161,7 @@ export default async function handler(req, res) {
       // and double-credit the reward.
       const result = await users.findOneAndUpdate(
         { telegramId: String(telegramId), completedTasks: { $ne: taskId } },
-        { $inc: { goldBalance: task.reward }, $push: { completedTasks: taskId } },
+        { $inc: { spBalance: spOf(task) }, $push: { completedTasks: taskId } },
         { returnDocument: 'after' }
       );
       const updated = result?.value || result;
@@ -169,44 +169,11 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Task already completed.' });
       }
 
-      // Referral Tier 2: referrer gets 50 SP once their referred user has
-      // completed 10 (one-time) tasks. Fires once, guarded by
-      // referralTask10Paid so it can't double-pay on a later task.
-      if (
-        (updated.completedTasks?.length || 0) >= 10 &&
-        updated.referredBy &&
-        !updated.referralTask10Paid
-      ) {
-        const flagged = await users.findOneAndUpdate(
-          { telegramId: String(telegramId), referralTask10Paid: { $ne: true } },
-          { $set: { referralTask10Paid: true } },
-          { returnDocument: 'after' }
-        );
-        if (flagged?.value || flagged) {
-          await users.updateOne(
-            { telegramId: updated.referredBy },
-            { $inc: { spBalance: 50, totalRefEarnedSP: 50 } }
-          );
-        }
-      }
+      // Referral: when this was the task that made the friend a "valid referral"
+      // (10 tasks + 10 ads), the referrer gets +300 SP (lib/referral.js).
+      await maybeAwardValidReferral(db, updated);
 
-      // "Valid referral" gate flag (mirrors the same check in adwatch.js —
-      // either a task completion or an ad watch can be the action that
-      // crosses this threshold, so both files check it). Set on THIS user
-      // (the referee), pays nothing — it only unlocks the referrer's
-      // ability to withdraw above the free tier.
-      if (
-        (updated.completedTasks?.length || 0) >= VALID_TASKS &&
-        (updated.totalAdsWatched || 0) >= VALID_ADS &&
-        !updated.refereeValid
-      ) {
-        await users.updateOne(
-          { telegramId: String(telegramId), refereeValid: { $ne: true } },
-          { $set: { refereeValid: true } }
-        );
-      }
-
-      return res.status(200).json({ success: true, reward: task.reward });
+      return res.status(200).json({ success: true, reward: spOf(task) });
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
@@ -214,4 +181,4 @@ export default async function handler(req, res) {
     console.error('tasks.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-          }
+        }
