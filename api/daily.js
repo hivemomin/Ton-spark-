@@ -1,7 +1,8 @@
+import { toSp } from '../lib/constants.js';
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 
-const DAILY_REWARD = 300; // Gold, not EG
+const DAILY_REWARD = 7.5; // SP
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://ton-spark-qu47.vercel.app');
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
             { dailyClaimLast: { $lte: cutoff } },
           ],
         },
-        { $inc: { goldBalance: DAILY_REWARD }, $set: { dailyClaimLast: now } },
+        { $inc: { spBalance: DAILY_REWARD }, $set: { dailyClaimLast: now } },
         { returnDocument: 'after' }
       );
       const updated = result?.value || result;
@@ -55,7 +56,7 @@ export default async function handler(req, res) {
         const hours = Math.ceil(24 - (now - last) / 3600000);
         return res.status(400).json({ error: `Already claimed. Come back in ${hours} hours.` });
       }
-      return res.status(200).json({ success: true, reward: DAILY_REWARD });
+      return res.status(200).json({ success: true, reward: DAILY_REWARD, newSp: updated.spBalance });
     }
 
     // ── action: promo ─────────────────────────────────────────────
@@ -81,19 +82,21 @@ export default async function handler(req, res) {
       // this endpoint directly with checkOnly:false and skip the ad
       // entirely. Low stakes (small, capped, one-time-per-user reward) but
       // flagging it: if the ad-watch is meant to be mandatory, it isn't.
-      if (checkOnly) return res.status(200).json({ valid: true, reward: promo.reward, currency: promo.currency === 'gold' ? 'gold' : 'sp' });
+      if (checkOnly) return res.status(200).json({ valid: true, reward: promo.reward, currency: 'sp' });
 
       // Old promo codes created before the Gold/SP choice existed have no
       // currency field — default those to 'sp' so they keep behaving exactly
       // as they always did.
-      const field = promo.currency === 'gold' ? 'goldBalance' : 'spBalance';
+      // Gold is gone: legacy gold promos pay their value in SP (÷ 40); SP promos pay as-is.
+      const spReward = promo.currency === 'gold' ? toSp(promo.reward) : promo.reward;
+      const field = 'spBalance';
 
       // Atomic redeem: only succeeds if this code isn't already in
       // promosUsed. Previously read-then-write, so two simultaneous redeems
       // of the same code by the same user could both succeed.
       const result = await users.findOneAndUpdate(
         { telegramId: String(telegramId), promosUsed: { $ne: cleanCode } },
-        { $inc: { [field]: promo.reward }, $push: { promosUsed: cleanCode } },
+        { $inc: { [field]: spReward }, $push: { promosUsed: cleanCode } },
         { returnDocument: 'after' }
       );
       const updated = result?.value || result;
@@ -107,7 +110,7 @@ export default async function handler(req, res) {
       // of extra redemptions on a capped code, not unlimited balance growth.
       await promos.updateOne({ code: cleanCode }, { $inc: { usedCount: 1 } });
 
-      return res.status(200).json({ success: true, reward: promo.reward, currency: promo.currency === 'gold' ? 'gold' : 'sp' });
+      return res.status(200).json({ success: true, reward: spReward, currency: 'sp' });
     }
 
     return res.status(400).json({ error: 'Invalid action. Use: daily | promo' });
@@ -115,4 +118,4 @@ export default async function handler(req, res) {
     console.error('daily.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-}
+                                               }
