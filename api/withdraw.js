@@ -2,17 +2,14 @@
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
-import { BOT_SUSPECT_HOLD_COUNT, SP_PER_USDT } from '../lib/constants.js';
+import { BOT_SUSPECT_HOLD_COUNT, SP_PER_USDT, MIN_WITHDRAW_SP, WD_MIN_TOWER_CLAIMS, WD_MIN_TASKS, WITHDRAW_FEE } from '../lib/constants.js';
 
 // Currency system: SP is the only currency: (Gold + Convert were removed), and
 // 50,000 SP = $1 USDT.
-const MIN_WITHDRAW_SP = 1000; // ≈ $0.02 before fee, ≈ $0.018 after 10% fee
 const SP_TO_USDT = 1 / SP_PER_USDT; // 50,000 SP = $1
-const WITHDRAW_FEE = 0.10; // 10% — same for Binance UID and TonKeeper
 
 // ── Withdraw gate requirements ──────────────────────────────────
-const MIN_TASKS_COMPLETED = 8;   // lifetime, one-time — no need to repeat
-const MIN_ADS_24H = 6;           // rolling 24h window, GigaPub + Monetag combined
+// Lifetime requirements (values live in lib/constants.js): 3 tower claims + 5 tasks + 2,000 SP minimum.
 const FREE_WITHDRAW_USDT = 0.15; // withdrawals at/under this need no valid referral
 
 // "Valid referral" — a friend you referred counts as valid once THEY have
@@ -101,14 +98,13 @@ export default async function handler(req, res) {
     const usdtAmount = parseFloat((grossUsdt * (1 - WITHDRAW_FEE)).toFixed(4));
 
     const tasksCompleted = (user.completedTasks || []).length;
-    const cutoff24h = new Date(Date.now() - 24 * 3600000);
-    const adsIn24h = (user.adWatchLog || []).filter(t => new Date(t) >= cutoff24h).length;
+    const towerClaims = ['t1', 't2', 't3', 't4'].reduce((n, k) => n + (user.towers?.[k]?.claims || 0), 0);
 
     const missing = [];
-    if (tasksCompleted < MIN_TASKS_COMPLETED)
-      missing.push(`complete ${MIN_TASKS_COMPLETED - tasksCompleted} more task(s) (${MIN_TASKS_COMPLETED} total, one-time)`);
-    if (adsIn24h < MIN_ADS_24H)
-      missing.push(`watch ${MIN_ADS_24H - adsIn24h} more ad(s) in the last 24 hours (GigaPub or Monetag, Ads tab)`);
+    if (towerClaims < WD_MIN_TOWER_CLAIMS)
+      missing.push(`collect your towers ${WD_MIN_TOWER_CLAIMS - towerClaims} more time(s) in Electricity (${WD_MIN_TOWER_CLAIMS} claims needed)`);
+    if (tasksCompleted < WD_MIN_TASKS)
+      missing.push(`complete ${WD_MIN_TASKS - tasksCompleted} more task(s) (${WD_MIN_TASKS} needed)`);
 
     // Withdrawals above the free tier need at least one "valid" referral —
     // a friend you referred who has completed 5 tasks AND watched 20 ads.
@@ -124,8 +120,8 @@ export default async function handler(req, res) {
       return res.status(400).json({
         error: `Withdraw requirements not met: ${missing.join(', ')}.`,
         requirements: {
-          tasksCompleted, tasksRequired: MIN_TASKS_COMPLETED,
-          adsIn24h, adsRequired24h: MIN_ADS_24H,
+          tasksCompleted, tasksRequired: WD_MIN_TASKS,
+          towerClaims, towerClaimsRequired: WD_MIN_TOWER_CLAIMS,
           hasValidReferral, freeWithdrawUsdt: FREE_WITHDRAW_USDT,
         },
       });
@@ -186,4 +182,4 @@ export default async function handler(req, res) {
     console.error('withdraw.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-      }
+  }
