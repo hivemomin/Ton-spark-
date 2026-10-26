@@ -11,7 +11,7 @@
 
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
-import { toSp, AD_NETWORKS } from '../lib/constants.js';
+import { toSp, AD_NETWORKS, MIN_WITHDRAW_SP, WD_MIN_TOWER_CLAIMS, WD_MIN_TASKS, WITHDRAW_FEE } from '../lib/constants.js';
 import { towerState } from '../lib/towers.js';
 import { tgSend } from '../lib/telegram.js';
 import { recordSignupAndCheckVelocity, checkAndRecordFingerprint } from '../lib/security.js';
@@ -34,6 +34,7 @@ function publicUser(u) {
   // (all of it is already in the user document we just loaded → zero extra DB reads, zero extra requests).
   const now = Date.now();
   const today = new Date(now + 6 * 3600000).toISOString().slice(0, 10); // Bangladesh day
+  o.wdRules = { minSp: MIN_WITHDRAW_SP, towerClaims: WD_MIN_TOWER_CLAIMS, tasks: WD_MIN_TASKS, fee: WITHDRAW_FEE };
   o.refLink = `http://t.me/TonSparks_bot/startapp?startapp=${u.referCode}`;
   o.tw = towerState(u, now);
   o.ads = {};
