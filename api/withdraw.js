@@ -31,11 +31,17 @@ export default async function handler(req, res) {
     if (!gid || !gtg || String(gtg.id) !== String(gid)) return res.status(403).json({ error: 'Invalid Telegram session' });
     try {
       const db = await getDb();
-      const rows = await db.collection('withdrawals')
+      // PAGINATED: ?page=1,2,3… (10 per page, newest first)
+      const PAGE_SIZE = 10;
+      const col = db.collection('withdrawals');
+      const total = await col.countDocuments({ telegramId: String(gid) });
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      const page = Math.min(Math.max(parseInt(req.query?.page, 10) || 1, 1), totalPages);
+      const rows = await col
         .find({ telegramId: String(gid) }, { projection: { _id: 0, spAmount: 1, usdtAmount: 1, method: 1, status: 1, createdAt: 1 } })
-        .sort({ createdAt: -1 }).limit(10).toArray();
+        .sort({ createdAt: -1 }).skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).toArray();
       res.setHeader('Cache-Control', 'private, max-age=20');
-      return res.status(200).json({ success: true, withdrawals: rows });
+      return res.status(200).json({ success: true, withdrawals: rows, page, totalPages, total });
     } catch (err) {
       console.error('withdraw.js GET error:', err);
       return res.status(500).json({ error: 'Server error' });
@@ -182,4 +188,4 @@ export default async function handler(req, res) {
     console.error('withdraw.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-  }
+      }
