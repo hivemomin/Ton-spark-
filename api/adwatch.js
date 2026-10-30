@@ -12,11 +12,12 @@ import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 import { guardAdClaim } from '../lib/security.js';
 import { maybeAwardValidReferral } from '../lib/referral.js';
+import { AD_NETWORKS } from '../lib/constants.js';
 
 // Per-network SP reward and daily watch cap.
 // Only GigaPub and Monetag are supported (Adexium / USL / Adsgram removed).
-const REWARD_MAP = { giga: 12.5, monetag: 12.5 };
-const MAX_PER_DAY_MAP = { giga: 20, monetag: 20 };
+const REWARD_MAP = { giga: AD_NETWORKS.giga.reward, monetag: AD_NETWORKS.monetag.reward };
+const MAX_PER_DAY_MAP = { giga: AD_NETWORKS.giga.max, monetag: AD_NETWORKS.monetag.max };
 
 // How many recent ad-watch timestamps we keep per user — only needed to
 // answer "how many ads in the last 24h" for the withdraw gate, so this
@@ -123,7 +124,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Remember this claim for the pattern rules, then check whether the referral just became valid (+300 SP to the referrer).
+    // Remember this claim for the pattern rules, then check whether this ad unlocked a referral step (+200 SP to the referrer at 10 ads).
     await maybeAwardValidReferral(db, updated);
 
     return res.status(200).json({ success: true, reward: REWARD, count: updated[field].count, max: MAX_PER_DAY, newSp: updated.spBalance });
