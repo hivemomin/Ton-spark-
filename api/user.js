@@ -1,201 +1,347 @@
-// FILE PATH: api/user.js
+// api/user.js — CONSOLIDATED + SECURITY FIX (Telegram initData verification)
 //
-// Handles /api/user (register / fetch / heartbeat) plus two small
-// action-routed extras that used to be their own files:
-//   (channel/community join check REMOVED — no join requirement any more)
-//   (one-account-per-IP gate REMOVED — Bangladesh SIM networks share IPs. Device fingerprint soft-flag is used instead.)
-// Merged in because Vercel's free (Hobby) plan caps a project at 12
-// serverless functions total — every file under /api counts as one,
-// so folding related small endpoints into the file they're closest to
-// keeps headroom for future features instead of burning a slot each time.
+// Key change: previously the client-supplied userId was trusted as-is — anyone
+// could open browser DevTools, call the API directly, and pass someone else's
+// userId. Now every request requires Telegram's `initData` (a signed string)
+// which the server verifies cryptographically — nobody can forge it without
+// the bot token, so userId can no longer be spoofed.
+//
+//   POST /api/user   body: { action: 'init', initData, fingerprint }
+//   GET  /api/user?action=checkJoin&initData=...
+//   GET  /api/user?action=profile&initData=...
 
-import { getDb } from '../lib/mongodb.js';
-import { verifyTelegramInit } from '../lib/auth.js';
-import { toSp, AD_NETWORKS, MIN_WITHDRAW_SP, WD_MIN_TOWER_CLAIMS, WD_MIN_TASKS, WITHDRAW_FEE } from '../lib/constants.js';
-import { towerState } from '../lib/towers.js';
-import { tgSend } from '../lib/telegram.js';
-import { recordSignupAndCheckVelocity, checkAndRecordFingerprint } from '../lib/security.js';
-import {
-  REFERRAL_VELOCITY_WINDOW_MS, REFERRAL_VELOCITY_THRESHOLD, IP_SIGNUP_VELOCITY_THRESHOLD,
-} from '../lib/constants.js';
+import { connectToDatabase } from '../lib/mongodb.js';
+import { cyInc, cyMin } from '../lib/cycleStats.js'; // 18 Oct 2026 — cycle counters
+import { todayBD, REFERRAL_VELOCITY_WINDOW_MS, REFERRAL_VELOCITY_THRESHOLD, IP_SIGNUP_VELOCITY_THRESHOLD, IP_SIGNUP_VELOCITY_WINDOW_MS } from '../lib/constants.js';
+import { ensureDailyReset } from '../lib/dailyReset.js';
+import { checkAndRecordFingerprint } from '../lib/fingerprintCheck.js';
+import { isMember, OFFICIAL_CHANNEL, COMMUNITY_GROUP, tgSend } from '../lib/telegram.js';
+import { maybeAwardReferralMilestones } from '../lib/referral.js';
+import { verifyTelegramInitData } from '../lib/telegramAuth.js';
+import { getClientIp, checkDevice, claimDevice, claimDeviceForUser, getOwnerPublicInfo, recordSignupAndCheckVelocity } from '../lib/ipRegistry.js';
 
-const ADMIN_ID = process.env.ADMIN_ID;
+const ADMIN_ID = process.env.ADMIN_TELEGRAM_ID;
 
-// Fields the browser never needs (anti-fraud data + big arrays) — stripped from every response.
-const PRIVATE_FIELDS = ['_id', 'recentAdClaims', 'adWatchLog', 'fpHash', 'signupIp', 'multiAccountSiblings', 'refSignupLog',
-  'botSuspectAt', 'botReviewAt', 'refVelocityAlertedAt', 'dailyTasksClaimed', 'promosUsed'];
-function publicUser(u) {
-  if (!u) return u;
-  const o = { ...u };
-  for (const f of PRIVATE_FIELDS) delete o[f];
-  o.tasksDone = (u.completedTasks || []).length;
-  delete o.completedTasks;
-  // Everything the Home / Electricity / Ads / Invite screens need, sent ONCE with the login response
-  // (all of it is already in the user document we just loaded → zero extra DB reads, zero extra requests).
-  const now = Date.now();
-  const today = new Date(now + 6 * 3600000).toISOString().slice(0, 10); // Bangladesh day
-  o.wdRules = { minSp: MIN_WITHDRAW_SP, towerClaims: WD_MIN_TOWER_CLAIMS, tasks: WD_MIN_TASKS, fee: WITHDRAW_FEE };
-  o.refLink = `http://t.me/TonSparks_bot/startapp?startapp=${u.referCode}`;
-  o.tw = towerState(u, now);
-  o.ads = {};
-  for (const [n, cfg] of Object.entries(AD_NETWORKS)) {
-    o.ads[n] = { count: u[cfg.field]?.date === today ? (u[cfg.field].count || 0) : 0, max: cfg.max, reward: cfg.reward };
-  }
-  return o;
-}
+async function handleInit(req, res, db) {
+    const initData = req.body?.initData;
+    const verified = verifyTelegramInitData(initData);
+    if (!verified.ok) return res.status(401).json({ ok: false, error: 'unauthorized', reason: verified.error });
 
-function getClientIp(req) {
-  const fwd = req.headers['x-forwarded-for'];
-  if (fwd) return String(fwd).split(',')[0].trim();
-  return req.socket?.remoteAddress || 'unknown';
-}
+    const userId = String(verified.user.id);
+    const firstName = verified.user.first_name;
+    const username = verified.user.username;
+    const referrerCode = verified.startParam; // ✅ comes from verified initData — client can't send a different one separately
+    const { fingerprint } = req.body;
 
+    // ── Season 4: device-fingerprint gate (IP kept only as fallback — see
+    // lib/ipRegistry.js), checked on EVERY init (new or returning user)
+    // since the client calls action:init on every app boot. A different
+    // account already owning this device blocks entry outright — the
+    // client shows the "Device Already In Use" screen with the owner's
+    // public info and lets the person log into that account, or force-claim
+    // this device for their own (resets balance).
+    const clientIp = getClientIp(req);
+    const deviceCheck = await checkDevice(db, fingerprint, clientIp, userId);
+    if (deviceCheck.blocked) {
+        const owner = await getOwnerPublicInfo(db, deviceCheck.ownerId);
+        return res.status(409).json({ ok: false, error: 'ip_in_use', owner });
+    }
+    // soft IP-fallback collision (see lib/ipRegistry.js checkDevice).
+    // Not blocked, but worth a quiet admin-side breadcrumb in case a real
+    // multi-account pattern later shows up on the SAME key from the SAME
+    // userId repeatedly — never touches isBanned, never alerts per-event.
+    if (deviceCheck.fallbackCollision) {
+        db.collection('users').updateOne(
+            { _id: userId },
+            { $set: { ipFallbackCollisionFlag: true, ipFallbackCollisionWith: deviceCheck.ownerId } }
+        ).catch(() => {});
+    }
 
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://ton-spark-qu47.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-
-  const action = req.query?.action || req.body?.action;
-
-  try {
-    const db = await getDb();
     const users = db.collection('users');
-
-    // ── GET /api/user?telegramId=xxx ───────────────────────────
-    if (req.method === 'GET') {
-      const { telegramId, initData } = req.query;
-      if (!telegramId) return res.status(400).json({ error: 'telegramId required' });
-
-      const tgUser = verifyTelegramInit(initData);
-      if (!tgUser || String(tgUser.id) !== String(telegramId)) {
-        return res.status(403).json({ error: 'Invalid Telegram session' });
-      }
-
-      const user = await users.findOne(
-        { telegramId: String(telegramId) }
-      );
-      if (!user) return res.status(404).json({ error: 'User not found' });
-      return res.status(200).json({ success: true, user: publicUser(user) });
-    }
-
-    // ── POST /api/user  (register / app-open heartbeat) ───────────
-    if (req.method === 'POST') {
-      const { telegramId, username, firstName, referCode, initData, fingerprint } = req.body;
-
-      if (!telegramId) return res.status(400).json({ error: 'telegramId required' });
-
-      const tgUser = verifyTelegramInit(initData);
-      if (!tgUser || String(tgUser.id) !== String(telegramId)) {
-        return res.status(403).json({ error: 'Invalid Telegram session' });
-      }
-
-      const tgId = String(telegramId);
-      const existing = await users.findOne({ telegramId: tgId });
-
-      if (existing) {
-        const updated = await users.findOneAndUpdate(
-          { telegramId: tgId },
-          { $set: { lastActive: new Date() }, $inc: { appOpens: 1 } },
-          { returnDocument: 'after' }
-        );
-        let userDoc = updated?.value || updated;
-        // One-time migration: Gold was removed — any leftover Gold becomes SP (÷ 40), atomically.
-        if ((userDoc.goldBalance || 0) > 0) {
-          const g = userDoc.goldBalance;
-          const mig = await users.findOneAndUpdate(
-            { telegramId: tgId, goldBalance: g },
-            { $inc: { spBalance: toSp(g) }, $set: { goldBalance: 0, goldMigratedAt: new Date() } },
+    const existing = await users.findOne({ _id: userId });
+    if (existing) {
+        if (deviceCheck.unclaimed) await claimDevice(db, deviceCheck.key, userId); // link a fresh device to a returning user
+        // refresh the "still alive" clock every time the app opens.
+        // Powers the 90-day dead-account TTL below: 3 months with the app
+        // never once opened and the whole doc auto-deletes (see
+        // models/schema.js). If this same Telegram ID opens the app again
+        // after that, `existing` here comes back null and they fall straight
+        // into the newUser branch below — a genuinely fresh account, same as
+        // if they'd never used the app at all.
+        // v1.5 (saves Vercel usage): the app used to call action:init and then action:profile right after it (2 function runs per app open).
+        // Now init also sends the profile back for returning users, so the phone skips the separate profile call.
+        await ensureDailyReset(users, userId);
+        const fresh = await users.findOneAndUpdate(
+            { _id: userId },
+            { $set: { lastActiveAt: new Date() } },
             { returnDocument: 'after' }
-          );
-          userDoc = mig?.value || mig || userDoc;
-        }
-        // Device fingerprint soft-flag: only runs when this account's fingerprint changed (≈ once per device).
-        if (fingerprint && typeof fingerprint === 'string' && userDoc.fpHash !== fingerprint) {
-          await checkAndRecordFingerprint(db, tgId, fingerprint).catch(() => {});
-          await users.updateOne({ telegramId: tgId }, { $set: { fpHash: fingerprint } }).catch(() => {});
-        }
-        return res.status(200).json({ success: true, user: publicUser(userDoc), isNew: false });
-      }
-
-      const myReferCode =
-        'TEP' + tgId.slice(-5) + Math.random().toString(36).slice(2, 5).toUpperCase();
-
-      const newUser = {
-        telegramId: tgId,
-        username: username || '',
-        firstName: firstName || 'User',
-        spBalance: 0,
-        referCode: myReferCode,
-        referredBy: null,
-        totalReferred: 0,
-        totalRefEarned: 0,
-        totalRefEarnedSP: 0,
-        dailyClaimLast: null,
-        completedTasks: [],
-        dailyTasksClaimed: [],
-        totalAdsWatched: 0,
-        promosUsed: [],
-        isBanned: false,
-        appOpens: 1,
-        withdrawPending: false,
-        signupIp: (getClientIp(req) && getClientIp(req) !== 'unknown') ? getClientIp(req) : null, // used by admin 🆕 Signup Bursts
-        fpHash: (typeof fingerprint === 'string' && fingerprint.length >= 16 && fingerprint.length <= 128) ? fingerprint : null,
-        createdAt: new Date(),
-        lastActive: new Date(),
-      };
-
-      let referrerForAlert = null;
-      if (referCode) {
-        const referrer = await users.findOne({ referCode });
-        if (referrer && referrer.telegramId !== tgId) {
-          newUser.referredBy = referrer.telegramId;
-          referrerForAlert = referrer;
-        }
-      }
-
-      await users.insertOne(newUser);
-
-      // ── Referral bookkeeping + velocity alert (NEWTUBE: 20+ signups under ONE referrer in 2 min) ──
-      if (referrerForAlert) {
-        const now = Date.now();
-        const upd = await users.findOneAndUpdate(
-          { telegramId: referrerForAlert.telegramId },
-          { $inc: { totalReferred: 1 }, $push: { refSignupLog: { $each: [new Date(now)], $slice: -40 } } },
-          { returnDocument: 'after' }
         );
-        const ref = upd?.value || upd;
-        const recent = (ref?.refSignupLog || []).filter(t => now - new Date(t).getTime() <= REFERRAL_VELOCITY_WINDOW_MS).length;
-        if (ref && recent >= REFERRAL_VELOCITY_THRESHOLD && !ref.refVelocityAlertedAt && ADMIN_ID) {
-          await users.updateOne({ telegramId: ref.telegramId }, { $set: { refVelocityAlertedAt: new Date() } });
-          tgSend(ADMIN_ID,
-            `🚨 <b>Referral signup velocity</b>\n\nReferrer <code>${ref.telegramId}</code> (${ref.firstName || '—'}) got <b>${recent}</b> signups within <b>${Math.round(REFERRAL_VELOCITY_WINDOW_MS / 60000)} minutes</b> — no real promotion delivers signups this fast.\nNothing was blocked — you decide.`,
-            { reply_markup: { inline_keyboard: [[{ text: '🔒 Lock referrer', callback_data: `lock_${ref.telegramId}` }, { text: '👤 Profile', callback_data: `lookup_${ref.telegramId}` }], [{ text: '🚫 Ban referrer', callback_data: `ban_${ref.telegramId}` }]] } }
-          ).catch(() => {});
+        const freshDoc = fresh?.value !== undefined ? fresh.value : fresh;
+        if (freshDoc) {
+            const { multiAccountSiblings, multiAccountFingerprint, ...safeUser } = freshDoc;
+            return res.status(200).json({ ok: true, alreadyExists: true, user: safeUser });
         }
-      }
-
-      // ── Raw-IP signup velocity: ALERT ONLY. Bangladesh mobile networks share one IP between thousands of
-      //    real users (CGNAT), so this never locks anybody — the admin reviews it in 🆕 Signup Bursts. ──
-      try {
-        const { count } = await recordSignupAndCheckVelocity(db, getClientIp(req));
-        if (count === IP_SIGNUP_VELOCITY_THRESHOLD && ADMIN_ID) {
-          tgSend(ADMIN_ID,
-            `⚠️ <b>Many signups from one IP</b>\n\n<b>${count}</b> new accounts from one IP in 3 minutes. Could be a shared mobile network (normal in Bangladesh) or a farm. <b>Nobody was locked.</b>\nOpen 🆕 Signup Bursts to review.`
-          ).catch(() => {});
-        }
-      } catch (e) { console.error('ip velocity error:', e?.message); }
-
-      // ── Device fingerprint soft flag (admin review only) ──
-      if (newUser.fpHash) await checkAndRecordFingerprint(db, tgId, newUser.fpHash).catch(() => {});
-
-      return res.status(200).json({ success: true, user: publicUser(newUser), isNew: true });
+        return res.status(200).json({ ok: true, alreadyExists: true });
     }
 
-    return res.status(405).json({ error: 'Method not allowed' });
-  } catch (err) {
-    console.error('user.js error:', err);
-    return res.status(500).json({ error: 'Server error' });
-  }
+    // Two different auto-deletes can land a returning Telegram ID here with
+    // `existing === null` even though they've used the app before:
+    //   1) a banned user's doc, 60 days after bannedAt (see models/schema.js) — the
+    //      stillBanned check right below catches this via the separate,
+    //      never-expiring `bannedTelegramIds` registry, so the ban still holds.
+    //   2) a genuinely inactive user's doc, 90 days after lastActiveAt (also
+    //      models/schema.js) — NOT banned, so nothing blocks them below: they
+    //      fall straight into creating newUser and get a real fresh start,
+    //      which is the intended behavior for a "dead" (not banned) account.
+    const stillBanned = await db.collection('bannedTelegramIds').findOne({ _id: userId });
+    if (stillBanned) return res.status(403).json({ ok: false, error: 'banned' });
+
+    const newUser = {
+        _id: userId,
+        firstName: firstName || 'User',
+        telegramUsername: username || 'N/A',
+        wtcBalance: 0,
+        usdtBalance: 0,
+        lifetimeWtcEarned: 0,
+        pendingVideoWTC: 0,
+        referralCount: 0,
+        totalInvites: 0,
+        referredBy: (referrerCode && referrerCode !== userId) ? String(referrerCode) : null,
+        signupIp: (clientIp && clientIp !== 'unknown') ? clientIp : null, // 18 Oct 2026 — only for the admin 🆕 Signup Bursts screen (lib/signupBursts.js)
+        referralMineRewardDone: false, // 300 WTC referral reward — paid once after this user's first mining claim (lib/referral.js)
+        completedTasks: [],
+        isBanned: false,
+        channelVerified: false,
+        withdrawalCount: 0,
+        lifetimeAdsWatched: 0,
+        adsWatchedToday: 0,
+        adsgramDailyCountToday: 0,
+        adsgramSpecialCountToday: 0,
+        adsgramTaskCountToday: 0,
+        monetagCountToday: 0,
+        gigaCountToday: 0,
+        // ⚠️ REMOVED — tadsCountToday (network deleted)
+        // 17 Oct 2026: Spin Wheel removed — no spin fields are created for new users any more.
+        usedAdStarts: [],
+        usedLootboxStarts: [],
+        usedTaskStarts: [],
+        dailyVideoWtcMined: 0,
+        tasksCompletedToday: 0,
+        lastResetDate: todayBD(),
+        welcomeBonusClaimed: false,
+        createdAt: new Date(),
+        lastActiveAt: new Date(), // ⚠️ NEW — see the dead-account TTL note above / models/schema.js
+        multiAccountFlag: false,
+        multiAccountSiblings: [],
+        validReferralCount: 0,      // ⚠️ NEW — Season 4, +1 when a referral completes all 3 steps (lib/referral.js)
+        usedValidReferrals: 0,      // ⚠️ NEW — Season 4, +1 each withdraw after the user's first (free) one
+        // wallet lock (see WALLET_CHANGE_PENALTY_PERCENT, lib/constants.js).
+        // Set on the user's first-ever withdrawal, reused automatically after that.
+        lockedWalletMethod: null,
+        lockedWalletAddress: null,
+        walletChangeUsed: false,   // lifetime one-time allowance to change the locked wallet
+        // ⚠️ REMOVED (this update) — luckyTickets / "777" lottery field. Feature removed entirely, see lib/constants.js.
+    };
+
+    // raw-IP signup velocity gate (see IP_SIGNUP_VELOCITY_* in
+    // lib/constants.js for the full reasoning). Unlike the device-fingerprint
+    // gate above, this can't be dodged by a script sending a fresh fake
+    // fingerprint per account — it's keyed on the actual client IP the
+    // request arrived from. Crossing the threshold auto-locks the account
+    // BEFORE it's even inserted (accountLocked blocks withdrawal — see
+    // api/withdraw.js), then alerts the admin. This is a harder response
+    // than the referral-velocity heuristic above (which is alert-only) on
+    // purpose: that one can be tripped by a genuinely viral real promotion,
+    // this one — a burst of brand-new accounts from one IP — has no
+    // legitimate-organic explanation, so locking first and letting the
+    // admin unlock on review is the safe default here.
+    const { count: ipSignupCount } = await recordSignupAndCheckVelocity(db, clientIp);
+    if (ipSignupCount >= IP_SIGNUP_VELOCITY_THRESHOLD) {
+        newUser.accountLocked = true;
+        newUser.accountLockedReason = 'ip_signup_velocity'; // 12 Oct 2026 — now visible in the admin panel / dashboard breakdown
+        newUser.velocityFlaggedAt = new Date();
+        newUser.velocityFlaggedReason = 'ip_signup_velocity';
+    }
+
+    try {
+        await users.insertOne(newUser);
+    } catch (err) {
+        if (err.code === 11000) return res.status(200).json({ ok: true, alreadyExists: true });
+        throw err;
+    }
+
+    // admin alert for the IP signup velocity lock above. Fires once
+    // right at the threshold, then every +10 accounts after that while the
+    // same burst keeps going (mirrors the switchCount modulo pattern in
+    // lib/ipRegistry.js) — enough to notice a large ongoing farm run without
+    // spamming one message per account.
+    if (ipSignupCount >= IP_SIGNUP_VELOCITY_THRESHOLD && (ipSignupCount === IP_SIGNUP_VELOCITY_THRESHOLD || ipSignupCount % 10 === 0) && ADMIN_ID) {
+        const minutes = Math.round(IP_SIGNUP_VELOCITY_WINDOW_MS / 60000);
+        tgSend(
+            ADMIN_ID,
+            `🔒 <b>IP signup velocity — accounts auto-locked</b>\n\n` +
+            `<b>${ipSignupCount}+</b> new accounts have signed up from IP <code>${clientIp}</code> within a few minutes — looks like a farming script, not real traffic.\n\n` +
+            `Latest account (locked, withdrawal blocked): <code>${userId}</code>\n\n` +
+            `Review and unlock manually if this turns out to be a legitimate shared network.`,
+            { reply_markup: { inline_keyboard: [[{ text: '🔎 Review this account', callback_data: `lookup_${userId}` }]] } }
+        ).catch(() => {});
+    }
+
+    if (newUser.referredBy) {
+        const referrerId = newUser.referredBy;
+        const now = new Date();
+        // referral signup velocity lock (lib/constants.js
+        // REFERRAL_VELOCITY_*). Every signup under this referrer pushes a
+        // timestamp onto a capped rolling list (last 50 — plenty to check
+        // a 2-minute window, negligible storage), then checks how many of
+        // those timestamps fall inside the velocity window.
+        const referrerAfter = await users.findOneAndUpdate(
+            { _id: referrerId },
+            {
+                // 17 Oct 2026: the old "+1 bonus spin per referral" is gone with the Spin Wheel.
+                $inc: { referralCount: 1, totalInvites: 1, newRefCount: 1, ...cyInc('refJoin', 0) }, // 28 Oct 2026: newRefCount = referrals made AFTER the new withdraw rule (old referrals never counted) — withdraw needs 1 (api/withdraw.js) // refJoin = admin 📊 Cycle Report: friends who joined via this user's link
+                $min: cyMin(),
+                $push: { recentReferralSignups: { $each: [now], $slice: -50 } },
+            },
+            { returnDocument: 'after' }
+        );
+        const referrerDoc = referrerAfter?.value !== undefined ? referrerAfter.value : referrerAfter;
+        // this used to auto-lock the referrer
+        // immediately (blocking their withdrawals + referral rewards).
+        // Now it's ALERT-ONLY — the admin reviews and decides (Lock or
+        // dismiss) from the alert or the user's info panel. No automatic
+        // harm to the user just for tripping a heuristic; a legitimate
+        // fast-growing promotion doesn't get punished by default.
+        if (referrerDoc && !referrerDoc.accountLocked && !referrerDoc.velocityFlaggedAt) {
+            const windowStart = Date.now() - REFERRAL_VELOCITY_WINDOW_MS;
+            const recentCount = (referrerDoc.recentReferralSignups || [])
+                .filter((t) => new Date(t).getTime() >= windowStart).length;
+            if (recentCount >= REFERRAL_VELOCITY_THRESHOLD) {
+                // ⚠️ Atomic guard (velocityFlaggedAt:{$exists:false}) — only
+                // the first signup to cross the threshold sends the alert;
+                // this is now purely informational (velocityFlaggedAt), it
+                // does NOT block anything on its own — see accountLocked
+                // (admin-set only now) for the actual enforcement flag.
+                const justFlagged = await users.updateOne(
+                    { _id: referrerId, velocityFlaggedAt: { $exists: false } },
+                    { $set: { velocityFlaggedAt: now, velocityFlaggedReason: 'referral_velocity' } }
+                );
+                if (justFlagged.modifiedCount > 0 && ADMIN_ID) {
+                    const minutes = Math.round(REFERRAL_VELOCITY_WINDOW_MS / 60000);
+                    tgSend(
+                        ADMIN_ID,
+                        `🚩 <b>Referral velocity alert (no action taken)</b>\n\n` +
+                        `Referrer <code>${referrerId}</code> just crossed <b>${REFERRAL_VELOCITY_THRESHOLD}+</b> referral signups within <b>${minutes} minutes</b> — no real promotion delivers signups this fast.\n\n` +
+                        `Nothing is blocked — check their referral list, then Lock if it looks fake or ignore if it's a real promotion.`,
+                        { reply_markup: { inline_keyboard: [[{ text: '🔎 Review this account', callback_data: `lookup_${referrerId}` }]] } }
+                    ).catch(() => {});
+                }
+            }
         }
+    }
+
+    await claimDevice(db, deviceCheck.key, userId); // first account on this device — claim it
+
+    // NOTE — checkAndRecordFingerprint (lib/fingerprintCheck.js) only sets
+    // multiAccountFlag for admin review here; it does NOT auto-ban. Real
+    // one-account-per-device enforcement is the hard block up in checkDevice()
+    // above. (An earlier version of this comment described an auto-ban path
+    // that was intentionally reverted — see fingerprintCheck.js's own note —
+    // fixed here so it stops contradicting the actual code.)
+    const fpResult = await checkAndRecordFingerprint(db, userId, fingerprint);
+    return res.status(200).json({ ok: true, created: true, multiAccountFlagged: fpResult.flagged });
+}
+
+// Season 4 "Switch account" — the way forward from the device-in-use block
+// screen besides logging into the account that already owns this device.
+// Force-claims the device key (fingerprint, or IP as fallback — see
+// lib/ipRegistry.js:registryKey) for the CALLER's Telegram account and wipes
+// their balance as the anti-abuse cost of doing so. See
+// lib/ipRegistry.js:claimDeviceForUser for exactly what gets reset.
+async function handleSwitchAccount(req, res, db) {
+    const initData = req.body?.initData;
+    const verified = verifyTelegramInitData(initData);
+    if (!verified.ok) return res.status(401).json({ ok: false, error: 'unauthorized', reason: verified.error });
+    const userId = String(verified.user.id);
+    const { fingerprint } = req.body;
+
+    const stillBanned = await db.collection('bannedTelegramIds').findOne({ _id: userId });
+    if (stillBanned) return res.status(403).json({ ok: false, error: 'banned' });
+
+    const existing = await db.collection('users').findOne({ _id: userId });
+    if (!existing) return res.status(404).json({ ok: false, error: 'user_not_found' });
+
+    const clientIp = getClientIp(req);
+    const key = fingerprint && fingerprint.length >= 16 ? fingerprint : `ip:${clientIp}`;
+    const result = await claimDeviceForUser(db, key, userId);
+    // claimDeviceForUser now enforces a cooldown between switches on
+    // the same device (see lib/ipRegistry.js for why). Surface it clearly
+    // instead of silently no-op'ing.
+    if (!result.ok) {
+        const hours = Math.ceil(result.retryAfterMs / (60 * 60 * 1000));
+        return res.status(429).json({
+            ok: false, error: 'switch_cooldown', retryAfterMs: result.retryAfterMs,
+            message: `This device was already switched recently. Try again in about ${hours}h, or log into the existing account instead.`,
+        });
+    }
+    return res.status(200).json({ ok: true, switched: true });
+}
+
+async function handleCheckJoin(req, res, db) {
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    const verified = verifyTelegramInitData(req.query.initData);
+    if (!verified.ok) return res.status(401).json({ joined: false, error: 'unauthorized', reason: verified.error });
+    const userId = String(verified.user.id);
+
+    try {
+        const [inChannel, inGroup] = await Promise.all([
+            isMember(userId, OFFICIAL_CHANNEL),
+            isMember(userId, COMMUNITY_GROUP),
+        ]);
+        const joined = inChannel && inGroup;
+
+        if (joined) {
+            try {
+                await db.collection('users').updateOne({ _id: userId }, { $set: { channelVerified: true } });
+                await maybeAwardReferralMilestones(db, userId, { channelVerified: true });
+            } catch { /* non-blocking */ }
+        } else {
+            // this DB read+write had no try/catch of its own, so a
+            // transient Mongo error here (not just isMember failing) fell
+            // through to the outer catch below, which used to return
+            // `joined: true` — see that fix for why this branch is wrapped now too.
+            try {
+                const existing = await db.collection('users').findOne({ _id: userId }, { projection: { channelVerified: 1 } });
+                if (existing?.channelVerified) {
+                    await db.collection('users').updateOne({ _id: userId }, { $set: { channelVerified: false } });
+                    return res.status(200).json({ joined: false, inChannel, inGroup, leftAfterVerifying: true });
+                }
+            } catch { /* non-blocking — worst case this one flag update is skipped, joined:false below still holds */ }
+        }
+
+        return res.status(200).json({ joined, inChannel, inGroup });
+    } catch (err) {
+        console.error('checkJoin error:', err);
+        // this used to return `joined: true` here, meaning
+        // ANY transient error (a DB blip, isMember throwing unexpectedly)
+        // waved the user through the join-gate as if they were a verified
+        // member, with nothing checked at all. Fail CLOSED instead — a
+        // genuine member just sees "not joined yet" for a moment and can
+        // tap "check now" again; a non-member correctly stays gated during
+        // the same failure window. Matches the fail-closed pattern used
+        // everywhere else in this codebase (see isMember() in telegram.js).
+        return res.status(200).json({ joined: false, error: 'check_failed' });
+    }
+}
+
+async function handleProfile(req, res, db) {
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    const verified = verifyTelegramInitData(req.query.initData);
+    if (!verified.ok) return res.status(401).json({ ok: false, error: 'unauthorized', reason: verified.error });
+    const userId = String(verified.user.id);
+
+    const users = db.collection('users');
+    await ensureDailyReset(users, userId);
+
+    const user = await users.findOne({ _id: userId });
+    if (!user) return res.status(404).js
