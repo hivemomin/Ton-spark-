@@ -3,14 +3,14 @@
 import { getDb } from '../lib/mongodb.js';
 import { verifyTelegramInit } from '../lib/auth.js';
 import { maybeAwardValidReferral } from '../lib/referral.js';
-import { toSp, VALID_TASKS, VALID_ADS, REFERRAL_REWARD_SP, WITHDRAW_COMMISSION_PERCENT } from '../lib/constants.js';
+import { toSp, VALID_TASKS, VALID_ADS, REFERRAL_REWARD_SP, REF_JOIN_SP, REF_ADS_SP, REF_TASKS_SP, WITHDRAW_COMMISSION_PERCENT, PAYOUT_CHANNEL } from '../lib/constants.js';
 
 const BOT_LINK = 'http://t.me/TonSparks_bot/startapp';
 const BOT_TOKEN = process.env.BOT_TOKEN;
 
 // Only these two are ever real-verified — must match bot.js's CHANNEL/COMMUNITY.
 const OFFICIAL_TARGETS = {
-  channel: '@Tonsparkpayout',
+  channel: PAYOUT_CHANNEL,
   group: '@Tonspark2',
 };
 
@@ -69,18 +69,24 @@ export default async function handler(req, res) {
       const { type } = req.query;
 
       if (type === 'refer') {
-        // Newest 30 referrals only, with counts computed inside MongoDB — never pulls whole documents
-        // (an account with 1,000+ referrals used to load every one of them on each visit).
+        // PAGINATED: one page of friends per request (newest first), counts computed inside MongoDB —
+        // never pulls whole documents. ?page=1,2,3… &limit=10 (max 20).
+        const PAGE_SIZE = Math.min(Math.max(parseInt(req.query.limit, 10) || 10, 1), 20);
+        const totalFriends = user.totalReferred || 0;
+        const totalPages = Math.max(1, Math.ceil(totalFriends / PAGE_SIZE));
+        const page = Math.min(Math.max(parseInt(req.query.page, 10) || 1, 1), totalPages);
         const referredSummary = (await users.aggregate([
           { $match: { referredBy: String(telegramId) } },
           { $sort: { createdAt: -1 } },
-          { $limit: 30 },
-          { $project: { _id: 0, firstName: 1, username: 1, createdAt: 1, refereeValid: 1,
+          { $skip: (page - 1) * PAGE_SIZE },
+          { $limit: PAGE_SIZE },
+          { $project: { _id: 0, firstName: 1, username: 1, createdAt: 1, refereeValid: 1, channelJoined: 1,
               tasksDone: { $size: { $ifNull: ['$completedTasks', []] } }, adsWatched: { $ifNull: ['$totalAdsWatched', 0] } } },
         ]).toArray()).map(r => ({
           firstName: r.firstName, username: r.username, createdAt: r.createdAt,
           tasksDone: Math.min(r.tasksDone || 0, VALID_TASKS),
           adsWatched: Math.min(r.adsWatched || 0, VALID_ADS),
+          channelJoined: !!r.channelJoined,
           isValidReferral: !!r.refereeValid,
         }));
 
@@ -94,9 +100,10 @@ export default async function handler(req, res) {
           commissionEarnedSP: user.referralCommissionEarned || 0,
           validReferrals: user.validReferralCount || 0,
           referredUsers: referredSummary,
-          listLimit: 30,
+          page, totalPages, pageSize: PAGE_SIZE, totalFriends,
           rewards: {
-            rewardSp: REFERRAL_REWARD_SP, commissionPercent: WITHDRAW_COMMISSION_PERCENT,
+            rewardSp: REFERRAL_REWARD_SP, joinSp: REF_JOIN_SP, adsSp: REF_ADS_SP, tasksSp: REF_TASKS_SP,
+            commissionPercent: WITHDRAW_COMMISSION_PERCENT,
             validReferralTasksReq: VALID_TASKS, validReferralAdsReq: VALID_ADS,
           },
         });
@@ -170,8 +177,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Task already completed.' });
       }
 
-      // Referral: when this was the task that made the friend a "valid referral"
-      // (10 tasks + 10 ads), the referrer gets +300 SP (lib/referral.js).
+      // Referral: when this was the 10th task, the referrer gets the tasks-step reward (+200 SP, lib/referral.js).
       await maybeAwardValidReferral(db, updated);
 
       return res.status(200).json({ success: true, reward: spOf(task) });
@@ -182,4 +188,4 @@ export default async function handler(req, res) {
     console.error('tasks.js error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-            }
+                               }
